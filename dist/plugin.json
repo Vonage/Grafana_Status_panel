@@ -1,0 +1,24 @@
+{
+  "type": "panel",
+  "name": "Status Panel",
+  "id": "status-panel",
+
+  "info": {
+    "description": "Status Panel for Grafana",
+    "author": {
+      "name": "Tomer Amir"
+    },
+    "keywords": ["status", "panel"],
+    "links": [
+    ],
+    "screenshots": [
+    ],
+    "version": "0.0.1",
+    "updated": "2016-10-5"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": [ ]
+  }
+}
