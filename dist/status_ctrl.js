@@ -86,6 +86,8 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
         _createClass(StatusPluginCtrl, [{
           key: "postRefresh",
           value: function postRefresh() {
+            var _this2 = this;
+
             this.log("refresh");
 
             this.measurements = _.filter(this.panel.targets, function (target) {
@@ -95,17 +97,15 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
             /** Duplicate alias validation **/
             this.duplicates = false;
 
-            function countDuplicates(m) {
-              var res = _.filter(this.measurements, function (measurement) {
+            _.each(this.measurements, function (m) {
+              var res = _.filter(_this2.measurements, function (measurement) {
                 return m.alias == measurement.alias;
               });
 
               if (res.length > 1) {
-                this.duplicates = true;
+                _this2.duplicates = true;
               }
-            }
-
-            _.each(this.measurements, countDuplicates.bind(this));
+            });
 
             // TODO: Remove temp test code
             //if (this.status) {

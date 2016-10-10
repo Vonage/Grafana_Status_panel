@@ -30,7 +30,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     /** Duplicate alias validation **/
     this.duplicates = false;
 
-    function countDuplicates(m) {
+    _.each(this.measurements, (m) => {
       var res = _.filter(this.measurements, function(measurement) {
         return m.alias == measurement.alias;
       });
@@ -38,9 +38,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       if (res.length > 1) {
         this.duplicates = true;
       }
-    }
-
-    _.each(this.measurements, countDuplicates.bind(this));
+    });
 
     // TODO: Remove temp test code
     //if (this.status) {
