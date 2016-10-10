@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/series_overrides_ctrl', 'angular', 'moment', 'app/core/utils/kbn', 'lodash', 'app/core/time_series2', 'app/core/utils/file_export', 'app/plugins/sdk'], function (_export, _context) {
+System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/plugins/sdk"], function (_export, _context) {
   "use strict";
 
-  var angular, moment, kbn, _, TimeSeries, fileExport, MetricsPanelCtrl, _createClass, StatusPluginCtrl;
+  var _, TimeSeries, MetricsPanelCtrl, _createClass, StatusPluginCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -36,18 +36,10 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
   }
 
   return {
-    setters: [function (_appPluginsPanelGraphLegend) {}, function (_appPluginsPanelGraphSeries_overrides_ctrl) {}, function (_angular) {
-      angular = _angular.default;
-    }, function (_moment) {
-      moment = _moment.default;
-    }, function (_appCoreUtilsKbn) {
-      kbn = _appCoreUtilsKbn.default;
-    }, function (_lodash) {
+    setters: [function (_appPluginsPanelGraphLegend) {}, function (_appPluginsPanelGraphSeries_overrides_ctrl) {}, function (_lodash) {
       _ = _lodash.default;
     }, function (_appCoreTime_series) {
       TimeSeries = _appCoreTime_series.default;
-    }, function (_appCoreUtilsFile_export) {
-      fileExport = _appCoreUtilsFile_export;
     }, function (_appPluginsSdk) {
       MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
     }],
@@ -70,7 +62,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
         };
       }();
 
-      _export('StatusPluginCtrl', StatusPluginCtrl = function (_MetricsPanelCtrl) {
+      _export("StatusPluginCtrl", StatusPluginCtrl = function (_MetricsPanelCtrl) {
         _inherits(StatusPluginCtrl, _MetricsPanelCtrl);
 
         /** @ngInject */
@@ -79,7 +71,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
 
           var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
-          _this.log = $log.log;
+          _this.log = $log.debug;
 
           /** Bind events to functions **/
           _this.events.on('render', _this.onRender.bind(_this));
@@ -92,7 +84,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
         }
 
         _createClass(StatusPluginCtrl, [{
-          key: 'postRefresh',
+          key: "postRefresh",
           value: function postRefresh() {
             this.log("refresh");
 
@@ -125,7 +117,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             //this.status = !this.status;
           }
         }, {
-          key: 'onInitEditMode',
+          key: "onInitEditMode",
           value: function onInitEditMode() {
             this.log(this);
             this.addEditorTab('Options', 'public/plugins/status-panel/editor.html', 2);
@@ -133,22 +125,22 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             this.log(this.panel.targets);
           }
         }, {
-          key: 'setUnitFormat',
+          key: "setUnitFormat",
           value: function setUnitFormat() {
             this.log("setUnitFormat");
           }
         }, {
-          key: 'onDataError',
+          key: "onDataError",
           value: function onDataError() {
             this.log("onDataError");
           }
         }, {
-          key: 'changeSeriesColor',
+          key: "changeSeriesColor",
           value: function changeSeriesColor(series, color) {
             this.log("changeSeriesColor");
           }
         }, {
-          key: 'onRender',
+          key: "onRender",
           value: function onRender() {
             this.log("onRender");
 
@@ -163,12 +155,12 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             });
           }
         }, {
-          key: 'parseSeries',
+          key: "parseSeries",
           value: function parseSeries() {
             this.log("parseSeries");
           }
         }, {
-          key: 'onDataReceived',
+          key: "onDataReceived",
           value: function onDataReceived(dataList) {
             this.log("onDataReceived");
             this.series = dataList.map(this.seriesHandler.bind(this));
@@ -176,7 +168,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             this.render();
           }
         }, {
-          key: 'seriesHandler',
+          key: "seriesHandler",
           value: function seriesHandler(seriesData) {
             this.log("seriesHandler");
             this.log(seriesData);
@@ -191,17 +183,17 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             return series;
           }
         }, {
-          key: 'getDecimalsForValue',
+          key: "getDecimalsForValue",
           value: function getDecimalsForValue(value) {
             this.log("getDecimalsForValue");
           }
         }, {
-          key: 'formatValue',
+          key: "formatValue",
           value: function formatValue(value) {
             this.log("formatValue");
           }
         }, {
-          key: 'link',
+          key: "link",
           value: function link(scope, elem, attrs, ctrl) {
             this.log("link");
             this.$panelContainer = elem.find('.panel-container');
@@ -211,7 +203,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
         return StatusPluginCtrl;
       }(MetricsPanelCtrl));
 
-      _export('StatusPluginCtrl', StatusPluginCtrl);
+      _export("StatusPluginCtrl", StatusPluginCtrl);
 
       StatusPluginCtrl.templateUrl = 'module.html';
     }

@@ -1,20 +1,15 @@
-import 'app/plugins/panel/graph/legend';
-import 'app/plugins/panel/graph/series_overrides_ctrl';
-
-import angular from 'angular';
-import moment from 'moment';
-import kbn from 'app/core/utils/kbn';
-import _ from 'lodash';
-import TimeSeries from 'app/core/time_series2';
-import * as fileExport from 'app/core/utils/file_export';
-import {MetricsPanelCtrl} from 'app/plugins/sdk';
+import "app/plugins/panel/graph/legend";
+import "app/plugins/panel/graph/series_overrides_ctrl";
+import _ from "lodash";
+import TimeSeries from "app/core/time_series2";
+import {MetricsPanelCtrl} from "app/plugins/sdk";
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
   /** @ngInject */
   constructor($scope, $injector, $log, annotationsSrv) {
     super($scope, $injector);
 
-    this.log = $log.log;
+    this.log = $log.debug;
 
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
