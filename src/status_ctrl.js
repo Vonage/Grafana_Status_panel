@@ -27,9 +27,25 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
   postRefresh() {
     this.log("refresh");
+
     this.measurements = _.filter(this.panel.targets, function(target) {
       return target.alias && !target.hide;
     });
+
+    /** Duplicate alias validation **/
+    this.duplicates = false;
+
+    function countDuplicates(m) {
+      var res = _.filter(this.measurements, function(measurement) {
+        return m.alias == measurement.alias;
+      });
+
+      if (res.length > 1) {
+        this.duplicates = true;
+      }
+    }
+
+    _.each(this.measurements, countDuplicates.bind(this));
 
     // TODO: Remove temp test code
     //if (this.status) {
@@ -70,7 +86,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
         return target.alias == s.alias;
       });
 
-      s.thresholds = target.thresholds;
+      if (target)
+        s.thresholds = target.thresholds;
     });
   }
 

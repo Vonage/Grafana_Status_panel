@@ -1,4 +1,12 @@
-<div ng-repeat="measurement in ctrl.measurements">
+<div>
+  <strong>Note:</strong> Every measurement has to have a unique <strong>Alias</strong> to be used
+</div>
+
+<div ng-show="ctrl.duplicates">
+  <h1>Duplicates</h1>
+</div>
+
+<div ng-repeat="measurement in ctrl.measurements" ng-hide="ctrl.duplicates">
   {{ measurement | json }}
   <div class="editor-row">
     <div class="section gf-form-group">
