@@ -23,7 +23,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   postRefresh() {
     this.log("refresh");
 
-    this.measurements = _.filter(this.panel.targets, function(target) {
+    this.measurements = _.filter(this.panel.targets, (target) => {
       return target.alias && !target.hide;
     });
 
@@ -31,7 +31,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.duplicates = false;
 
     _.each(this.measurements, (m) => {
-      var res = _.filter(this.measurements, function(measurement) {
+      var res = _.filter(this.measurements, (measurement) => {
         return m.alias == measurement.alias;
       });
 
@@ -74,8 +74,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
     let targets = this.panel.targets;
 
-    _.each(this.series, function (s) {
-      let target = _.find(targets, function(target) {
+    _.each(this.series, (s) => {
+      let target = _.find(targets, (target) => {
         return target.alias == s.alias;
       });
 
