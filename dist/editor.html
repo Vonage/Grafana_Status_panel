@@ -6,6 +6,16 @@
   <h1>Duplicates</h1>
 </div>
 
+<div class="editor-row">
+  <div class="section gf-form-group">
+    <h5 class="section-heading">{{ measurement.alias }}</h5>
+    <div class="gf-form">
+      <span class="gf-form-label width-8">Cluster Name:</span>
+      <input type="text" ng-model="ctrl.panel.clusterName" class="gf-form-input max-width-10" ng-change="ctrl.onRender()">
+    </div>
+  </div>
+</div>
+
 <div ng-repeat="measurement in ctrl.measurements" ng-hide="ctrl.duplicates">
   {{ measurement | json }}
   <div class="editor-row">

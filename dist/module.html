@@ -1,4 +1,4 @@
-<h1>This is a test</h1>
+<h1>{{ ctrl.panel.clusterName | interpolateTemplateVars:this }}</h1>
 <div ng-repeat="s in ctrl.series">
   {{ s | json }}
 </div>
