@@ -30,6 +30,15 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.measurements = _.filter(this.panel.targets, function(target) {
       return target.alias && !target.hide;
     });
+
+    // TODO: Remove temp test code
+    //if (this.status) {
+    //  this.$panelContainer.css('background-color', "red");
+    //} else {
+    //  this.$panelContainer.css('background-color', "green");
+    //}
+    //
+    //this.status = !this.status;
   }
 
   onInitEditMode() {
@@ -41,34 +50,39 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
   setUnitFormat() {
     this.log("setUnitFormat");
-
   }
 
   onDataError() {
     this.log("onDataError");
-
   }
 
   changeSeriesColor(series, color) {
     this.log("changeSeriesColor");
-
   }
 
   onRender() {
     this.log("onRender");
 
+    let targets = this.panel.targets;
+
+    _.each(this.series, function (s) {
+      let target = _.find(targets, function(target) {
+        return target.alias == s.alias;
+      });
+
+      s.thresholds = target.thresholds;
+    });
   }
 
   parseSeries() {
     this.log("parseSeries");
-
   }
 
   onDataReceived(dataList) {
     this.log("onDataReceived");
-    this.log(dataList);
     this.series = dataList.map(this.seriesHandler.bind(this));
-    this.log(this.series);
+
+    this.render();
   }
 
   seriesHandler(seriesData) {
@@ -80,25 +94,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       alias: seriesData.target
     });
 
-    this.log(series);
+    //series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
 
-    series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
     return series;
   }
 
   getDecimalsForValue(value) {
     this.log("getDecimalsForValue");
-
   }
 
   formatValue(value) {
     this.log("formatValue");
-
   }
 
   link(scope, elem, attrs, ctrl) {
     this.log("link");
-
+    this.$panelContainer = elem.find('.panel-container');
   }
 }
 

@@ -98,6 +98,15 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
             this.measurements = _.filter(this.panel.targets, function (target) {
               return target.alias && !target.hide;
             });
+
+            // TODO: Remove temp test code
+            //if (this.status) {
+            //  this.$panelContainer.css('background-color', "red");
+            //} else {
+            //  this.$panelContainer.css('background-color', "green");
+            //}
+            //
+            //this.status = !this.status;
           }
         }, {
           key: 'onInitEditMode',
@@ -126,6 +135,16 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
           key: 'onRender',
           value: function onRender() {
             this.log("onRender");
+
+            var targets = this.panel.targets;
+
+            _.each(this.series, function (s) {
+              var target = _.find(targets, function (target) {
+                return target.alias == s.alias;
+              });
+
+              s.thresholds = target.thresholds;
+            });
           }
         }, {
           key: 'parseSeries',
@@ -136,9 +155,9 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
           key: 'onDataReceived',
           value: function onDataReceived(dataList) {
             this.log("onDataReceived");
-            this.log(dataList);
             this.series = dataList.map(this.seriesHandler.bind(this));
-            this.log(this.series);
+
+            this.render();
           }
         }, {
           key: 'seriesHandler',
@@ -151,9 +170,8 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
               alias: seriesData.target
             });
 
-            this.log(series);
+            //series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
 
-            series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
             return series;
           }
         }, {
@@ -170,6 +188,7 @@ System.register(['app/plugins/panel/graph/legend', 'app/plugins/panel/graph/seri
           key: 'link',
           value: function link(scope, elem, attrs, ctrl) {
             this.log("link");
+            this.$panelContainer = elem.find('.panel-container');
           }
         }]);
 
