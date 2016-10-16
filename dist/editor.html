@@ -17,14 +17,13 @@
 </div>
 
 <div ng-repeat="measurement in ctrl.measurements" ng-hide="ctrl.duplicates">
-  {{ measurement | json }}
   <div class="editor-row">
     <div class="section gf-form-group">
       <h5 class="section-heading">{{ measurement.alias }}</h5>
       <div class="gf-form">
         <span class="gf-form-label width-8">Thresholds:</span>
-        <input type="text" ng-model="measurement.thresholds" class="gf-form-input max-width-10" ng-change="ctrl.onRender()">
-        <info-popover mode="right-absolute">Combines all slices that are smaller than the specified percentage (ranging from 0 to 1) i.e. a value of '0.03' will combine all slices 3% or less into one slice).</info-popover>
+        <input type="text" name="thresholds" ng-model="measurement.thresholds" class="gf-form-input max-width-10" ng-change="ctrl.onRender()" pattern="\d+,\s*\d+" required />
+        <info-popover mode="right-absolute">Define two threshold values<br /></i> 50,80 will produce: <50 = Green, 50:80 = Yellow, >80 = Red</info-popover>
       </div>
     </div>
   </div>
