@@ -3,6 +3,7 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.loadNpmTasks('grunt-execute');
+  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
@@ -26,6 +27,18 @@ module.exports = function(grunt) {
         expand: true,
         src: [ 'plugin.json', 'README.md' ],
         dest: 'dist'
+      }
+    },
+
+    sass: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'src',
+          src: ['css/*.scss'],
+          dest: 'dist',
+          ext: '.css'
+        }]
       }
     },
 
@@ -56,5 +69,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel']);
+  grunt.registerTask('default', ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel']);
 };
