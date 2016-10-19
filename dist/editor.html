@@ -16,15 +16,20 @@
   </div>
 </div>
 
-<div ng-repeat="measurement in ctrl.measurements" ng-hide="ctrl.duplicates">
-  <div class="editor-row">
+<div ng-hide="ctrl.duplicates">
+  <div class="editor-row" ng-repeat="measurement in ctrl.measurements">
     <div class="section gf-form-group">
       <h5 class="section-heading">{{ measurement.alias }}</h5>
       <div class="gf-form">
-        <span class="gf-form-label width-8">Thresholds:</span>
+        <span class="gf-form-label width-8">
+          Thresholds
+          <info-popover mode="right-normal">
+            Define two threshold values<br /> 50,80 will produce: <50 = Green, 50:80 = Yellow, >80 = Red
+          </info-popover>
+        </span>
         <input type="text" name="thresholds" ng-model="measurement.thresholds" class="gf-form-input max-width-10" ng-change="ctrl.onRender()" pattern="\d+,\s*\d+" required />
-        <info-popover mode="right-absolute">Define two threshold values<br /></i> 50,80 will produce: <50 = Green, 50:80 = Yellow, >80 = Red</info-popover>
       </div>
+      <gf-form-switch class="gf-form" label-class="width-8" tooltip="Low values indicate problems" label="Inverted" checked="measurement.inverted" on-change="ctrl.render()"></gf-form-switch>
     </div>
   </div>
 </div>
