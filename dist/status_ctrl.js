@@ -1,6 +1,6 @@
 "use strict";
 
-System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/plugins/sdk"], function (_export, _context) {
+System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/plugins/sdk", "./css/status_panel.css!"], function (_export, _context) {
   "use strict";
 
   var _, TimeSeries, MetricsPanelCtrl, _createClass, StatusPluginCtrl;
@@ -42,7 +42,7 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
       TimeSeries = _appCoreTime_series.default;
     }, function (_appPluginsSdk) {
       MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
-    }],
+    }, function (_cssStatus_panelCss) {}],
     execute: function () {
       _createClass = function () {
         function defineProperties(target, props) {
@@ -106,15 +106,6 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
                 _this2.duplicates = true;
               }
             });
-
-            // TODO: Remove temp test code
-            //if (this.status) {
-            //  this.$panelContainer.css('background-color', "red");
-            //} else {
-            //  this.$panelContainer.css('background-color', "green");
-            //}
-            //
-            //this.status = !this.status;
           }
         }, {
           key: "onInitEditMode",
@@ -140,19 +131,61 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
             this.log("changeSeriesColor");
           }
         }, {
+          key: "setElementHeight",
+          value: function setElementHeight() {
+            this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
+          }
+        }, {
           key: "onRender",
           value: function onRender() {
+            var _this3 = this;
+
             this.log("onRender");
+            this.setElementHeight();
 
             var targets = this.panel.targets;
+
+            this.crit = [];
+            this.warn = [];
 
             _.each(this.series, function (s) {
               var target = _.find(targets, function (target) {
                 return target.alias == s.alias;
               });
 
-              if (target) s.thresholds = target.thresholds;
+              if (target) {
+                s.thresholds = StatusPluginCtrl.parseThresholds(target.thresholds);
+                s.inverted = target.inverted;
+
+                if (!s.inverted) {
+                  if (s.datapoints[0][0] >= s.thresholds.crit) {
+                    _this3.crit.push(s);
+                  } else if (s.datapoints[0][0] >= s.thresholds.warn) {
+                    _this3.warn.push(s);
+                  }
+                } else {
+                  if (s.datapoints[0][0] <= s.thresholds.crit) {
+                    _this3.crit.push(s);
+                  } else if (s.datapoints[0][0] <= s.thresholds.warn) {
+                    _this3.warn.push(s);
+                  }
+                }
+              }
             });
+
+            this.$panelContainer.removeClass('error-state warn-state ok-state');
+
+            if (this.crit.length > 0) {
+              //this.$panelContainer.css('background-color', "red");
+              this.log("test");
+              this.$panelContainer.addClass('error-state');
+            } else if (this.warn.length > 0) {
+              //this.$panelContainer.css('background-color', "orange");
+              this.$panelContainer.addClass('warn-state');
+            } else {
+              //this.$panelContainer.css('background-color', "green");
+              this.$panelContainer.addClass('ok-state');
+            }
           }
         }, {
           key: "parseSeries",
@@ -197,6 +230,19 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
           value: function link(scope, elem, attrs, ctrl) {
             this.log("link");
             this.$panelContainer = elem.find('.panel-container');
+            this.$panelContoller = ctrl;
+          }
+        }], [{
+          key: "parseThresholds",
+          value: function parseThresholds(thresholds) {
+            var res = {};
+
+            var nums = _.split(thresholds, ",");
+
+            res.warn = parseInt(_.trim(nums[0]));
+            res.crit = parseInt(_.trim(nums[1]));
+
+            return res;
           }
         }]);
 
