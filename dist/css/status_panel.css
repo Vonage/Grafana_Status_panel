@@ -1,0 +1,19 @@
+.status-panel {
+  display: table;
+  position: relative;
+  width: 100%; }
+  .status-panel > div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center; }
+
+.error-state {
+  background-color: red; }
+
+.warn-state {
+  background-color: orange; }
+
+.ok-state {
+  background-color: green; }
+
+/*# sourceMappingURL=status_panel.css.map */

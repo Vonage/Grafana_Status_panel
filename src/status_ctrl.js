@@ -4,6 +4,8 @@ import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
 import {MetricsPanelCtrl} from "app/plugins/sdk";
 
+import './css/status_panel.css!';
+
 export class StatusPluginCtrl extends MetricsPanelCtrl {
   /** @ngInject */
   constructor($scope, $injector, $log, annotationsSrv) {
@@ -39,15 +41,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
         this.duplicates = true;
       }
     });
-
-    // TODO: Remove temp test code
-    //if (this.status) {
-    //  this.$panelContainer.css('background-color', "red");
-    //} else {
-    //  this.$panelContainer.css('background-color', "green");
-    //}
-    //
-    //this.status = !this.status;
   }
 
   onInitEditMode() {
@@ -69,19 +62,68 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.log("changeSeriesColor");
   }
 
+  setElementHeight() {
+    this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
+  }
+
   onRender() {
     this.log("onRender");
+    this.setElementHeight();
 
     let targets = this.panel.targets;
+
+    this.crit = [];
+    this.warn = [];
 
     _.each(this.series, (s) => {
       let target = _.find(targets, (target) => {
         return target.alias == s.alias;
       });
 
-      if (target)
-        s.thresholds = target.thresholds;
+      if (target) {
+        s.thresholds = StatusPluginCtrl.parseThresholds(target.thresholds);
+        s.inverted = target.inverted;
+
+        if (!s.inverted) {
+          if (s.datapoints[0][0] >= s.thresholds.crit) {
+            this.crit.push(s);
+          } else if (s.datapoints[0][0] >= s.thresholds.warn) {
+            this.warn.push(s);
+          }
+        } else {
+          if (s.datapoints[0][0] <= s.thresholds.crit) {
+            this.crit.push(s);
+          } else if (s.datapoints[0][0] <= s.thresholds.warn) {
+            this.warn.push(s);
+          }
+        }
+      }
     });
+
+    this.$panelContainer.removeClass('error-state warn-state ok-state');
+
+    if (this.crit.length > 0) {
+      //this.$panelContainer.css('background-color', "red");
+      this.log("test");
+      this.$panelContainer.addClass('error-state');
+    } else if (this.warn.length > 0) {
+      //this.$panelContainer.css('background-color', "orange");
+      this.$panelContainer.addClass('warn-state');
+    } else {
+      //this.$panelContainer.css('background-color', "green");
+      this.$panelContainer.addClass('ok-state');
+    }
+  }
+
+  static parseThresholds(thresholds) {
+    var res = {};
+
+    let nums = _.split(thresholds, ",");
+
+    res.warn = parseInt(_.trim(nums[0]));
+    res.crit = parseInt(_.trim(nums[1]));
+
+    return res;
   }
 
   parseSeries() {
@@ -120,6 +162,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   link(scope, elem, attrs, ctrl) {
     this.log("link");
     this.$panelContainer = elem.find('.panel-container');
+    this.$panelContoller = ctrl;
   }
 }
 

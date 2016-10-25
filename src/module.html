@@ -1,4 +1,8 @@
-<h1>{{ ctrl.panel.clusterName | interpolateTemplateVars:this }}</h1>
-<div ng-repeat="s in ctrl.series">
-  {{ s | json }}
+<div class="status-panel">
+  <div>
+    <h1>{{ ctrl.panel.clusterName | interpolateTemplateVars:this }}</h1>
+
+    <div ng-repeat="crit in ctrl.crit">{{ crit.alias }}</div>
+    <div ng-repeat="warn in ctrl.warn">{{ warn.alias }}</div>
+  </div>
 </div>
