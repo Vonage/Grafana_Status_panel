@@ -1,9 +1,9 @@
 "use strict";
 
-System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/plugins/sdk", "./css/status_panel.css!"], function (_export, _context) {
+System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "./css/status_panel.css!"], function (_export, _context) {
   "use strict";
 
-  var _, TimeSeries, MetricsPanelCtrl, _createClass, StatusPluginCtrl;
+  var MetricsPanelCtrl, _, TimeSeries, _createClass, StatusPluginCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -36,12 +36,12 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
   }
 
   return {
-    setters: [function (_appPluginsPanelGraphLegend) {}, function (_appPluginsPanelGraphSeries_overrides_ctrl) {}, function (_lodash) {
+    setters: [function (_appPluginsSdk) {
+      MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
+    }, function (_appPluginsPanelGraphLegend) {}, function (_appPluginsPanelGraphSeries_overrides_ctrl) {}, function (_lodash) {
       _ = _lodash.default;
     }, function (_appCoreTime_series) {
       TimeSeries = _appCoreTime_series.default;
-    }, function (_appPluginsSdk) {
-      MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
     }, function (_cssStatus_panelCss) {}],
     execute: function () {
       _createClass = function () {
@@ -237,10 +237,10 @@ System.register(["app/plugins/panel/graph/legend", "app/plugins/panel/graph/seri
           value: function parseThresholds(thresholds) {
             var res = {};
 
-            var nums = _.split(thresholds, ",");
+            var nums = thresholds.split(",");
 
-            res.warn = parseInt(_.trim(nums[0]));
-            res.crit = parseInt(_.trim(nums[1]));
+            res.warn = parseInt(nums[0].trim());
+            res.crit = parseInt(nums[1].trim());
 
             return res;
           }

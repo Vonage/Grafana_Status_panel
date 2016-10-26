@@ -1,8 +1,8 @@
+import {MetricsPanelCtrl} from "app/plugins/sdk";
 import "app/plugins/panel/graph/legend";
 import "app/plugins/panel/graph/series_overrides_ctrl";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
-import {MetricsPanelCtrl} from "app/plugins/sdk";
 
 import './css/status_panel.css!';
 
@@ -118,10 +118,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   static parseThresholds(thresholds) {
     var res = {};
 
-    let nums = _.split(thresholds, ",");
+    let nums = thresholds.split(",");
 
-    res.warn = parseInt(_.trim(nums[0]));
-    res.crit = parseInt(_.trim(nums[1]));
+    res.warn = parseInt(nums[0].trim());
+    res.crit = parseInt(nums[1].trim());
 
     return res;
   }
