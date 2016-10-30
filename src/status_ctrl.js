@@ -110,6 +110,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
+  onDataError() {
+    this.crit = [];
+    this.warn = [];
+  }
+
   seriesHandler(seriesData) {
     var series = new TimeSeries({
       datapoints: seriesData.datapoints,

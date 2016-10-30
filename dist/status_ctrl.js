@@ -71,8 +71,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
           var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
-          _this.log = $log.debug;
-
           /** Bind events to functions **/
           _this.events.on('render', _this.onRender.bind(_this));
           _this.events.on('refresh', _this.postRefresh.bind(_this));
@@ -87,8 +85,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           key: "postRefresh",
           value: function postRefresh() {
             var _this2 = this;
-
-            this.log("refresh");
 
             this.measurements = _.filter(this.panel.targets, function (target) {
               return target.alias && !target.hide;
@@ -110,25 +106,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
         }, {
           key: "onInitEditMode",
           value: function onInitEditMode() {
-            this.log(this);
             this.addEditorTab('Options', 'public/plugins/status-panel/editor.html', 2);
-
-            this.log(this.panel.targets);
-          }
-        }, {
-          key: "setUnitFormat",
-          value: function setUnitFormat() {
-            this.log("setUnitFormat");
-          }
-        }, {
-          key: "onDataError",
-          value: function onDataError() {
-            this.log("onDataError");
-          }
-        }, {
-          key: "changeSeriesColor",
-          value: function changeSeriesColor(series, color) {
-            this.log("changeSeriesColor");
           }
         }, {
           key: "setElementHeight",
@@ -140,7 +118,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           value: function onRender() {
             var _this3 = this;
 
-            this.log("onRender");
             this.setElementHeight();
 
             var targets = this.panel.targets;
@@ -177,7 +154,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
             if (this.crit.length > 0) {
               //this.$panelContainer.css('background-color', "red");
-              this.log("test");
               this.$panelContainer.addClass('error-state');
             } else if (this.warn.length > 0) {
               //this.$panelContainer.css('background-color', "orange");
@@ -188,24 +164,21 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
             }
           }
         }, {
-          key: "parseSeries",
-          value: function parseSeries() {
-            this.log("parseSeries");
-          }
-        }, {
           key: "onDataReceived",
           value: function onDataReceived(dataList) {
-            this.log("onDataReceived");
             this.series = dataList.map(this.seriesHandler.bind(this));
 
             this.render();
           }
         }, {
+          key: "onDataError",
+          value: function onDataError() {
+            this.crit = [];
+            this.warn = [];
+          }
+        }, {
           key: "seriesHandler",
           value: function seriesHandler(seriesData) {
-            this.log("seriesHandler");
-            this.log(seriesData);
-
             var series = new TimeSeries({
               datapoints: seriesData.datapoints,
               alias: seriesData.target
@@ -216,19 +189,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
             return series;
           }
         }, {
-          key: "getDecimalsForValue",
-          value: function getDecimalsForValue(value) {
-            this.log("getDecimalsForValue");
-          }
-        }, {
-          key: "formatValue",
-          value: function formatValue(value) {
-            this.log("formatValue");
-          }
-        }, {
           key: "link",
           value: function link(scope, elem, attrs, ctrl) {
-            this.log("link");
             this.$panelContainer = elem.find('.panel-container');
             this.$panelContoller = ctrl;
           }
@@ -236,7 +198,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           key: "parseThresholds",
           value: function parseThresholds(thresholds) {
             var res = {};
-
             var nums = thresholds.split(",");
 
             res.warn = parseInt(nums[0].trim());
