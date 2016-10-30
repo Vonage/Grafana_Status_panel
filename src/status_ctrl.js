@@ -11,8 +11,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, $log, annotationsSrv) {
     super($scope, $injector);
 
-    this.log = $log.debug;
-
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
     this.events.on('refresh', this.postRefresh.bind(this));
@@ -23,8 +21,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   postRefresh() {
-    this.log("refresh");
-
     this.measurements = _.filter(this.panel.targets, (target) => {
       return target.alias && !target.hide;
     });
@@ -44,22 +40,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   onInitEditMode() {
-    this.log(this);
     this.addEditorTab('Options', 'public/plugins/status-panel/editor.html', 2);
-
-    this.log(this.panel.targets);
-  }
-
-  setUnitFormat() {
-    this.log("setUnitFormat");
-  }
-
-  onDataError() {
-    this.log("onDataError");
-  }
-
-  changeSeriesColor(series, color) {
-    this.log("changeSeriesColor");
   }
 
   setElementHeight() {
@@ -67,7 +48,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   onRender() {
-    this.log("onRender");
     this.setElementHeight();
 
     let targets = this.panel.targets;
@@ -104,7 +84,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
     if (this.crit.length > 0) {
       //this.$panelContainer.css('background-color', "red");
-      this.log("test");
       this.$panelContainer.addClass('error-state');
     } else if (this.warn.length > 0) {
       //this.$panelContainer.css('background-color', "orange");
@@ -116,8 +95,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   static parseThresholds(thresholds) {
-    var res = {};
-
+    let res = {};
     let nums = thresholds.split(",");
 
     res.warn = parseInt(nums[0].trim());
@@ -126,21 +104,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     return res;
   }
 
-  parseSeries() {
-    this.log("parseSeries");
-  }
-
   onDataReceived(dataList) {
-    this.log("onDataReceived");
     this.series = dataList.map(this.seriesHandler.bind(this));
 
     this.render();
   }
 
   seriesHandler(seriesData) {
-    this.log("seriesHandler");
-    this.log(seriesData);
-
     var series = new TimeSeries({
       datapoints: seriesData.datapoints,
       alias: seriesData.target
@@ -151,16 +121,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     return series;
   }
 
-  getDecimalsForValue(value) {
-    this.log("getDecimalsForValue");
-  }
-
-  formatValue(value) {
-    this.log("formatValue");
-  }
-
   link(scope, elem, attrs, ctrl) {
-    this.log("link");
     this.$panelContainer = elem.find('.panel-container');
     this.$panelContoller = ctrl;
   }

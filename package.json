@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vonage/Grafana_Status_panel.git"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
