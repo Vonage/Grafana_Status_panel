@@ -11,6 +11,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, $log, annotationsSrv) {
     super($scope, $injector);
 
+    this.log = $log.debug;
+    this.aggregations = ['None', 'Max', 'Min', 'Sum'];
+
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
     this.events.on('refresh', this.postRefresh.bind(this));
@@ -61,19 +64,36 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       });
 
       if (target) {
-        s.thresholds = StatusPluginCtrl.parseThresholds(target.thresholds);
-        s.inverted = target.inverted;
+        s.thresholds = StatusPluginCtrl.parseThresholds(target);
+        s.inverted = s.thresholds.crit < s.thresholds.warn;
+
+        let value;
+
+        switch (target.aggregation) {
+          case 'Max':
+            value = _.max(s.datapoints, (point) => { return point[0]; })[0];
+            break;
+          case 'Min':
+            value = _.min(s.datapoints, (point) => { return point[0]; })[0];
+            break;
+          case 'Sum':
+            value = 0;
+            _.each(s.datapoints, (point) => { value += point[0] });
+            break;
+          default:
+            value = s.datapoints[0][0]
+        }
 
         if (!s.inverted) {
-          if (s.datapoints[0][0] >= s.thresholds.crit) {
+          if (value >= s.thresholds.crit) {
             this.crit.push(s);
-          } else if (s.datapoints[0][0] >= s.thresholds.warn) {
+          } else if (value >= s.thresholds.warn) {
             this.warn.push(s);
           }
         } else {
-          if (s.datapoints[0][0] <= s.thresholds.crit) {
+          if (value <= s.thresholds.crit) {
             this.crit.push(s);
-          } else if (s.datapoints[0][0] <= s.thresholds.warn) {
+          } else if (value <= s.thresholds.warn) {
             this.warn.push(s);
           }
         }
@@ -94,12 +114,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     }
   }
 
-  static parseThresholds(thresholds) {
+  static parseThresholds(measurement) {
     let res = {};
-    let nums = thresholds.split(",");
 
-    res.warn = parseInt(nums[0].trim());
-    res.crit = parseInt(nums[1].trim());
+    res.warn = measurement.warn;
+    res.crit = measurement.crit;
 
     return res;
   }

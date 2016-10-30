@@ -71,6 +71,9 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
           var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
+          _this.log = $log.debug;
+          _this.aggregations = ['None', 'Max', 'Min', 'Sum'];
+
           /** Bind events to functions **/
           _this.events.on('render', _this.onRender.bind(_this));
           _this.events.on('refresh', _this.postRefresh.bind(_this));
@@ -131,19 +134,42 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
               });
 
               if (target) {
-                s.thresholds = StatusPluginCtrl.parseThresholds(target.thresholds);
-                s.inverted = target.inverted;
+                s.thresholds = StatusPluginCtrl.parseThresholds(target);
+                s.inverted = s.thresholds.crit < s.thresholds.warn;
+
+                var value = void 0;
+
+                switch (target.aggregation) {
+                  case 'Max':
+                    value = _.max(s.datapoints, function (point) {
+                      return point[0];
+                    })[0];
+                    break;
+                  case 'Min':
+                    value = _.min(s.datapoints, function (point) {
+                      return point[0];
+                    })[0];
+                    break;
+                  case 'Sum':
+                    value = 0;
+                    _.each(s.datapoints, function (point) {
+                      value += point[0];
+                    });
+                    break;
+                  default:
+                    value = s.datapoints[0][0];
+                }
 
                 if (!s.inverted) {
-                  if (s.datapoints[0][0] >= s.thresholds.crit) {
+                  if (value >= s.thresholds.crit) {
                     _this3.crit.push(s);
-                  } else if (s.datapoints[0][0] >= s.thresholds.warn) {
+                  } else if (value >= s.thresholds.warn) {
                     _this3.warn.push(s);
                   }
                 } else {
-                  if (s.datapoints[0][0] <= s.thresholds.crit) {
+                  if (value <= s.thresholds.crit) {
                     _this3.crit.push(s);
-                  } else if (s.datapoints[0][0] <= s.thresholds.warn) {
+                  } else if (value <= s.thresholds.warn) {
                     _this3.warn.push(s);
                   }
                 }
@@ -196,12 +222,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           }
         }], [{
           key: "parseThresholds",
-          value: function parseThresholds(thresholds) {
+          value: function parseThresholds(measurement) {
             var res = {};
-            var nums = thresholds.split(",");
 
-            res.warn = parseInt(nums[0].trim());
-            res.crit = parseInt(nums[1].trim());
+            res.warn = measurement.warn;
+            res.crit = measurement.crit;
 
             return res;
           }
