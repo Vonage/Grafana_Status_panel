@@ -121,6 +121,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           value: function onRender() {
             var _this3 = this;
 
+            this.log(this.panel);
             this.setElementHeight();
 
             var targets = this.panel.targets;
@@ -187,6 +188,17 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
             } else {
               //this.$panelContainer.css('background-color', "green");
               this.$panelContainer.addClass('ok-state');
+            }
+
+            this.parseUri();
+          }
+        }, {
+          key: "parseUri",
+          value: function parseUri() {
+            if (this.panel.links.length > 0) {
+              this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
+            } else {
+              this.uri = undefined;
             }
           }
         }, {

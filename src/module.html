@@ -1,6 +1,13 @@
 <div class="status-panel">
   <div>
-    <h1>{{ ctrl.panel.clusterName | interpolateTemplateVars:this }}</h1>
+    <h1>
+      <a ng-href="{{ 'dashboard/' + ctrl.uri | interpolateTemplateVars:this }}" target="_blank" ng-show="ctrl.uri">
+        {{ ctrl.panel.clusterName | interpolateTemplateVars:this }}
+      </a>
+      <span ng-hide="ctrl.uri">
+        {{ ctrl.panel.clusterName | interpolateTemplateVars:this }}
+      </span>
+    </h1>
 
     <div ng-repeat="crit in ctrl.crit">{{ crit.alias }}</div>
     <div ng-repeat="warn in ctrl.warn">{{ warn.alias }}</div>

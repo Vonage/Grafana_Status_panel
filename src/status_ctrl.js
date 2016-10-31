@@ -51,6 +51,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   onRender() {
+    this.log(this.panel);
     this.setElementHeight();
 
     let targets = this.panel.targets;
@@ -111,6 +112,16 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     } else {
       //this.$panelContainer.css('background-color', "green");
       this.$panelContainer.addClass('ok-state');
+    }
+
+    this.parseUri();
+  }
+
+  parseUri() {
+    if (this.panel.links.length > 0) {
+      this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
+    } else {
+      this.uri = undefined;
     }
   }
 
