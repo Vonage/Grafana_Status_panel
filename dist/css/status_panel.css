@@ -6,6 +6,8 @@
     display: table-cell;
     vertical-align: middle;
     text-align: center; }
+  .status-panel h1 {
+    font-size: 1.5rem; }
 
 .error-state {
   background-color: red; }
