@@ -10,7 +10,7 @@
   <div class="section gf-form-group">
     <h5 class="section-heading">{{ measurement.alias }}</h5>
     <div class="gf-form">
-      <span class="gf-form-label width-9"><strong>Cluster Name</strong></span>
+      <span class="gf-form-label width-9">Cluster Name</span>
       <input type="text" ng-model="ctrl.panel.clusterName" class="gf-form-input max-width-10" ng-change="ctrl.onRender()">
     </div>
   </div>
@@ -21,20 +21,20 @@
     <div class="section gf-form-group">
       <h5 class="section-heading">{{ measurement.alias }} Thresholds</h5>
       <div class="gf-form">
-        <span class="gf-form-label width-9" style="font-weight: bold;">
+        <span class="gf-form-label width-9">
           Warning
         </span>
         <input type="number" name="warn" ng-model="measurement.warn" class="gf-form-input max-width-10" ng-change="ctrl.onRender()" required />
       </div>
       <div class="gf-form">
-        <span class="gf-form-label width-9" style="font-weight: bold;">
+        <span class="gf-form-label width-9">
           Critical
         </span>
         <input type="number" name="crit" ng-model="measurement.crit" class="gf-form-input max-width-10" ng-change="ctrl.onRender()" required />
       </div>
       <div class="gf-form">
         <span class="gf-form-label width-9">
-          <strong>Aggregation</strong>
+          Aggregation
           <info-popover mode="right-normal">
             What to do if the query returns multiple data points.<br />
             <strong>Note:</strong> 'None' will select the first value.
@@ -50,6 +50,11 @@
                   required></select>
         </div>
       </div>
+      <gf-form-switch class="gf-form"
+                      label-class="width-9"
+                      tooltip="This field will always be displayed with it's value"
+                      label="Show Value" checked="measurement.display"
+                      on-change="ctrl.render()"></gf-form-switch>
     </div>
   </div>
 </div>

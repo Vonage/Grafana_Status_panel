@@ -9,7 +9,14 @@
       </span>
     </h1>
 
-    <div ng-repeat="crit in ctrl.crit">{{ crit.alias }}</div>
-    <div ng-repeat="warn in ctrl.warn">{{ warn.alias }}</div>
+    <div ng-repeat="display in ctrl.display">
+      {{ display.alias }}<span ng-show="display.display"> - {{ display.display_value }}</span>
+    </div>
+    <div ng-repeat="crit in ctrl.crit">
+      {{ crit.alias }}<span ng-show="crit.display"> - {{ crit.display_value }}</span>
+    </div>
+    <div ng-repeat="warn in ctrl.warn">
+      {{ warn.alias }}<span ng-show="warn.display"> - {{ warn.display_value }}</span>
+    </div>
   </div>
 </div>

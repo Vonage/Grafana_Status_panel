@@ -58,6 +58,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
     this.crit = [];
     this.warn = [];
+    this.display = [];
 
     _.each(this.series, (s) => {
       let target = _.find(targets, (target) => {
@@ -67,6 +68,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       if (target) {
         s.thresholds = StatusPluginCtrl.parseThresholds(target);
         s.inverted = s.thresholds.crit < s.thresholds.warn;
+        s.display = target.display;
 
         let value;
 
@@ -82,20 +84,27 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
             _.each(s.datapoints, (point) => { value += point[0] });
             break;
           default:
-            value = s.datapoints[0][0]
+            value = s.datapoints[0][0];
         }
+
+        s.display_value = value;
 
         if (!s.inverted) {
           if (value >= s.thresholds.crit) {
             this.crit.push(s);
           } else if (value >= s.thresholds.warn) {
             this.warn.push(s);
+          } else if (s.display) {
+            this.display.push(s);
           }
         } else {
           if (value <= s.thresholds.crit) {
             this.crit.push(s);
           } else if (value <= s.thresholds.warn) {
             this.warn.push(s);
+          } else if (s.display) {
+            s.display_value = value;
+            this.display.push(s);
           }
         }
       }

@@ -128,6 +128,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
             this.crit = [];
             this.warn = [];
+            this.display = [];
 
             _.each(this.series, function (s) {
               var target = _.find(targets, function (target) {
@@ -137,6 +138,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
               if (target) {
                 s.thresholds = StatusPluginCtrl.parseThresholds(target);
                 s.inverted = s.thresholds.crit < s.thresholds.warn;
+                s.display = target.display;
 
                 var value = void 0;
 
@@ -161,17 +163,24 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
                     value = s.datapoints[0][0];
                 }
 
+                s.display_value = value;
+
                 if (!s.inverted) {
                   if (value >= s.thresholds.crit) {
                     _this3.crit.push(s);
                   } else if (value >= s.thresholds.warn) {
                     _this3.warn.push(s);
+                  } else if (s.display) {
+                    _this3.display.push(s);
                   }
                 } else {
                   if (value <= s.thresholds.crit) {
                     _this3.crit.push(s);
                   } else if (value <= s.thresholds.warn) {
                     _this3.warn.push(s);
+                  } else if (s.display) {
+                    s.display_value = value;
+                    _this3.display.push(s);
                   }
                 }
               }
