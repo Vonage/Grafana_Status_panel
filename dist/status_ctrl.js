@@ -1,9 +1,9 @@
 "use strict";
 
-System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "./css/status_panel.css!"], function (_export, _context) {
+System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/core/core_module", "./css/status_panel.css!"], function (_export, _context) {
   "use strict";
 
-  var MetricsPanelCtrl, _, TimeSeries, _createClass, StatusPluginCtrl;
+  var MetricsPanelCtrl, _, TimeSeries, coreModule, _createClass, StatusPluginCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -42,6 +42,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
       _ = _lodash.default;
     }, function (_appCoreTime_series) {
       TimeSeries = _appCoreTime_series.default;
+    }, function (_appCoreCore_module) {
+      coreModule = _appCoreCore_module.default;
     }, function (_cssStatus_panelCss) {}],
     execute: function () {
       _createClass = function () {
@@ -66,12 +68,14 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
         _inherits(StatusPluginCtrl, _MetricsPanelCtrl);
 
         /** @ngInject */
-        function StatusPluginCtrl($scope, $injector, $log, annotationsSrv) {
+        function StatusPluginCtrl($scope, $injector, $log, $filter, annotationsSrv) {
           _classCallCheck(this, StatusPluginCtrl);
 
           var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
           _this.log = $log.debug;
+          _this.filter = $filter;
+
           _this.aggregations = ['None', 'Max', 'Min', 'Sum'];
 
           /** Bind events to functions **/
@@ -121,8 +125,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           value: function onRender() {
             var _this3 = this;
 
-            this.log(this.panel);
             this.setElementHeight();
+            this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
 
             var targets = this.panel.targets;
 
@@ -257,6 +261,13 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
       }(MetricsPanelCtrl));
 
       _export("StatusPluginCtrl", StatusPluginCtrl);
+
+      //coreModule.filter('prefixRemover', function(prefix) {
+      //  return function(text) {
+      //    console.log(text + " " + prefix);
+      //    return text; //text.replace(new RegExp('/^' + prefix), '');
+      //  }
+      //});
 
       StatusPluginCtrl.templateUrl = 'module.html';
     }

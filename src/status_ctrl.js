@@ -3,15 +3,18 @@ import "app/plugins/panel/graph/legend";
 import "app/plugins/panel/graph/series_overrides_ctrl";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
+import coreModule from "app/core/core_module"
 
 import './css/status_panel.css!';
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
   /** @ngInject */
-  constructor($scope, $injector, $log, annotationsSrv) {
+  constructor($scope, $injector, $log, $filter, annotationsSrv) {
     super($scope, $injector);
 
     this.log = $log.debug;
+    this.filter = $filter;
+
     this.aggregations = ['None', 'Max', 'Min', 'Sum'];
 
     /** Bind events to functions **/
@@ -51,8 +54,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   onRender() {
-    this.log(this.panel);
     this.setElementHeight();
+    this.panel.displayName =
+      this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope)
+        .replace(new RegExp(this.panel.namePrefix, 'i'), '');
+
+
 
     let targets = this.panel.targets;
 
@@ -170,5 +177,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.$panelContoller = ctrl;
   }
 }
+
+//coreModule.filter('prefixRemover', function(prefix) {
+//  return function(text) {
+//    console.log(text + " " + prefix);
+//    return text; //text.replace(new RegExp('/^' + prefix), '');
+//  }
+//});
 
 StatusPluginCtrl.templateUrl = 'module.html';
