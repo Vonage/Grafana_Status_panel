@@ -11,6 +11,15 @@ It is very similar to the Single Stat panel, but it can hold multiple values and
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
 5. If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
 
+# Screenshots
+### Panel States
+<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true" height="100px" />
+<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true" height="100px" />
+<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true" height="100px" />
+
+### The end result should look like this
+![Result](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
+
 # License
 
 See the [LICENSE](LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
