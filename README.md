@@ -1,7 +1,15 @@
 # Grafana Status Panel
 
 This is a plugin meant to be used as a centralized view for the status of a server/cluster in a glance.
-It is very similar to the Single Stat panel, but it can hold multiple values and you can customize the thresholds for each of them.
+It is very similar to the Single Stat panel, but it can hold multiple values and you can customize the thresholds for each of them separately.
+
+## How to use
+1. Add the queries you want to the panel and give each of them a unique alias
+2. Choose the name of the panel to be displayed.
+**Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
+3. Go the the Options tab, and enter the `Warning` and `Critical` thresholds for each of your queries
+4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
+5. If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
 
 # License
 

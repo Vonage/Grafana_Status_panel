@@ -1,19 +1,26 @@
 {
   "type": "panel",
   "name": "Status Panel",
-  "id": "status-panel",
+  "id": "vonage-status-panel",
 
   "info": {
     "description": "Status Panel for Grafana",
     "author": {
-      "name": "Tomer Amir"
+      "name": "Tomer Amir",
+      "url": "https://github.com/Vonage"
     },
     "keywords": ["status", "panel"],
+    "logos": {
+      "small": "",
+      "large": ""
+    },
     "links": [
+      {"name": "Github", "url": "https://github.com/Vonage/Grafana_Status_panel"}
     ],
     "screenshots": [
+      {"name": "Environment Snapshot", "path": "src/img/environment_snapshot.png"}
     ],
-    "version": "0.1.1",
+    "version": "1.0.0",
     "updated": "2016-10-5"
   },
 
