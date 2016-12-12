@@ -113,7 +113,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
         }, {
           key: "onInitEditMode",
           value: function onInitEditMode() {
-            this.addEditorTab('Options', 'public/plugins/status-panel/editor.html', 2);
+            this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
           }
         }, {
           key: "setElementHeight",

@@ -46,7 +46,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   onInitEditMode() {
-    this.addEditorTab('Options', 'public/plugins/status-panel/editor.html', 2);
+    this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
   }
 
   setElementHeight() {
