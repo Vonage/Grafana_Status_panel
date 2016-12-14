@@ -13,9 +13,9 @@ It is very similar to the Single Stat panel, but it can hold multiple values and
 
 # Screenshots
 ### Panel States
-<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true" height="100px" />
-<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true" height="100px" />
-<img src="https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true" height="100px" />
+![ok](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
+![warning](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
+![error](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
 
 ### The end result should look like this
 ![Result](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
