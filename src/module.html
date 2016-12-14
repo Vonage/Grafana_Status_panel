@@ -10,13 +10,19 @@
     </h1>
 
     <div ng-repeat="display in ctrl.display">
-      {{ display.alias }}<span ng-show="display.display"> - {{ display.display_value }}</span>
+      <a ng-show="display.url" ng-href="{{ display.url }}" target="_blank">{{ display.alias }}</a>
+      <span ng-hide="display.url">{{ display.alias }}</span>
+      <span ng-show="display.display"> - {{ display.display_value }}</span>
     </div>
     <div ng-repeat="crit in ctrl.crit">
-      {{ crit.alias }}<span ng-show="crit.display"> - {{ crit.display_value }}</span>
+      <a ng-show="crit.url" ng-href="{{ crit.url }}" target="_blank">{{ crit.alias }}</a>
+      <span ng-hide="crit.url">{{ crit.alias }}</span>
+      <span ng-show="crit.display"> - {{ crit.display_value }}</span>
     </div>
     <div ng-repeat="warn in ctrl.warn">
-      {{ warn.alias }}<span ng-show="warn.display"> - {{ warn.display_value }}</span>
+      <a ng-show="warn.url" ng-href="{{ warn.url }}" target="_blank">{{ warn.alias }}</a>
+      <span ng-hide="warn.url">{{ warn.alias }}</span>
+      <span ng-show="warn.display"> - {{ warn.display_value }}</span>
     </div>
   </div>
 </div>
