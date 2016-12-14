@@ -73,7 +73,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
           var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
-          _this.log = $log.debug;
+          //this.log = $log.debug;
           _this.filter = $filter;
 
           _this.aggregations = ['None', 'Max', 'Min', 'Sum'];
@@ -126,7 +126,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
             var _this3 = this;
 
             this.setElementHeight();
-            this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
+
+            if (this.panel.clusterName) {
+              this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
+            } else {
+              this.panel.displayName = "";
+            }
 
             var targets = this.panel.targets;
 
@@ -139,53 +144,56 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
                 return target.alias == s.alias;
               });
 
-              if (target) {
-                s.thresholds = StatusPluginCtrl.parseThresholds(target);
-                s.inverted = s.thresholds.crit < s.thresholds.warn;
-                s.display = target.display;
+              if (!target) {
+                return;
+              }
 
-                var value = void 0;
+              s.thresholds = StatusPluginCtrl.parseThresholds(target);
+              s.inverted = s.thresholds.crit < s.thresholds.warn;
+              s.display = target.display;
+              s.url = target.url;
 
-                switch (target.aggregation) {
-                  case 'Max':
-                    value = _.max(s.datapoints, function (point) {
-                      return point[0];
-                    })[0];
-                    break;
-                  case 'Min':
-                    value = _.min(s.datapoints, function (point) {
-                      return point[0];
-                    })[0];
-                    break;
-                  case 'Sum':
-                    value = 0;
-                    _.each(s.datapoints, function (point) {
-                      value += point[0];
-                    });
-                    break;
-                  default:
-                    value = s.datapoints[0][0];
+              var value = void 0;
+
+              switch (target.aggregation) {
+                case 'Max':
+                  value = _.max(s.datapoints, function (point) {
+                    return point[0];
+                  })[0];
+                  break;
+                case 'Min':
+                  value = _.min(s.datapoints, function (point) {
+                    return point[0];
+                  })[0];
+                  break;
+                case 'Sum':
+                  value = 0;
+                  _.each(s.datapoints, function (point) {
+                    value += point[0];
+                  });
+                  break;
+                default:
+                  value = s.datapoints[0][0];
+              }
+
+              s.display_value = value;
+
+              if (!s.inverted) {
+                if (value >= s.thresholds.crit) {
+                  _this3.crit.push(s);
+                } else if (value >= s.thresholds.warn) {
+                  _this3.warn.push(s);
+                } else if (s.display) {
+                  _this3.display.push(s);
                 }
-
-                s.display_value = value;
-
-                if (!s.inverted) {
-                  if (value >= s.thresholds.crit) {
-                    _this3.crit.push(s);
-                  } else if (value >= s.thresholds.warn) {
-                    _this3.warn.push(s);
-                  } else if (s.display) {
-                    _this3.display.push(s);
-                  }
-                } else {
-                  if (value <= s.thresholds.crit) {
-                    _this3.crit.push(s);
-                  } else if (value <= s.thresholds.warn) {
-                    _this3.warn.push(s);
-                  } else if (s.display) {
-                    s.display_value = value;
-                    _this3.display.push(s);
-                  }
+              } else {
+                if (value <= s.thresholds.crit) {
+                  _this3.crit.push(s);
+                } else if (value <= s.thresholds.warn) {
+                  _this3.warn.push(s);
+                } else if (s.display) {
+                  s.display_value = value;
+                  _this3.display.push(s);
                 }
               }
             });
@@ -208,7 +216,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
         }, {
           key: "parseUri",
           value: function parseUri() {
-            if (this.panel.links.length > 0) {
+            if (this.panel.links && this.panel.links.length > 0) {
               this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
             } else {
               this.uri = undefined;
@@ -261,13 +269,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
       }(MetricsPanelCtrl));
 
       _export("StatusPluginCtrl", StatusPluginCtrl);
-
-      //coreModule.filter('prefixRemover', function(prefix) {
-      //  return function(text) {
-      //    console.log(text + " " + prefix);
-      //    return text; //text.replace(new RegExp('/^' + prefix), '');
-      //  }
-      //});
 
       StatusPluginCtrl.templateUrl = 'module.html';
     }

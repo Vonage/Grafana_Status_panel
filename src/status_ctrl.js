@@ -12,7 +12,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, $log, $filter, annotationsSrv) {
     super($scope, $injector);
 
-    this.log = $log.debug;
+    //this.log = $log.debug;
     this.filter = $filter;
 
     this.aggregations = ['None', 'Max', 'Min', 'Sum'];
@@ -55,9 +55,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
   onRender() {
     this.setElementHeight();
-    this.panel.displayName =
-      this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope)
-        .replace(new RegExp(this.panel.namePrefix, 'i'), '');
+
+    if (this.panel.clusterName) {
+      this.panel.displayName =
+        this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope)
+          .replace(new RegExp(this.panel.namePrefix, 'i'), '');
+    } else {
+      this.panel.displayName = "";
+    }
 
 
 
@@ -72,47 +77,50 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
         return target.alias == s.alias;
       });
 
-      if (target) {
-        s.thresholds = StatusPluginCtrl.parseThresholds(target);
-        s.inverted = s.thresholds.crit < s.thresholds.warn;
-        s.display = target.display;
+      if (!target) {
+        return;
+      }
 
-        let value;
+      s.thresholds = StatusPluginCtrl.parseThresholds(target);
+      s.inverted = s.thresholds.crit < s.thresholds.warn;
+      s.display = target.display;
+      s.url = target.url;
 
-        switch (target.aggregation) {
-          case 'Max':
-            value = _.max(s.datapoints, (point) => { return point[0]; })[0];
-            break;
-          case 'Min':
-            value = _.min(s.datapoints, (point) => { return point[0]; })[0];
-            break;
-          case 'Sum':
-            value = 0;
-            _.each(s.datapoints, (point) => { value += point[0] });
-            break;
-          default:
-            value = s.datapoints[0][0];
+      let value;
+
+      switch (target.aggregation) {
+        case 'Max':
+          value = _.max(s.datapoints, (point) => { return point[0]; })[0];
+          break;
+        case 'Min':
+          value = _.min(s.datapoints, (point) => { return point[0]; })[0];
+          break;
+        case 'Sum':
+          value = 0;
+          _.each(s.datapoints, (point) => { value += point[0] });
+          break;
+        default:
+          value = s.datapoints[0][0];
+      }
+
+      s.display_value = value;
+
+      if (!s.inverted) {
+        if (value >= s.thresholds.crit) {
+          this.crit.push(s);
+        } else if (value >= s.thresholds.warn) {
+          this.warn.push(s);
+        } else if (s.display) {
+          this.display.push(s);
         }
-
-        s.display_value = value;
-
-        if (!s.inverted) {
-          if (value >= s.thresholds.crit) {
-            this.crit.push(s);
-          } else if (value >= s.thresholds.warn) {
-            this.warn.push(s);
-          } else if (s.display) {
-            this.display.push(s);
-          }
-        } else {
-          if (value <= s.thresholds.crit) {
-            this.crit.push(s);
-          } else if (value <= s.thresholds.warn) {
-            this.warn.push(s);
-          } else if (s.display) {
-            s.display_value = value;
-            this.display.push(s);
-          }
+      } else {
+        if (value <= s.thresholds.crit) {
+          this.crit.push(s);
+        } else if (value <= s.thresholds.warn) {
+          this.warn.push(s);
+        } else if (s.display) {
+          s.display_value = value;
+          this.display.push(s);
         }
       }
     });
@@ -134,7 +142,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
   }
 
   parseUri() {
-    if (this.panel.links.length > 0) {
+    if (this.panel.links && this.panel.links.length > 0) {
       this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
     } else {
       this.uri = undefined;
@@ -177,12 +185,5 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     this.$panelContoller = ctrl;
   }
 }
-
-//coreModule.filter('prefixRemover', function(prefix) {
-//  return function(text) {
-//    console.log(text + " " + prefix);
-//    return text; //text.replace(new RegExp('/^' + prefix), '');
-//  }
-//});
 
 StatusPluginCtrl.templateUrl = 'module.html';
