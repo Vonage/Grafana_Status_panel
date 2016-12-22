@@ -20,7 +20,7 @@
     "screenshots": [
       {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},
       {"name": "Ok State", "path": "img/ok.png"},
-      {"name": "Warning State", "path": "img/warn.png"},
+      {"name": "Warning State", "path": "img/warning.png"},
       {"name": "Critical State", "path": "img/error.png"}
     ],
     "version": "1.0.0",
