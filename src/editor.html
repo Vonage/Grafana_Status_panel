@@ -10,17 +10,17 @@
   <div class="section gf-form-group">
     <h5 class="section-heading">{{ measurement.alias }}</h5>
     <div class="gf-form">
-      <span class="gf-form-label width-11">Panel Title</span>
-      <input type="text" ng-model="ctrl.panel.clusterName" class="gf-form-input max-width-11" ng-change="ctrl.onRender()">
+      <span class="gf-form-label width-12">Panel Title</span>
+      <input type="text" ng-model="ctrl.panel.clusterName" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
     </div>
     <div class="gf-form">
-      <span class="gf-form-label width-11">
+      <span class="gf-form-label width-12">
         Remove Prefix
         <info-popover mode="right-normal">
           A prefix to remove from the name (helps when repeating panel over a template)
         </info-popover>
       </span>
-      <input type="text" ng-model="ctrl.panel.namePrefix" class="gf-form-input max-width-11" ng-change="ctrl.onRender()">
+      <input type="text" ng-model="ctrl.panel.namePrefix" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
     </div>
   </div>
 </div>
@@ -30,26 +30,26 @@
     <div class="section gf-form-group">
       <h5 class="section-heading">{{ measurement.alias }} Thresholds</h5>
       <div class="gf-form">
-        <span class="gf-form-label width-11">
+        <span class="gf-form-label width-12">
           Warning
         </span>
-        <input type="number" name="warn" ng-model="measurement.warn" class="gf-form-input max-width-11" ng-change="ctrl.onRender()" required />
+        <input type="number" name="warn" ng-model="measurement.warn" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
       </div>
       <div class="gf-form">
-        <span class="gf-form-label width-11">
+        <span class="gf-form-label width-12">
           Critical
         </span>
-        <input type="number" name="crit" ng-model="measurement.crit" class="gf-form-input max-width-11" ng-change="ctrl.onRender()" required />
+        <input type="number" name="crit" ng-model="measurement.crit" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
       </div>
       <div class="gf-form">
-        <span class="gf-form-label width-11">
+        <span class="gf-form-label width-12">
           Aggregation
           <info-popover mode="right-normal">
             What to do if the query returns multiple data points.<br />
             <strong>Note:</strong> 'None' will select the first value.
           </info-popover>
         </span>
-        <div class="gf-form-select-wrapper max-width-11">
+        <div class="gf-form-select-wrapper max-width-12">
           <select class="gf-form-input"
                   ng-init="measurement.aggregation =
                     (measurement.aggregation ? measurement.aggregation : ctrl.aggregations[0])"
@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="gf-form">
-        <span class="gf-form-label width-11">
+        <span class="gf-form-label width-12">
           Measurement URL
           <info-popover mode="right-normal">
             Make the name of the measurement clickable, and send the user to a link (with explanations what to do when this error occurs)
@@ -69,7 +69,7 @@
         <input type="text" name="crit" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
       </div>
       <gf-form-switch class="gf-form"
-                      label-class="width-11"
+                      label-class="width-12"
                       tooltip="This field will always be displayed with it's value"
                       label="Show Value" checked="measurement.display"
                       on-change="ctrl.render()"></gf-form-switch>
