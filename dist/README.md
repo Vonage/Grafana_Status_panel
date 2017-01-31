@@ -40,4 +40,4 @@ Currently the plugin was tested with influxDB. Support for other data sources co
 
 # License
 
-See the [LICENSE](LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
