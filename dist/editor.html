@@ -3,7 +3,7 @@
 </div>
 
 <div ng-show="ctrl.duplicates">
-  <h1>Duplicates</h1>
+  <strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
 </div>
 
 <div class="editor-row">
@@ -25,22 +25,37 @@
   </div>
 </div>
 
-<div ng-hide="ctrl.duplicates">
+<div>
   <div class="editor-row" ng-repeat="measurement in ctrl.measurements">
     <div class="section gf-form-group">
-      <h5 class="section-heading">{{ measurement.alias }} Thresholds</h5>
+      <h5 class="section-heading" ng-if="measurement.alias">{{ measurement.alias }} Thresholds</h5>
+
+      <div ng-if="!measurement.alias">
+        <h5 class="section-heading">Thresholds for measurement: {{ measurement.refId }}</h5>
+        <div>Please enter an alias for this measurement bellow</div>
+      </div>
+
+      <div class="gf-form">
+        <span class="gf-form-label width-12">
+          Alias
+        </span>
+        <input type="text" name="alias" ng-model="measurement.alias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
+      </div>
+
       <div class="gf-form">
         <span class="gf-form-label width-12">
           Warning
         </span>
         <input type="number" name="warn" ng-model="measurement.warn" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
       </div>
+
       <div class="gf-form">
         <span class="gf-form-label width-12">
           Critical
         </span>
         <input type="number" name="crit" ng-model="measurement.crit" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
       </div>
+
       <div class="gf-form">
         <span class="gf-form-label width-12">
           Aggregation
@@ -59,6 +74,7 @@
                   required></select>
         </div>
       </div>
+
       <div class="gf-form">
         <span class="gf-form-label width-12">
           Measurement URL
@@ -68,6 +84,7 @@
         </span>
         <input type="text" name="crit" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
       </div>
+
       <gf-form-switch class="gf-form"
                       label-class="width-12"
                       tooltip="This field will always be displayed with it's value"
