@@ -12,7 +12,8 @@ This plugin will make it easier to do. You just add all the measurements that yo
 1. Add the queries you want to the panel and give each of them a unique alias
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
   **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
-3. Go the the Options tab, and enter the `Warning` and `Critical` thresholds for each of your queries
+3. Go the the Options tab, and enter the `Warning` and `Critical` thresholds for each of your queries.
+  **Note:** The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your measurement higher values are better, put a lower value in the "critical" threshold than the "warning" threshold.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
 5. If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
 
