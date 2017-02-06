@@ -28,7 +28,7 @@ i.e. you recognize your servers by domain, and they are all name in the followin
 Lets say that you want your user the be able to get instructions on what to do when a certain measurement is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
 
 ## Supported Data Sources
-Currently the plugin was tested with influxDB. Support for other data sources could be added by demand
+Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
 
 # Screenshots
 ### Panel States
