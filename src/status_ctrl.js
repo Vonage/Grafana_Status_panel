@@ -66,6 +66,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       this.panel.displayName = "";
     }
 
+    if(this.panel.flipCard){
+      this.$panelContainer.addClass("effect-hover");
+    } else {
+      this.$panelContainer.removeClass("effect-hover");
+    }
 
 
     let targets = this.panel.targets;
@@ -185,6 +190,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
   link(scope, elem, attrs, ctrl) {
     this.$panelContainer = elem.find('.panel-container');
+    this.$panelContainer.addClass("st-card");
     this.$panelContoller = ctrl;
   }
 }
