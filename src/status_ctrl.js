@@ -15,7 +15,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     //this.log = $log.debug;
     this.filter = $filter;
 
-    this.aggregations = ['None', 'Max', 'Min', 'Sum'];
+    this.aggregations = ['None', 'Max', 'Min', 'Sum', 'Avg', 'Last'];
 
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
@@ -102,6 +102,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
           value = 0;
           _.each(s.datapoints, (point) => { value += point[0] });
           break;
+        case 'Avg':
+          value = s.stats.avg;
+          break;
+        case 'Last':
+          value = s.datapoints[s.datapoints.length - 1][0];
+              break;
         default:
           value = s.datapoints[0][0];
       }
@@ -175,7 +181,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       alias: seriesData.target
     });
 
-    //series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
+    series.flotpairs = series.getFlotPairs("connected");
 
     return series;
   }
