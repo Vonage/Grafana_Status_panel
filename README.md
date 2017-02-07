@@ -8,6 +8,11 @@ Lets say that you want to monitor a bunch of servers, and you want to keep track
 
 This plugin will make it easier to do. You just add all the measurements that you want to track, set the threshold for each (you could also repeat the panel on a template if you have multiple instances that you want to watch) and you get an overview that will report to you if there is anything wrong with any measurements. That means that if all the measurements are is the OK zone, the panel will be green. if evan one of the measurements is in the WARNING zone, it will be yellow, and red if any of them is CRITICAL.
 
+## How to install (for debugging purposes only)
+1. Copy the contents of "Grafana_Status_panel" to the "/var/lib/grafana/plugins" folder
+2. restart grafana by using "service grafana-server restart"
+3. Now this panel should be installed.
+
 ## How to use
 1. Add the queries you want to the panel and give each of them a unique alias
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
@@ -28,7 +33,7 @@ i.e. you recognize your servers by domain, and they are all name in the followin
 Lets say that you want your user the be able to get instructions on what to do when a certain measurement is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
 
 ## Supported Data Sources
-Currently the plugin was tested with influxDB. Support for other data sources could be added by demand
+Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
 
 # Screenshots
 ### Panel States

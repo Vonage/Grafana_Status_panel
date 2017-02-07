@@ -93,16 +93,18 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           value: function postRefresh() {
             var _this2 = this;
 
-            this.measurements = _.filter(this.panel.targets, function (target) {
-              return target.alias && !target.hide;
-            });
+            this.measurements = this.panel.targets;
 
             /** Duplicate alias validation **/
             this.duplicates = false;
 
+            this.measurements = _.filter(this.measurements, function (measurement) {
+              return !measurement.hide;
+            });
+
             _.each(this.measurements, function (m) {
               var res = _.filter(_this2.measurements, function (measurement) {
-                return m.alias == measurement.alias;
+                return (m.alias == measurement.alias || m.target == measurement.target && m.target) && !m.hide;
               });
 
               if (res.length > 1) {
@@ -141,7 +143,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
             _.each(this.series, function (s) {
               var target = _.find(targets, function (target) {
-                return target.alias == s.alias;
+                return target.alias == s.alias || target.target == s.alias;
               });
 
               if (!target) {
@@ -151,6 +153,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
               s.thresholds = StatusPluginCtrl.parseThresholds(target);
               s.inverted = s.thresholds.crit < s.thresholds.warn;
               s.display = target.display;
+              s.alias = target.alias;
               s.url = target.url;
 
               var value = void 0;
@@ -200,14 +203,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
             this.$panelContainer.removeClass('error-state warn-state ok-state');
 
-            if (this.crit.length > 0) {
-              //this.$panelContainer.css('background-color', "red");
+            if (this.crit.length > 0 || this.duplicates) {
               this.$panelContainer.addClass('error-state');
             } else if (this.warn.length > 0) {
-              //this.$panelContainer.css('background-color', "orange");
               this.$panelContainer.addClass('warn-state');
             } else {
-              //this.$panelContainer.css('background-color', "green");
               this.$panelContainer.addClass('ok-state');
             }
 

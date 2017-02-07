@@ -12,7 +12,8 @@ This plugin will make it easier to do. You just add all the measurements that yo
 1. Add the queries you want to the panel and give each of them a unique alias
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
   **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
-3. Go the the Options tab, and enter the `Warning` and `Critical` thresholds for each of your queries
+3. Go the the Options tab, and enter the `Warning` and `Critical` thresholds for each of your queries.
+  **Note:** The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your measurement higher values are better, put a lower value in the "critical" threshold than the "warning" threshold.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
 5. If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
 
@@ -27,7 +28,7 @@ i.e. you recognize your servers by domain, and they are all name in the followin
 Lets say that you want your user the be able to get instructions on what to do when a certain measurement is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
 
 ## Supported Data Sources
-Currently the plugin was tested with influxDB. Support for other data sources could be added by demand
+Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
 
 # Screenshots
 ### Panel States
@@ -40,4 +41,4 @@ Currently the plugin was tested with influxDB. Support for other data sources co
 
 # License
 
-See the [LICENSE](LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
