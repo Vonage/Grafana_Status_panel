@@ -134,8 +134,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       this.$panelContainer.addClass('error-state');
     } else if (this.warn.length > 0) {
       this.$panelContainer.addClass('warn-state');
-    } else if(this.display.length == 0) {
-      //this.$panelContainer.css('background-color', "gray");
+    } else if(this.series.length == 0) {
       this.$panelContainer.addClass('gray-state');
     } else {
       this.$panelContainer.addClass('ok-state');
