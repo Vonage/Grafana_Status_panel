@@ -25,7 +25,11 @@
     <gf-form-switch class="gf-form"
                     label-class="width-12"
                     label="Flip card" checked="ctrl.panel.flipCard"
-                    on-change="ctrl.render()"></gf-form-switch>
+                    on-change="ctrl.onRender()"></gf-form-switch>
+    <div class="gf-form">
+      <span class="gf-form-label width-12">Flip interval</span>
+      <input type="text" ng-model="ctrl.panel.flipTime" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+    </div>
   </div>
 </div>
 

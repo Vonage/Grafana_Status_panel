@@ -17,6 +17,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
     this.aggregations = ['None', 'Max', 'Min', 'Sum'];
 
+    this.panel.flipTime = this.panel.flipTime || 5;
+
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
     this.events.on('refresh', this.postRefresh.bind(this));
@@ -140,12 +142,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     } else if (this.warn.length > 0) {
       this.$panelContainer.addClass('warn-state');
     } else if(this.display.length == 0) {
-      //this.$panelContainer.css('background-color', "gray");
       this.$panelContainer.addClass('gray-state');
     } else {
       this.$panelContainer.addClass('ok-state');
     }
 
+    this.autoFlip();
     this.parseUri();
   }
 
@@ -186,6 +188,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     //series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
 
     return series;
+  }
+
+  $onDestroy() {
+    if(this.timeoutId) clearInterval(this.timeoutId);
+  }
+
+  autoFlip() {
+    if(this.timeoutId) clearInterval(this.timeoutId);
+    if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0)) {
+      this.timeoutId = setInterval(() => {
+        this.$panelContainer.toggleClass("flipped");
+      }, this.panel.flipTime * 1000);
+    }
   }
 
   link(scope, elem, attrs, ctrl) {
