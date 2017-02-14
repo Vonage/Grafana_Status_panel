@@ -15,7 +15,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
     //this.log = $log.debug;
     this.filter = $filter;
 
-    this.aggregations = ['None', 'Max', 'Min', 'Sum', 'Avg', 'Last'];
+    this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
     /** Bind events to functions **/
     this.events.on('render', this.onRender.bind(this));
@@ -93,23 +93,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
       switch (target.aggregation) {
         case 'Max':
-          value = _.max(s.datapoints, (point) => { return point[0]; })[0];
+          value = s.stats.max;
           break;
         case 'Min':
-          value = _.min(s.datapoints, (point) => { return point[0]; })[0];
+          value = s.stats.min;
           break;
         case 'Sum':
-          value = 0;
-          _.each(s.datapoints, (point) => { value += point[0] });
+          value = s.stats.total;
           break;
         case 'Avg':
           value = s.stats.avg;
           break;
-        case 'Last':
-          value = s.datapoints[s.datapoints.length - 1][0];
-              break;
-        default:
+        case 'First':
           value = s.datapoints[0][0];
+          break;
+        default:
+          value = s.datapoints[s.datapoints.length - 1][0];
       }
 
       s.display_value = value;
