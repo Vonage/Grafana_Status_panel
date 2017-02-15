@@ -93,8 +93,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           value: function postRefresh() {
             var _this2 = this;
 
-            if (this.panel.fixed_span) {
-              this.panel.span = this.panel.fixed_span;
+            if (this.panel.fixedSpan) {
+              this.panel.span = this.panel.fixedSpan;
             }
 
             this.measurements = this.panel.targets;
