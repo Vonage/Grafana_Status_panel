@@ -22,6 +22,18 @@
       </span>
       <input type="text" ng-model="ctrl.panel.namePrefix" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
     </div>
+    <gf-form-switch class="gf-form"
+                    label-class="width-12"
+                    label="Flip card" checked="ctrl.panel.flipCard"
+                    on-change="ctrl.onRender()"></gf-form-switch>
+    <div class="gf-form">
+      <span class="gf-form-label width-12">Flip interval</span>
+      <input type="text" ng-model="ctrl.panel.flipTime" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+    </div>
+    <gf-form-switch class="gf-form"
+                    label-class="width-12"
+                    label="Make panel gray when no data" checked="ctrl.panel.isGrayColor"
+                    on-change="ctrl.onRender()"></gf-form-switch>
   </div>
 </div>
 
