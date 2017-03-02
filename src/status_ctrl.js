@@ -133,12 +133,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
       }
     });
 
-    this.$panelContainer.removeClass('error-state warn-state ok-state');
+    this.$panelContainer.removeClass('error-state warn-state ok-state gray-state');
 
     if (this.crit.length > 0 || this.duplicates) {
       this.$panelContainer.addClass('error-state');
     } else if (this.warn.length > 0) {
       this.$panelContainer.addClass('warn-state');
+    } else if(this.series.length == 0 && this.panel.isGrayColor) {
+      this.$panelContainer.addClass('gray-state');
     } else {
       this.$panelContainer.addClass('ok-state');
     }
