@@ -32,6 +32,7 @@
     </div>
     <gf-form-switch class="gf-form"
                     label-class="width-12"
+
                     label="Make panel gray when no data" checked="ctrl.panel.isGrayColor"
                     on-change="ctrl.onRender()"></gf-form-switch>
   </div>
@@ -72,8 +73,7 @@
         <span class="gf-form-label width-12">
           Aggregation
           <info-popover mode="right-normal">
-            What to do if the query returns multiple data points.<br />
-            <strong>Note:</strong> 'None' will select the first value.
+            What to do if the query returns multiple data points.
           </info-popover>
         </span>
         <div class="gf-form-select-wrapper max-width-12">

@@ -76,7 +76,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
           //this.log = $log.debug;
           _this.filter = $filter;
 
-          _this.aggregations = ['None', 'Max', 'Min', 'Sum'];
+          _this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
           _this.panel.flipTime = _this.panel.flipTime || 5;
 
@@ -168,23 +168,22 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
               switch (target.aggregation) {
                 case 'Max':
-                  value = _.max(s.datapoints, function (point) {
-                    return point[0];
-                  })[0];
+                  value = s.stats.max;
                   break;
                 case 'Min':
-                  value = _.min(s.datapoints, function (point) {
-                    return point[0];
-                  })[0];
+                  value = s.stats.min;
                   break;
                 case 'Sum':
-                  value = 0;
-                  _.each(s.datapoints, function (point) {
-                    value += point[0];
-                  });
+                  value = s.stats.total;
+                  break;
+                case 'Avg':
+                  value = s.stats.avg;
+                  break;
+                case 'First':
+                  value = s.datapoints[0][0];
                   break;
                 default:
-                  value = s.datapoints[0][0];
+                  value = s.datapoints[s.datapoints.length - 1][0];
               }
 
               s.display_value = value;
@@ -254,7 +253,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
               alias: seriesData.target
             });
 
-            //series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
+            series.flotpairs = series.getFlotPairs("connected");
 
             return series;
           }

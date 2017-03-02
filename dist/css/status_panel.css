@@ -71,4 +71,7 @@
 .st-card:not(.effect-hover):not(.gray-state) .st-card-front {
   display: none; }
 
+.gray-state {
+  background-color: gray; }
+
 /*# sourceMappingURL=status_panel.css.map */
