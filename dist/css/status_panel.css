@@ -9,6 +9,11 @@
   .status-panel h1 {
     font-size: 1.5rem; }
 
+.status-panel-annotation {
+  font-size: 0.75rem;
+  text-align: right;
+  vertical-align: text-top; }
+
 .error-state {
   background-color: red; }
 
@@ -18,7 +23,10 @@
 .ok-state {
   background-color: green; }
 
-.gray-state {
+.no-data-state {
+  background-color: gray; }
+
+.disabled-state {
   background-color: gray; }
 
 /*# sourceMappingURL=status_panel.css.map */

@@ -14,6 +14,12 @@
   }
 }
 
+.status-panel-annotation {
+  font-size: 0.75rem;
+  text-align: right;
+  vertical-align: text-top;
+}
+
 .error-state {
   background-color: red;
 }
@@ -26,6 +32,10 @@
   background-color: green;
 }
 
-.gray-state {
+.no-data-state {
+  background-color: gray;
+}
+
+.disabled-state {
   background-color: gray;
 }
