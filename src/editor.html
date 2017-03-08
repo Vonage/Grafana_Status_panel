@@ -98,9 +98,9 @@
         </span>
         <div class="gf-form-select-wrapper max-width-12">
           <select class="gf-form-input"
-                  ng-init="measurement.statusType = (measurement.statusType ? measurement.statusType : ctrl.statusTypes[0])"
-                  ng-model="measurement.statusType"
-                  ng-options="t for t in ctrl.statusTypes"
+                  ng-init="measurement.displayType = (measurement.displayType ? measurement.displayType : ctrl.displayTypes[0])"
+                  ng-model="measurement.displayType"
+                  ng-options="t for t in ctrl.displayTypes"
                   ng-change="ctrl.onRender()"
                   required></select>
         </div>
@@ -109,7 +109,7 @@
 
     <div class="section gf-form-group">
       <!--Threshold Section-->
-      <div ng-if="measurement.statusType == 'Threshold'">
+      <div ng-if="measurement.displayType == 'Threshold'">
         <h5 class="section-heading">Threshold</h5>
 
         <!--Warning threshold-->
@@ -137,7 +137,7 @@
       </div>
 
       <!--Disable Section-->
-      <div ng-if="measurement.statusType == 'Disable State'">
+      <div ng-if="measurement.displayType == 'Disable State'">
         <h5 class="section-heading">Disable State</h5>
 
         <!--Disable state-->

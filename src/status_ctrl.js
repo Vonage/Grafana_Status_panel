@@ -15,7 +15,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
         //this.log = $log.debug;
         this.filter = $filter;
 
-        this.statusTypes = ['Threshold', 'Disable State', 'Annotation'];
+        this.displayTypes = ['Threshold', 'Disable State', 'Annotation'];
         this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
         /** Bind events to functions **/
@@ -116,13 +116,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
             s.display_value = value;
 
-            if (target.statusType == "Threshold") {
+            if (target.displayType == "Threshold") {
                 this.handleThresholdStatus(s, target);
             }
-            else if (target.statusType == "Disable State") {
+            else if (target.displayType == "Disable State") {
                 this.handleDisabledStatus(s,target);
             }
-            else if (target.statusType == "Annotation") {
+            else if (target.displayType == "Annotation") {
                 this.handleAnnotations(s, target);
             }
         });
@@ -179,7 +179,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
             this.$panelContainer.addClass('error-state');
         } else if (this.warn.length > 0) {
             this.$panelContainer.addClass('warn-state');
-        } else if(this.series.length == 0 && this.panel.isGrayOnNoData) {
+        } else if((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
             this.$panelContainer.addClass('no-data-state');
         } else {
             this.$panelContainer.addClass('ok-state');

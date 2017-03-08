@@ -76,7 +76,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
                     //this.log = $log.debug;
                     _this.filter = $filter;
 
-                    _this.statusTypes = ['Threshold', 'Disable State', 'Annotation'];
+                    _this.displayTypes = ['Threshold', 'Disable State', 'Annotation'];
                     _this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
                     /** Bind events to functions **/
@@ -189,11 +189,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
                             s.display_value = value;
 
-                            if (target.statusType == "Threshold") {
+                            if (target.displayType == "Threshold") {
                                 _this3.handleThresholdStatus(s, target);
-                            } else if (target.statusType == "Disable State") {
+                            } else if (target.displayType == "Disable State") {
                                 _this3.handleDisabledStatus(s, target);
-                            } else if (target.statusType == "Annotation") {
+                            } else if (target.displayType == "Annotation") {
                                 _this3.handleAnnotations(s, target);
                             }
                         });
@@ -254,7 +254,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
                             this.$panelContainer.addClass('error-state');
                         } else if (this.warn.length > 0) {
                             this.$panelContainer.addClass('warn-state');
-                        } else if (this.series.length == 0 && this.panel.isGrayOnNoData) {
+                        } else if ((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
                             this.$panelContainer.addClass('no-data-state');
                         } else {
                             this.$panelContainer.addClass('ok-state');
