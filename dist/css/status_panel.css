@@ -10,8 +10,8 @@
     font-size: 1.5rem; }
 
 .status-panel-annotation {
-  font-size: 0.75rem;
-  text-align: right;
+  font-size: 0.85rem;
+  text-align: left;
   vertical-align: text-top; }
 
 .error-state {
