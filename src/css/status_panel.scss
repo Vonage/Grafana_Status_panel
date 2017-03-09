@@ -1,41 +1,46 @@
 .status-panel {
-  display: table;
-  position: relative;
-  width: 100%;
+	display: table;
+	position: relative;
+	width: 100%;
+	text-align: center;
 
-  & > div {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-  }
+	.status-panel-annotation_row {
+		display: table-row;
+		height: 25%;
+		text-align: left;
+		font-size: 0.85rem;
+	}
 
-  h1 {
-    font-size: 1.5rem;
-  }
-}
+	.status_name_row {
+		display: table-row;
+		height: 10%;
+	}
 
-.status-panel-annotation {
-  font-size: 0.85rem;
-  text-align: left;
-  vertical-align: text-top;
+	.status_alerts_row {
+		display: table-row;
+	}
+
+	h1 {
+		font-size: 1.5rem;
+	}
 }
 
 .error-state {
-  background-color: red;
+	background-color: red;
 }
 
 .warn-state {
-  background-color: orange;
+	background-color: orange;
 }
 
 .ok-state {
-  background-color: green;
+	background-color: green;
 }
 
 .no-data-state {
-  background-color: gray;
+	background-color: gray;
 }
 
 .disabled-state {
-  background-color: gray;
+	background-color: gray;
 }
