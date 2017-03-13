@@ -14,7 +14,7 @@
     </h1>
 
     <div ng-repeat="display in ctrl.display">
-      <a ng-show="display.url" ng-href="{{ display.url }}" target="_blank">{{ display.alias }}</a>
+      <a ng-show="display.url" ng-href="{{ display.url | interpolateTemplateVars:this }}" target="_blank">{{ display.alias }}</a>
       <span ng-hide="display.url">{{ display.alias }}</span>
       <span ng-show="display.display"> - {{ display.display_value | number }}</span>
     </div>
