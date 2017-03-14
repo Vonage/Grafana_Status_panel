@@ -92,7 +92,7 @@
             The type of data to show to the panel<br/>
             <strong>Note:</strong> 'Threshold' will select the first value. <br/> <br/>
             <strong>Threshold</strong> - Change background color of the panel if got warning / error + show the alias of the problematic metrics. <br/>
-            <strong>Disabled state</strong> - Change background color of the panel if disabled. <br/>
+            <strong>Disable Criteria</strong> - Change background color of the panel if disabled. <br/>
             <strong>Annotation</strong> - Show extra info on the panel on top right.
           </info-popover>
         </span>
@@ -137,10 +137,10 @@
       </div>
 
       <!--Disable Section-->
-      <div ng-if="measurement.displayType == 'Disable State'">
-        <h5 class="section-heading">Disable State</h5>
+      <div ng-if="measurement.displayType == 'Disable Criteria'">
+        <h5 class="section-heading">Disable Criteria</h5>
 
-        <!--Disable state-->
+        <!--Disable Criteria-->
         <div class="gf-form">
         <span class="gf-form-label width-12">
           Disable Value

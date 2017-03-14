@@ -32,7 +32,7 @@ You can also repeat the panel on a template if you have multiple instances that 
 	1. For severity disply, select the `Threshold` option type under `Status Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
 		* If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
  		* The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the "critical" threshold than the "warning" threshold. 
-	2. For disable display, select the "Disable State" option type under "Status Type". Enter the `Disable Value` for each of your queries.
+	2. For disable display, select the `Disable Criteria` option type under "Status Type". Enter the `Disable Value` for each of your queries.
 	3. For annotation, select the "Annotation" option type under "Status Type". The alias + the value of the metric will be shown on the top left.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
 

@@ -15,7 +15,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		//this.log = $log.debug;
 		this.filter = $filter;
 
-		this.displayTypes = ['Threshold', 'Disable State', 'Annotation'];
+		this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
 		/** Bind events to functions **/
@@ -119,7 +119,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			if (target.displayType == "Threshold") {
 				this.handleThresholdStatus(s, target);
 			}
-			else if (target.displayType == "Disable State") {
+			else if (target.displayType == "Disable Criteria") {
 				this.handleDisabledStatus(s,target);
 			}
 			else if (target.displayType == "Annotation") {

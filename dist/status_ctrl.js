@@ -76,7 +76,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					//this.log = $log.debug;
 					_this.filter = $filter;
 
-					_this.displayTypes = ['Threshold', 'Disable State', 'Annotation'];
+					_this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
 					/** Bind events to functions **/
@@ -191,7 +191,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 							if (target.displayType == "Threshold") {
 								_this3.handleThresholdStatus(s, target);
-							} else if (target.displayType == "Disable State") {
+							} else if (target.displayType == "Disable Criteria") {
 								_this3.handleDisabledStatus(s, target);
 							} else if (target.displayType == "Annotation") {
 								_this3.handleAnnotations(s, target);
