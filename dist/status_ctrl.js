@@ -76,8 +76,9 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					//this.log = $log.debug;
 					_this.filter = $filter;
 
-					_this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
+					_this.valueHandlers = ['Threshold', 'Disable Criteria', 'Text Only'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+					_this.displayTypes = ['Regular', 'Annotation'];
 
 					/** Bind events to functions **/
 					_this.events.on('render', _this.onRender.bind(_this));
@@ -86,13 +87,31 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					_this.events.on('data-received', _this.onDataReceived.bind(_this));
 					_this.events.on('data-snapshot-load', _this.onDataReceived.bind(_this));
 					_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
+
+					_this.addFilters();
 					return _this;
 				}
 
 				_createClass(StatusPluginCtrl, [{
+					key: "addFilters",
+					value: function addFilters() {
+						var _this2 = this;
+
+						coreModule.filter('numberOrText', function () {
+							return function (input) {
+								if (angular.isNumber(input)) {
+									return _this2.filter('number')(input);
+								} else {
+									return input;
+									// return this.filter('limitTo')(input, 20, 0);
+								}
+							};
+						});
+					}
+				}, {
 					key: "postRefresh",
 					value: function postRefresh() {
-						var _this2 = this;
+						var _this3 = this;
 
 						this.measurements = this.panel.targets;
 
@@ -104,12 +123,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						});
 
 						_.each(this.measurements, function (m) {
-							var res = _.filter(_this2.measurements, function (measurement) {
+							var res = _.filter(_this3.measurements, function (measurement) {
 								return (m.alias == measurement.alias || m.target == measurement.target && m.target) && !m.hide;
 							});
 
 							if (res.length > 1) {
-								_this2.duplicates = true;
+								_this3.duplicates = true;
 							}
 						});
 					}
@@ -126,9 +145,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "onRender",
 					value: function onRender() {
-						var _this3 = this;
+						var _this4 = this;
 
+						// this.addFilters();
 						this.setElementHeight();
+						this.upgradeOldVersion();
 
 						if (this.panel.clusterName) {
 							this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
@@ -140,8 +161,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 						this.crit = [];
 						this.warn = [];
-						this.display = [];
 						this.disabled = [];
+						this.display = [];
 						this.annotation = [];
 
 						_.each(this.series, function (s) {
@@ -155,6 +176,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 							s.alias = target.alias;
 							s.url = target.url;
+							s.display = true;
+							s.displayType = target.displayType;
 
 							var value = void 0;
 							switch (target.aggregation) {
@@ -189,17 +212,41 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 							s.display_value = value;
 
-							if (target.displayType == "Threshold") {
-								_this3.handleThresholdStatus(s, target);
-							} else if (target.displayType == "Disable Criteria") {
-								_this3.handleDisabledStatus(s, target);
-							} else if (target.displayType == "Annotation") {
-								_this3.handleAnnotations(s, target);
+							if (target.valueHandler == "Threshold") {
+								_this4.handleThresholdStatus(s, target);
+							} else if (target.valueHandler == "Disable Criteria") {
+								_this4.handleDisabledStatus(s, target);
+							} else if (target.valueHandler == "Text Only") {
+								_this4.handleTextOnly(s, target);
 							}
 						});
 
+						if (this.disabled.length > 0) {
+							this.crit = [];
+							this.warn = [];
+							this.display = [];
+						}
+
 						this.handle_css_display();
 						this.parseUri();
+					}
+				}, {
+					key: "upgradeOldVersion",
+					value: function upgradeOldVersion() {
+						var _this5 = this;
+
+						var targets = this.panel.targets;
+
+						//Handle legacy code
+						_.each(targets, function (target) {
+							if (target.valueHandler == null) {
+								target.valueHandler = target.displayType;
+								if (target.valueHandler == "Annotation") {
+									target.valueHandler = "Text Only";
+								}
+								target.displayType = _this5.displayTypes[0];
+							}
+						});
 					}
 				}, {
 					key: "handleThresholdStatus",
@@ -208,20 +255,41 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						series.inverted = series.thresholds.crit < series.thresholds.warn;
 						series.display = target.display;
 
-						if (!series.inverted) {
-							if (series.display_value >= series.thresholds.crit) {
-								this.crit.push(series);
-							} else if (series.display_value >= series.thresholds.warn) {
-								this.warn.push(series);
-							} else if (series.display) {
-								this.display.push(series);
+						var isCritical = false;
+						var isWarning = false;
+						var isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
+						if (isCheckRanges) {
+							if (!series.inverted) {
+								if (series.display_value >= series.thresholds.crit) {
+									isCritical = true;
+								} else if (series.display_value >= series.thresholds.warn) {
+									isWarning = true;
+								}
+							} else {
+								if (series.display_value <= series.thresholds.crit) {
+									isCritical = true;
+								} else if (series.display_value <= series.thresholds.warn) {
+									isWarning = true;
+								}
 							}
 						} else {
-							if (series.display_value <= series.thresholds.crit) {
-								this.crit.push(series);
-							} else if (series.display_value <= series.thresholds.warn) {
-								this.warn.push(series);
-							} else if (series.display) {
+							if (series.display_value == series.thresholds.crit) {
+								isCritical = true;
+							} else if (series.display_value == series.thresholds.warn) {
+								isWarning = true;
+							}
+						}
+
+						if (isCritical) {
+							this.crit.push(series);
+							series.displayType = this.displayTypes[0];
+						} else if (isWarning) {
+							this.warn.push(series);
+							series.displayType = this.displayTypes[0];
+						} else if (series.display) {
+							if (series.displayType == "Annotation") {
+								this.annotation.push(series);
+							} else {
 								this.display.push(series);
 							}
 						}
@@ -229,7 +297,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "handleDisabledStatus",
 					value: function handleDisabledStatus(series, target) {
-
+						series.displayType = this.displayTypes[0];
 						series.disabledValue = target.disabledValue;
 
 						if (series.display_value == series.disabledValue) {
@@ -237,9 +305,13 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						}
 					}
 				}, {
-					key: "handleAnnotations",
-					value: function handleAnnotations(series, target) {
-						this.annotation.push(series);
+					key: "handleTextOnly",
+					value: function handleTextOnly(series, target) {
+						if (series.displayType == "Annotation") {
+							this.annotation.push(series);
+						} else {
+							this.display.push(series);
+						}
 					}
 				}, {
 					key: "handle_css_display",
@@ -306,7 +378,9 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var res = {};
 
 						res.warn = metricOptions.warn;
+						res.warnIsNumber = angular.isNumber(res.warn);
 						res.crit = metricOptions.crit;
+						res.critIsNumber = angular.isNumber(res.crit);
 
 						return res;
 					}

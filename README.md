@@ -1,3 +1,5 @@
+**Note:** The new version (1.0.3) can have some conflicts with older versions.
+
 # Grafana Status Panel
 
 This is a plugin meant to be used as a centralized view for the status of component in a glance.
@@ -13,7 +15,11 @@ Lets say that you want to monitor a bunch of servers, and you want to keep track
 This plugin will make it easier to do. You just add all the metrics you want to track, and choose how you want their values to be treated:
 1. Component severity marker - Set the threshold for each and you get an overview that will report to you if there is anything wrong with any metrics. That means that if all the metrics are in the OK zone, the panel will be green. If evan one of the metrics is in the WARNING zone, it will be yellow, and red if any of them is CRITICAL.
 2. Component disable marker - Set the exact value that represent if the component is disabled, the panel will be grey.
-3. Annotation - show extra information about the component in the top left side of the panel.
+3. Display as text - show extra information about the component in the panel
+
+Severity and text values can be shown in 2 options:
+1. Regular - under the panel title
+2. Annotation - In the top left side of the panel
 
 **Note:** The disable markers are prioritized over the severity ones. 
 
@@ -29,11 +35,11 @@ You can also repeat the panel on a template if you have multiple instances that 
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
   **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
 3. Go the the Options tab, and choose the how to treat each metric. 
-	1. For severity disply, select the `Threshold` option type under `Status Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
-		* If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Value`
+	1. For severity display, select the `Threshold` option type under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
+		* If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Always`
  		* The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the "critical" threshold than the "warning" threshold. 
-	2. For disable display, select the `Disable Criteria` option type under "Status Type". Enter the `Disable Value` for each of your queries.
-	3. For annotation, select the "Annotation" option type under "Status Type". The alias + the value of the metric will be shown on the top left.
+	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
+	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
 
 ## Other Features

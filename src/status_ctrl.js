@@ -15,8 +15,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		//this.log = $log.debug;
 		this.filter = $filter;
 
-		this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
+		this.valueHandlers = ['Threshold', 'Disable Criteria', 'Text Only'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+		this.displayTypes = ['Regular', 'Annotation'];
 
 		/** Bind events to functions **/
 		this.events.on('render', this.onRender.bind(this));
@@ -25,6 +26,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('data-received', this.onDataReceived.bind(this));
 		this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+
+		this.addFilters()
+	}
+
+
+	addFilters() {
+		coreModule.filter('numberOrText', ()=> {
+			return (input)=> {
+				if(angular.isNumber(input)) {
+					return this.filter('number')(input);
+				} else {
+					return input;
+					// return this.filter('limitTo')(input, 20, 0);
+				}
+			}
+		});
 	}
 
 	postRefresh() {
@@ -57,7 +74,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onRender() {
+		// this.addFilters();
 		this.setElementHeight();
+		this.upgradeOldVersion();
 
 		if (this.panel.clusterName) {
 			this.panel.displayName =
@@ -67,14 +86,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panel.displayName = "";
 		}
 
-
-
 		let targets = this.panel.targets;
 
 		this.crit = [];
 		this.warn = [];
-		this.display = [];
 		this.disabled = [];
+		this.display = [];
 		this.annotation = [];
 
 		_.each(this.series, (s) => {
@@ -88,6 +105,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 			s.alias = target.alias;
 			s.url = target.url;
+			s.display = true;
+			s.displayType = target.displayType;
 
 			let value;
 			switch (target.aggregation) {
@@ -116,19 +135,40 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 			s.display_value = value;
 
-			if (target.displayType == "Threshold") {
+			if (target.valueHandler == "Threshold") {
 				this.handleThresholdStatus(s, target);
 			}
-			else if (target.displayType == "Disable Criteria") {
+			else if (target.valueHandler == "Disable Criteria") {
 				this.handleDisabledStatus(s,target);
 			}
-			else if (target.displayType == "Annotation") {
-				this.handleAnnotations(s, target);
+			else if (target.valueHandler == "Text Only") {
+				this.handleTextOnly(s, target);
 			}
 		});
 
+		if(this.disabled.length > 0) {
+			this.crit = [];
+			this.warn = [];
+			this.display = [];
+		}
+
 		this.handle_css_display();
 		this.parseUri();
+	}
+
+	upgradeOldVersion() {
+		let targets = this.panel.targets;
+
+		//Handle legacy code
+		_.each(targets, (target) => {
+			if(target.valueHandler == null) {
+				target.valueHandler = target.displayType;
+				if(target.valueHandler == "Annotation") {
+					target.valueHandler = "Text Only"
+				}
+				target.displayType = this.displayTypes[0];
+			}
+		});
 	}
 
 	handleThresholdStatus(series, target) {
@@ -136,27 +176,48 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		series.inverted = series.thresholds.crit < series.thresholds.warn;
 		series.display = target.display;
 
-		if (!series.inverted) {
-			if (series.display_value >= series.thresholds.crit) {
-				this.crit.push(series);
-			} else if (series.display_value >= series.thresholds.warn) {
-				this.warn.push(series);
-			} else if (series.display) {
-				this.display.push(series);
+		var isCritical = false;
+		var isWarning = false;
+		let isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
+		if (isCheckRanges) {
+			if (!series.inverted) {
+				if (series.display_value >= series.thresholds.crit) {
+					isCritical = true
+				} else if (series.display_value >= series.thresholds.warn) {
+					isWarning = true
+				}
+			} else {
+				if (series.display_value <= series.thresholds.crit) {
+					isCritical = true
+				} else if (series.display_value <= series.thresholds.warn) {
+					isWarning = true
+				}
 			}
 		} else {
-			if (series.display_value <= series.thresholds.crit) {
-				this.crit.push(series);
-			} else if (series.display_value <= series.thresholds.warn) {
-				this.warn.push(series);
-			} else if (series.display) {
+			if (series.display_value == series.thresholds.crit) {
+				isCritical = true
+			} else if (series.display_value == series.thresholds.warn) {
+				isWarning = true
+			}
+		}
+
+		if(isCritical) {
+			this.crit.push(series);
+			series.displayType = this.displayTypes[0]
+		} else if(isWarning) {
+			this.warn.push(series);
+			series.displayType = this.displayTypes[0]
+		} else if (series.display) {
+			if(series.displayType == "Annotation") {
+				this.annotation.push(series);
+			} else {
 				this.display.push(series);
 			}
 		}
 	}
 
 	handleDisabledStatus(series, target) {
-
+		series.displayType = this.displayTypes[0]
 		series.disabledValue = target.disabledValue;
 
 		if (series.display_value == series.disabledValue) {
@@ -164,8 +225,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		}
 	}
 
-	handleAnnotations(series, target) {
-		this.annotation.push(series);
+	handleTextOnly(series, target) {
+		if(series.displayType == "Annotation") {
+			this.annotation.push(series);
+		} else {
+			this.display.push(series);
+		}
 	}
 
 	handle_css_display() {
@@ -198,7 +263,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		let res = {};
 
 		res.warn = metricOptions.warn;
+		res.warnIsNumber = angular.isNumber(res.warn);
 		res.crit = metricOptions.crit;
+		res.critIsNumber = angular.isNumber(res.crit);
 
 		return res;
 	}
