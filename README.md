@@ -1,5 +1,3 @@
-**Note:** The new version (1.0.3) can have some conflicts with older versions.
-
 # Grafana Status Panel
 
 This is a plugin meant to be used as a centralized view for the status of component in a glance.
@@ -56,6 +54,10 @@ Lets say that you want your user to be able to get instructions on what to do wh
 If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
 ## Supported Data Sources
 Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
+
+## Release Notes
+### Version 1.0.3
+* Version (1.0.3) can have some conflicts with older versions.
 
 # Screenshots
 ### Panel States
