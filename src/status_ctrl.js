@@ -32,13 +32,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 
 	addFilters() {
-		coreModule.filter('numberOrText', ()=> {
-			return (input)=> {
+		coreModule.filter('numberOrText', () => {
+			return (input) => {
 				if(angular.isNumber(input)) {
 					return this.filter('number')(input);
 				} else {
 					return input;
-					// return this.filter('limitTo')(input, 20, 0);
 				}
 			}
 		});
@@ -74,7 +73,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onRender() {
-		// this.addFilters();
 		this.setElementHeight();
 		this.upgradeOldVersion();
 
@@ -152,7 +150,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.display = [];
 		}
 
-		this.handle_css_display();
+		this.handleCssDisplay();
 		this.parseUri();
 	}
 
@@ -217,7 +215,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	handleDisabledStatus(series, target) {
-		series.displayType = this.displayTypes[0]
+		series.displayType = this.displayTypes[0];
 		series.disabledValue = target.disabledValue;
 
 		if (series.display_value == series.disabledValue) {
@@ -233,7 +231,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		}
 	}
 
-	handle_css_display() {
+	handleCssDisplay() {
 		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 
 		if(this.duplicates) {
@@ -271,7 +269,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onDataReceived(dataList) {
-		this.series = dataList.map(this.seriesHandler.bind(this));
+		this.series = dataList.map(StatusPluginCtrl.seriesHandler.bind(this));
 
 		this.render();
 	}
@@ -281,7 +279,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.warn = [];
 	}
 
-	seriesHandler(seriesData) {
+	static seriesHandler(seriesData) {
 		var series = new TimeSeries({
 			datapoints: seriesData.datapoints,
 			alias: seriesData.target
