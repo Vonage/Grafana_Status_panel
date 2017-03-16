@@ -30,21 +30,23 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.addFilters()
 	}
 
-
 	addFilters() {
 		coreModule.filter('numberOrText', ()=> {
-			return (input)=> {
+			let myFilter = (input)=> {
 				if(angular.isNumber(input)) {
 					return this.filter('number')(input);
 				} else {
 					return input;
-					// return this.filter('limitTo')(input, 20, 0);
 				}
-			}
+			};
+
+			myFilter.$stateful = true;
+			return myFilter;
 		});
 	}
 
 	postRefresh() {
+
 		this.measurements = this.panel.targets;
 
 		/** Duplicate alias validation **/
@@ -73,9 +75,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
 	}
 
+	setTextMaxWidth() {
+		let tail = ' …';
+		let panelWidth = this.$panelContainer.innerWidth();
+		if (isNaN(panelWidth))
+			panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
+		panelWidth = panelWidth - 20;
+		// this.$panelContainer.find('.row-overflow').css('max-width', panelWidth + 'px');
+		this.param = panelWidth;
+	}
+
 	onRender() {
-		// this.addFilters();
 		this.setElementHeight();
+		this.setTextMaxWidth();
 		this.upgradeOldVersion();
 
 		if (this.panel.clusterName) {
@@ -272,7 +284,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	onDataReceived(dataList) {
 		this.series = dataList.map(this.seriesHandler.bind(this));
-
 		this.render();
 	}
 

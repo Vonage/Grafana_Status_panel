@@ -98,14 +98,16 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var _this2 = this;
 
 						coreModule.filter('numberOrText', function () {
-							return function (input) {
+							var myFilter = function myFilter(input) {
 								if (angular.isNumber(input)) {
 									return _this2.filter('number')(input);
 								} else {
 									return input;
-									// return this.filter('limitTo')(input, 20, 0);
 								}
 							};
+
+							myFilter.$stateful = true;
+							return myFilter;
 						});
 					}
 				}, {
@@ -143,12 +145,22 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
 					}
 				}, {
+					key: "setTextMaxWidth",
+					value: function setTextMaxWidth() {
+						var tail = ' …';
+						var panelWidth = this.$panelContainer.innerWidth();
+						if (isNaN(panelWidth)) panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
+						panelWidth = panelWidth - 20;
+						// this.$panelContainer.find('.row-overflow').css('max-width', panelWidth + 'px');
+						this.param = panelWidth;
+					}
+				}, {
 					key: "onRender",
 					value: function onRender() {
 						var _this4 = this;
 
-						// this.addFilters();
 						this.setElementHeight();
+						this.setTextMaxWidth();
 						this.upgradeOldVersion();
 
 						if (this.panel.clusterName) {
@@ -345,7 +357,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					key: "onDataReceived",
 					value: function onDataReceived(dataList) {
 						this.series = dataList.map(this.seriesHandler.bind(this));
-
 						this.render();
 					}
 				}, {

@@ -4,10 +4,12 @@
 	</div>
 
 	<div ng-hide="ctrl.duplicates" class="status-panel-annotation_row">
-		<div ng-repeat="annotation in ctrl.annotation">
-			<a ng-show="annotation.url" ng-href="{{ annotation.url }}" target="_blank">{{ annoation.alias }}</a>
-			<span ng-hide="annotation.url">{{ annotation.alias }}</span>
-			<span> - {{ annotation.display_value | numberOrText }} </span>
+		<div ng-repeat="annotation in ctrl.annotation" >
+			<div class="row-overflow" ng-style="{ 'max-width': ctrl.param }">
+				<a ng-show="annotation.url" ng-href="{{ annotation.url | interpolateTemplateVars:this }}" target="_blank">{{ annoation.alias }}</a>
+				<span ng-hide="annotation.url">{{ annotation.alias }}</span>
+				<span bs-tooltip="'{{ annotation.display_value }}'"> - {{ annotation.display_value | numberOrText}} </span>
+			</div>
 		</div>
 	</div>
 
@@ -24,25 +26,25 @@
 
 	<div class="status_alerts_row" ng-hide="ctrl.duplicates">
 		<div ng-repeat="display in ctrl.display">
-			<a ng-show="display.url" ng-href="{{ display.url }}" target="_blank">{{ display.alias }}</a>
+			<a ng-show="display.url" ng-href="{{ display.url | interpolateTemplateVars:this }}" target="_blank">{{ display.alias }}</a>
 			<span ng-hide="display.url">{{ display.alias }}</span>
 			<span ng-show="display.display"> - {{ display.display_value | numberOrText }}</span>
 		</div>
 
 		<div ng-repeat="crit in ctrl.crit">
-			<a ng-show="crit.url" ng-href="{{ crit.url }}" target="_blank">{{ crit.alias }}</a>
+			<a ng-show="crit.url" ng-href="{{ crit.url | interpolateTemplateVars:this }}" target="_blank">{{ crit.alias }}</a>
 			<span ng-hide="crit.url">{{ crit.alias }}</span>
 			<span ng-show="crit.display"> - {{ crit.display_value | numberOrText }}</span>
 		</div>
 
 		<div ng-repeat="warn in ctrl.warn">
-			<a ng-show="warn.url" ng-href="{{ warn.url }}" target="_blank">{{ warn.alias }}</a>
+			<a ng-show="warn.url" ng-href="{{ warn.url | interpolateTemplateVars:this }}" target="_blank">{{ warn.alias }}</a>
 			<span ng-hide="warn.url">{{ warn.alias }}</span>
 			<span ng-show="warn.display"> - {{ warn.display_value | numberOrText }}</span>
 		</div>
 
 		<div ng-repeat="disabled in ctrl.disabled">
-			<a ng-show="disabled.url" ng-href="{{ disabled.url }}" target="_blank">{{ disabled.alias }}</a>
+			<a ng-show="disabled.url" ng-href="{{ disabled.url | interpolateTemplateVars:this }}" target="_blank">{{ disabled.alias }}</a>
 			<span ng-hide="disabled.url">{{ disabled.alias }}</span>
 		</div>
 	</div>

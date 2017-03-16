@@ -130,7 +130,13 @@
 		<div class="section gf-form-group">
 			<!--Threshold Section-->
 			<div ng-if="measurement.valueHandler == 'Threshold'">
-				<h5 class="section-heading">Threshold</h5>
+				<h5 class="section-heading">Threshold
+					<info-popover mode="normal">
+						The Warning and Critical fields get numbers or strings. <br/>
+						In case both of them are numbers, the thresholds will be used as ranges, and metric value will be checked if it is in the warning/critical ranges.<br/>
+						In case one of them is string, the thresholds will check equality to the value.
+					</info-popover>
+				</h5>
 
 				<!--Warning threshold-->
 				<div class="gf-form">
