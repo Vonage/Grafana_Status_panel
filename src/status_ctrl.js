@@ -174,8 +174,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		series.inverted = series.thresholds.crit < series.thresholds.warn;
 		series.display = target.display;
 
-		var isCritical = false;
-		var isWarning = false;
+		let isCritical = false;
+		let isWarning = false;
 		let isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
 		if (isCheckRanges) {
 			if (!series.inverted) {
