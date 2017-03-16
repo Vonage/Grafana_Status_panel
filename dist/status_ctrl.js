@@ -98,7 +98,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var _this2 = this;
 
 						coreModule.filter('numberOrText', function () {
-							var myFilter = function myFilter(input) {
+							var numberOrTextFilter = function numberOrTextFilter(input) {
 								if (angular.isNumber(input)) {
 									return _this2.filter('number')(input);
 								} else {
@@ -106,8 +106,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 								}
 							};
 
-							myFilter.$stateful = true;
-							return myFilter;
+							numberOrTextFilter.$stateful = true;
+							return numberOrTextFilter;
 						});
 					}
 				}, {
@@ -239,7 +239,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.display = [];
 						}
 
-						this.handle_css_display();
+						this.handleCssDisplay();
 						this.parseUri();
 					}
 				}, {
@@ -326,8 +326,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						}
 					}
 				}, {
-					key: "handle_css_display",
-					value: function handle_css_display() {
+					key: "handleCssDisplay",
+					value: function handleCssDisplay() {
 						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 
 						if (this.duplicates) {
@@ -356,7 +356,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "onDataReceived",
 					value: function onDataReceived(dataList) {
-						this.series = dataList.map(this.seriesHandler.bind(this));
+						this.series = dataList.map(StatusPluginCtrl.seriesHandler.bind(this));
 						this.render();
 					}
 				}, {
@@ -364,18 +364,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					value: function onDataError() {
 						this.crit = [];
 						this.warn = [];
-					}
-				}, {
-					key: "seriesHandler",
-					value: function seriesHandler(seriesData) {
-						var series = new TimeSeries({
-							datapoints: seriesData.datapoints,
-							alias: seriesData.target
-						});
-
-						series.flotpairs = series.getFlotPairs("connected");
-
-						return series;
 					}
 				}, {
 					key: "link",
@@ -394,6 +382,18 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						res.critIsNumber = angular.isNumber(res.crit);
 
 						return res;
+					}
+				}, {
+					key: "seriesHandler",
+					value: function seriesHandler(seriesData) {
+						var series = new TimeSeries({
+							datapoints: seriesData.datapoints,
+							alias: seriesData.target
+						});
+
+						series.flotpairs = series.getFlotPairs("connected");
+
+						return series;
 					}
 				}]);
 
