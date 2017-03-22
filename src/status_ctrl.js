@@ -28,6 +28,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	postRefresh() {
+		if (this.panel.fixedSpan) {
+			this.panel.span = this.panel.fixedSpan;
+		}
+
 		this.measurements = this.panel.targets;
 
 		/** Duplicate alias validation **/

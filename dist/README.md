@@ -24,11 +24,6 @@ You can also repeat the panel on a template if you have multiple instances that 
 2. Restart grafana by using "service grafana-server restart"
 3. Now this panel should be installed.
 
-## How to install (for debugging purposes only)
-1. Copy the contents of "Grafana_Status_panel" to the "/var/lib/grafana/plugins" folder
-2. restart grafana by using "service grafana-server restart"
-3. Now this panel should be installed.
-
 ## How to use
 1. Add the queries you want to the panel and give each of them a unique alias
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
