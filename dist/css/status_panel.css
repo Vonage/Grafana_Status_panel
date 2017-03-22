@@ -1,11 +1,18 @@
 .status-panel {
   display: table;
   position: relative;
-  width: 100%; }
-  .status-panel > div {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center; }
+  width: 100%;
+  text-align: center; }
+  .status-panel .status-panel-annotation_row {
+    display: table-row;
+    height: 25%;
+    text-align: left;
+    font-size: 0.85rem; }
+  .status-panel .status_name_row {
+    display: table-row;
+    height: 10%; }
+  .status-panel .status_alerts_row {
+    display: table-row; }
   .status-panel h1 {
     font-size: 1.5rem; }
 
@@ -17,5 +24,11 @@
 
 .ok-state {
   background-color: green; }
+
+.no-data-state {
+  background-color: gray; }
+
+.disabled-state {
+  background-color: gray; }
 
 /*# sourceMappingURL=status_panel.css.map */
