@@ -81,8 +81,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if (isNaN(panelWidth))
 			panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
 		panelWidth = panelWidth - 20;
-		// this.$panelContainer.find('.row-overflow').css('max-width', panelWidth + 'px');
-		this.param = panelWidth;
+		this.maxWidth = panelWidth;
 	}
 
 	onRender() {

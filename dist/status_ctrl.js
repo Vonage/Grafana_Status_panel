@@ -151,8 +151,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var panelWidth = this.$panelContainer.innerWidth();
 						if (isNaN(panelWidth)) panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
 						panelWidth = panelWidth - 20;
-						// this.$panelContainer.find('.row-overflow').css('max-width', panelWidth + 'px');
-						this.param = panelWidth;
+						this.maxWidth = panelWidth;
 					}
 				}, {
 					key: "onRender",

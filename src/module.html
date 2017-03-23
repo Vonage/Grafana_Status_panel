@@ -5,7 +5,7 @@
 
 	<div ng-hide="ctrl.duplicates" class="status-panel-annotation_row">
 		<div ng-repeat="annotation in ctrl.annotation" >
-			<div class="row-overflow" ng-style="{ 'max-width': ctrl.param }">
+			<div class="row-overflow" ng-style="{ 'max-width': ctrl.maxWidth }">
 				<a ng-show="annotation.url" ng-href="{{ annotation.url | interpolateTemplateVars:this }}" target="_blank">{{ annoation.alias }}</a>
 				<span ng-hide="annotation.url">{{ annotation.alias }}</span>
 				<span bs-tooltip="'{{ annotation.display_value }}'"> - {{ annotation.display_value | numberOrText}} </span>
