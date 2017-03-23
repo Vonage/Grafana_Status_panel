@@ -10,6 +10,12 @@
     font-size: 1.5rem; }
   .status-panel h1 {
     font-size: 1.5rem; }
+  .status-panel .status-panel-annotation_row {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: left;
+    font-size: 0.85rem; }
   .status-panel .ok-text, .status-panel .warning-text, .status-panel .fail-text, .status-panel .gray-text {
     display: none;
     font-size: 3.5rem; }
@@ -71,7 +77,10 @@
 .st-card:not(.effect-hover):not(.gray-state) .st-card-front {
   display: none; }
 
-.gray-state {
+.no-data-state {
+  background-color: gray; }
+
+.disabled-state {
   background-color: gray; }
 
 /*# sourceMappingURL=status_panel.css.map */

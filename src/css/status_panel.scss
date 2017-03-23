@@ -1,38 +1,34 @@
 .status-panel {
-  display: table;
-  position: relative;
-  width: 100%;
+	display: table;
+	position: relative;
+	width: 100%;
 
-    .status-panel-annotation_row {
-        display: table-row;
-        height: 25%;
-        text-align: left;
-        font-size: 0.85rem;
-    }
+	> div{
+	  display: flex;
+	  flex-flow: column nowrap;
+	  justify-content: center;
+	  align-items: center;
+	  font-size: 1.5rem
+	}
 
-    .status_name_row {
-        display: table-row;
-        height: 10%;
-    }
 
-    .status_alerts_row {
-        display: table-row;
-    }
+	h1 {
+		font-size: 1.5rem;
+	}
 
-  & > div {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-  }
 
-  h1 {
-    font-size: 1.5rem;
-  }
+	.status-panel-annotation_row {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		text-align: left;
+		font-size: 0.85rem;
+	}
 
-  .ok-text, .warning-text, .fail-text, .gray-text{
-    display: none;
-    font-size: 3.5rem;
-  }
+	.ok-text, .warning-text, .fail-text, .gray-text{
+		display: none;
+		font-size: 3.5rem;
+	}
 }
 
 .error-state {
