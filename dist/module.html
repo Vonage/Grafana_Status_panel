@@ -1,49 +1,41 @@
 <div class="status-panel">
-	<div ng-show="ctrl.duplicates">
-		<strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
-	</div>
+  <div class="st-card-front">
+    <div class="ok-text">ok</div>
+    <div class="warning-text">warning</div>
+    <div class="fail-text">critical</div>
+    <div class="gray-text">No data</div>
+  </div>
+  <div class="st-card-back">
+    <div ng-show="ctrl.duplicates">
+      <strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
+    </div>
 
-	<div ng-hide="ctrl.duplicates" class="status-panel-annotation_row">
-		<div ng-repeat="annoation in ctrl.annotation">
-			<a ng-show="annoation.url" ng-href="{{ annoation.url | interpolateTemplateVars:this }}" target="_blank">{{ annoation.alias }}</a>
-			<span ng-hide="annoation.url">{{ annoation.alias }}</span>
-			<span> - {{ annoation.display_value }} </span>
-		</div>
-	</div>
+    <div ng-hide="ctrl.duplicates">
+      <h1>
+        <a ng-href="{{ 'dashboard/' + ctrl.uri | interpolateTemplateVars:this }}" target="_blank" ng-show="ctrl.uri">
+          {{ ctrl.panel.displayName | interpolateTemplateVars:this }}
+        </a>
+      <span ng-hide="ctrl.uri">
+        {{ ctrl.panel.displayName | interpolateTemplateVars:this }}
+      </span>
+      </h1>
 
-	<div ng-hide="ctrl.duplicates" class="status_name_row">
-		<h1>
-			<a ng-href="{{ 'dashboard/' + ctrl.uri | interpolateTemplateVars:this }}" target="_blank" ng-show="ctrl.uri">
-				{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
-			</a>
-			<span ng-hide="ctrl.uri">
-				{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
-			</span>
-		</h1>
-	</div>
+      <div ng-repeat="display in ctrl.display">
+        <a ng-show="display.url" ng-href="{{ display.url }}" target="_blank">{{ display.alias }}</a>
+        <span ng-hide="display.url">{{ display.alias }}</span>
+        <span ng-show="display.display"> - {{ display.display_value | number }}</span>
+      </div>
+      <div ng-repeat="crit in ctrl.crit">
+        <a ng-show="crit.url" ng-href="{{ crit.url }}" target="_blank">{{ crit.alias }}</a>
+        <span ng-hide="crit.url">{{ crit.alias }}</span>
+        <span ng-show="crit.display"> - {{ crit.display_value | number }}</span>
+      </div>
+      <div ng-repeat="warn in ctrl.warn">
+        <a ng-show="warn.url" ng-href="{{ warn.url }}" target="_blank">{{ warn.alias }}</a>
+        <span ng-hide="warn.url">{{ warn.alias }}</span>
+        <span ng-show="warn.display"> - {{ warn.display_value | number }}</span>
+      </div>
+    </div>
+  </div>
 
-	<div class="status_alerts_row" ng-hide="ctrl.duplicates">
-		<div ng-repeat="display in ctrl.display">
-			<a ng-show="display.url" ng-href="{{ display.url | interpolateTemplateVars:this }}" target="_blank">{{ display.alias }}</a>
-			<span ng-hide="display.url">{{ display.alias }}</span>
-			<span ng-show="display.display"> - {{ display.display_value | number }}</span>
-		</div>
-
-		<div ng-repeat="crit in ctrl.crit">
-			<a ng-show="crit.url" ng-href="{{ crit.url | interpolateTemplateVars:this }}" target="_blank">{{ crit.alias }}</a>
-			<span ng-hide="crit.url">{{ crit.alias }}</span>
-			<span ng-show="crit.display"> - {{ crit.display_value | number }}</span>
-		</div>
-
-		<div ng-repeat="warn in ctrl.warn">
-			<a ng-show="warn.url" ng-href="{{ warn.url | interpolateTemplateVars:this }}" target="_blank">{{ warn.alias }}</a>
-			<span ng-hide="warn.url">{{ warn.alias }}</span>
-			<span ng-show="warn.display"> - {{ warn.display_value | number }}</span>
-		</div>
-
-		<div ng-repeat="disabled in ctrl.disabled">
-			<a ng-show="disabled.url" ng-href="{{ disabled.url | interpolateTemplateVars:this }}" target="_blank">{{ disabled.alias }}</a>
-			<span ng-hide="disabled.url">{{ disabled.alias }}</span>
-		</div>
-	</div>
 </div>
