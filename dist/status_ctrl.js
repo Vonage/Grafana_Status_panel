@@ -115,6 +115,10 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					value: function postRefresh() {
 						var _this3 = this;
 
+						if (this.panel.fixedSpan) {
+							this.panel.span = this.panel.fixedSpan;
+						}
+
 						this.measurements = this.panel.targets;
 
 						/** Duplicate alias validation **/
