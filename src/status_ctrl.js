@@ -19,6 +19,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 		this.displayTypes = ['Regular', 'Annotation'];
 
+		this.panel.flipTime = this.panel.flipTime || 5;
+
 		/** Bind events to functions **/
 		this.events.on('render', this.onRender.bind(this));
 		this.events.on('refresh', this.postRefresh.bind(this));
@@ -75,7 +77,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	setElementHeight() {
-		this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
+		this.$panelContainer.find('.status-panel').css('min-height', this.$panelContoller.height + 'px');
+		this.minHeight = this.$panelContoller.height-10;
 	}
 
 	setTextMaxWidth() {
@@ -98,6 +101,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					.replace(new RegExp(this.panel.namePrefix, 'i'), '');
 		} else {
 			this.panel.displayName = "";
+		}
+
+		if(this.panel.flipCard){
+		  this.$panelContainer.addClass("effect-hover");
+		} else {
+		  this.$panelContainer.removeClass("effect-hover");
 		}
 
 		let targets = this.panel.targets;
@@ -166,6 +175,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.display = [];
 		}
 
+		this.autoFlip();
 		this.handleCssDisplay();
 		this.parseUri();
 	}
@@ -305,8 +315,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		return series;
 	}
 
+	$onDestroy() {
+		if(this.timeoutId) clearInterval(this.timeoutId);
+	}
+
+	autoFlip() {
+		if (this.timeoutId) clearInterval(this.timeoutId);
+		if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0 || this.disabled.length > 0)) {
+			this.timeoutId = setInterval(() => {
+				this.$panelContainer.toggleClass("flipped");
+			}, this.panel.flipTime * 1000);
+		}
+	}
+
 	link(scope, elem, attrs, ctrl) {
 		this.$panelContainer = elem.find('.panel-container');
+		this.$panelContainer.addClass("st-card");
 		this.$panelContoller = ctrl;
 	}
 }

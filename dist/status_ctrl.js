@@ -80,6 +80,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 					_this.displayTypes = ['Regular', 'Annotation'];
 
+					_this.panel.flipTime = _this.panel.flipTime || 5;
+
 					/** Bind events to functions **/
 					_this.events.on('render', _this.onRender.bind(_this));
 					_this.events.on('refresh', _this.postRefresh.bind(_this));
@@ -146,7 +148,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "setElementHeight",
 					value: function setElementHeight() {
-						this.$panelContainer.find('.status-panel').css('height', this.$panelContoller.height + 'px');
+						this.$panelContainer.find('.status-panel').css('min-height', this.$panelContoller.height + 'px');
+						this.minHeight = this.$panelContoller.height - 10;
 					}
 				}, {
 					key: "setTextMaxWidth",
@@ -170,6 +173,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
 						} else {
 							this.panel.displayName = "";
+						}
+
+						if (this.panel.flipCard) {
+							this.$panelContainer.addClass("effect-hover");
+						} else {
+							this.$panelContainer.removeClass("effect-hover");
 						}
 
 						var targets = this.panel.targets;
@@ -242,6 +251,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.display = [];
 						}
 
+						this.autoFlip();
 						this.handleCssDisplay();
 						this.parseUri();
 					}
@@ -369,9 +379,27 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						this.warn = [];
 					}
 				}, {
+					key: "$onDestroy",
+					value: function $onDestroy() {
+						if (this.timeoutId) clearInterval(this.timeoutId);
+					}
+				}, {
+					key: "autoFlip",
+					value: function autoFlip() {
+						var _this6 = this;
+
+						if (this.timeoutId) clearInterval(this.timeoutId);
+						if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0 || this.disabled.length > 0)) {
+							this.timeoutId = setInterval(function () {
+								_this6.$panelContainer.toggleClass("flipped");
+							}, this.panel.flipTime * 1000);
+						}
+					}
+				}, {
 					key: "link",
 					value: function link(scope, elem, attrs, ctrl) {
 						this.$panelContainer = elem.find('.panel-container');
+						this.$panelContainer.addClass("st-card");
 						this.$panelContoller = ctrl;
 					}
 				}], [{
