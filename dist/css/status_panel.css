@@ -16,9 +16,13 @@
     width: 100%;
     text-align: left;
     font-size: 0.85rem; }
-  .status-panel .ok-text, .status-panel .warning-text, .status-panel .fail-text, .status-panel .gray-text {
+  .status-panel .ok-text, .status-panel .warning-text, .status-panel .fail-text, .status-panel .no-data-text, .status-panel .disabled-text {
     display: none;
-    font-size: 3.5rem; }
+    font-size: 2.5rem; }
+  .status-panel .status_name_row {
+    display: table-row;
+    height: 10%;
+    padding-top: 10px; }
 
 .error-state {
   background-color: red; }
@@ -35,12 +39,17 @@
   .ok-state .ok-text {
     display: block; }
 
-.gray-state {
+.no-data-state {
   background-color: gray; }
-  .gray-state .gray-text {
+  .no-data-state .no-data-text {
     display: block; }
 
-.gray-state .st-card-back {
+.disabled-state {
+  background-color: gray; }
+  .disabled-state .disabled-text {
+    display: block; }
+
+.no-data-state .st-card-back, .disabled-state .st-card-back {
   display: none; }
 
 .st-card {
@@ -66,15 +75,15 @@
   -webkit-transform: rotateY(-180deg);
   transform: rotateY(-180deg); }
 
-.st-card.effect-hover:hover:not(.gray-state) .st-card-front, .st-card.effect-hover.flipped:not(.gray-state) .st-card-front {
+.st-card.effect-hover:hover:not(.no-data-state):not(.disabled-state) .st-card-front, .st-card.effect-hover.flipped:not(.no-data-state):not(.disabled-state) .st-card-front {
   -webkit-transform: rotateY(-180deg);
   transform: rotateY(-180deg); }
 
-.st-card.effect-hover:hover:not(.gray-state) .st-card-back, .st-card.effect-hover.flipped:not(.gray-state) .st-card-back {
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-back, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-back {
   -webkit-transform: rotateY(0);
   transform: rotateY(0); }
 
-.st-card:not(.effect-hover):not(.gray-state) .st-card-front {
+.st-card:not(.effect-hover):not(.no-data-state):not(.disabled-state) .st-card-front {
   display: none; }
 
 .no-data-state {

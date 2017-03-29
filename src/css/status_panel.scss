@@ -16,7 +16,6 @@
 		font-size: 1.5rem;
 	}
 
-
 	.status-panel-annotation_row {
 		position: absolute;
 		top: 0;
@@ -25,9 +24,15 @@
 		font-size: 0.85rem;
 	}
 
-	.ok-text, .warning-text, .fail-text, .gray-text{
+	.ok-text, .warning-text, .fail-text, .no-data-text, .disabled-text{
 		display: none;
-		font-size: 3.5rem;
+		font-size: 2.5rem;
+	}
+
+	.status_name_row {
+		display: table-row;
+		height: 10%;
+		padding-top: 10px;
 	}
 }
 
@@ -52,14 +57,21 @@
   }
 }
 
-.gray-state {
+.no-data-state {
   background-color: gray;
-  .gray-text {
+  .no-data-text {
     display: block;
   }
 }
 
-.gray-state .st-card-back{
+.disabled-state {
+	background-color: gray;
+	.disabled-text {
+		display: block;
+	}
+}
+
+.no-data-state .st-card-back, .disabled-state .st-card-back{
   display: none;
 }
 
@@ -90,20 +102,19 @@
   transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover:not(.gray-state) .st-card-front, .st-card.effect-hover.flipped:not(.gray-state) .st-card-front {
+.st-card.effect-hover:hover:not(.no-data-state):not(.disabled-state) .st-card-front, .st-card.effect-hover.flipped:not(.no-data-state):not(.disabled-state) .st-card-front {
   -webkit-transform: rotateY(-180deg);
   transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover:not(.gray-state) .st-card-back, .st-card.effect-hover.flipped:not(.gray-state) .st-card-back {
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-back, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-back {
   -webkit-transform: rotateY(0);
   transform: rotateY(0);
 }
 
-.st-card:not(.effect-hover):not(.gray-state) .st-card-front {
+.st-card:not(.effect-hover):not(.no-data-state):not(.disabled-state) .st-card-front {
   display: none;
 }
-
 
 .no-data-state {
 	background-color: gray;
