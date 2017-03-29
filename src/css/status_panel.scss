@@ -1,114 +1,121 @@
 .status-panel {
-	display: table;
 	position: relative;
 	width: 100%;
-
-	> div{
-	  display: flex;
-	  flex-flow: column nowrap;
-	  justify-content: center;
-	  align-items: center;
-	  font-size: 1.5rem
-	}
-
+	height: 100%;
+	text-align: center;
 
 	h1 {
 		font-size: 1.5rem;
 	}
 
-
-	.status-panel-annotation_row {
+	.st-card-front {
 		position: absolute;
-		top: 0;
 		width: 100%;
-		text-align: left;
-		font-size: 0.85rem;
+		height: 100%;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-content: center;
 	}
 
-	.ok-text, .warning-text, .fail-text, .gray-text{
+	.st-card-back {
+		.top_section {
+			.status-panel-annotation_row {
+				text-align: left;
+				font-size: 0.85rem;
+				padding-bottom: 10px;
+
+				.row-overflow {
+					max-width: 150px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			}
+		}
+
+		.bottom_section {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-content: center;
+
+			.status_name_row {
+			}
+
+			.status_alerts_row {
+				min-height: 1px;
+			}
+		}
+	}
+
+	.st-card-front,
+	.st-card-back {
+	  backface-visibility: hidden;
+	  transition: transform 0.5s;
+	}
+}
+
+.st-card-front {
+	.ok-text, .warning-text, .fail-text, .no-data-text, .disabled-text {
 		display: none;
-		font-size: 3.5rem;
+		font-size: 2.0rem;
+	}
+}
+
+.ok-state {
+	background-color: green;
+
+	.ok-text {
+		display: block;
+	}
+}
+
+.warn-state {
+	background-color: orange;
+	.warning-text {
+		display: block;
 	}
 }
 
 .error-state {
-  background-color: red;
-  .fail-text {
-    display: block;
-  }
+	background-color: red;
+	.fail-text {
+		display: block;
+	}
 }
-
-.warn-state {
-  background-color: orange;
-  .warning-text {
-    display: block;
-  }
-}
-
-.ok-state {
-  background-color: green;
-  .ok-text {
-    display: block;
-  }
-}
-
-.gray-state {
-  background-color: gray;
-  .gray-text {
-    display: block;
-  }
-}
-
-.gray-state .st-card-back{
-  display: none;
-}
-
-.st-card {
-  position: relative;
-  text-align: center;
-}
-
-.st-card-front,
-.st-card-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.st-card-front,
-.st-card-back {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transition: -webkit-transform 0.5s;
-  transition: transform 0.5s;
-}
-
-.st-card.effect-hover .st-card-back {
-  -webkit-transform: rotateY(-180deg);
-  transform: rotateY(-180deg);
-}
-
-.st-card.effect-hover:hover:not(.gray-state) .st-card-front, .st-card.effect-hover.flipped:not(.gray-state) .st-card-front {
-  -webkit-transform: rotateY(-180deg);
-  transform: rotateY(-180deg);
-}
-
-.st-card.effect-hover:hover:not(.gray-state) .st-card-back, .st-card.effect-hover.flipped:not(.gray-state) .st-card-back {
-  -webkit-transform: rotateY(0);
-  transform: rotateY(0);
-}
-
-.st-card:not(.effect-hover):not(.gray-state) .st-card-front {
-  display: none;
-}
-
 
 .no-data-state {
 	background-color: gray;
+
+	.no-data-text {
+		display: block;
+	}
 }
 
 .disabled-state {
 	background-color: gray;
+	.disabled-text {
+		display: block;
+	}
+}
+
+.st-card.effect-hover .st-card-back {
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-front, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-front {
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-back, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-back {
+	-webkit-transform: rotateY(0);
+	transform: rotateY(0);
+}
+
+.st-card:not(.effect-hover):not(.no-data-state) .st-card-front {
+	display: none;
 }
