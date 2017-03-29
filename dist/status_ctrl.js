@@ -79,6 +79,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					_this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
+					_this.panel.flipTime = _this.panel.flipTime || 5;
+
 					/** Bind events to functions **/
 					_this.events.on('render', _this.onRender.bind(_this));
 					_this.events.on('refresh', _this.postRefresh.bind(_this));
@@ -138,6 +140,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.panel.displayName = this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope).replace(new RegExp(this.panel.namePrefix, 'i'), '');
 						} else {
 							this.panel.displayName = "";
+						}
+
+						if (this.panel.flipCard) {
+							this.$panelContainer.addClass("effect-hover");
+						} else {
+							this.$panelContainer.removeClass("effect-hover");
 						}
 
 						var targets = this.panel.targets;
@@ -202,6 +210,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							}
 						});
 
+						this.autoFlip();
 						this.handle_css_display();
 						this.parseUri();
 					}
@@ -299,9 +308,27 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						return series;
 					}
 				}, {
+					key: "$onDestroy",
+					value: function $onDestroy() {
+						if (this.timeoutId) clearInterval(this.timeoutId);
+					}
+				}, {
+					key: "autoFlip",
+					value: function autoFlip() {
+						var _this4 = this;
+
+						if (this.timeoutId) clearInterval(this.timeoutId);
+						if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0)) {
+							this.timeoutId = setInterval(function () {
+								_this4.$panelContainer.toggleClass("flipped");
+							}, this.panel.flipTime * 1000);
+						}
+					}
+				}, {
 					key: "link",
 					value: function link(scope, elem, attrs, ctrl) {
 						this.$panelContainer = elem.find('.panel-container');
+						this.$panelContainer.addClass("st-card");
 						this.$panelContoller = ctrl;
 					}
 				}], [{

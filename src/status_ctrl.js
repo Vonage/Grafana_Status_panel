@@ -18,6 +18,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.displayTypes = ['Threshold', 'Disable Criteria', 'Annotation'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 
+		this.panel.flipTime = this.panel.flipTime || 5;
+
 		/** Bind events to functions **/
 		this.events.on('render', this.onRender.bind(this));
 		this.events.on('refresh', this.postRefresh.bind(this));
@@ -25,7 +27,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('data-received', this.onDataReceived.bind(this));
 		this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-	}
+  	}
 
 	postRefresh() {
 		if (this.panel.fixedSpan) {
@@ -71,7 +73,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panel.displayName = "";
 		}
 
-
+		if(this.panel.flipCard){
+		  this.$panelContainer.addClass("effect-hover");
+		} else {
+		  this.$panelContainer.removeClass("effect-hover");
+		}
 
 		let targets = this.panel.targets;
 
@@ -131,6 +137,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		});
 
+		this.autoFlip();
 		this.handle_css_display();
 		this.parseUri();
 	}
@@ -229,8 +236,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		return series;
 	}
 
+	$onDestroy() {
+		if(this.timeoutId) clearInterval(this.timeoutId);
+	}
+
+	autoFlip() {
+		if (this.timeoutId) clearInterval(this.timeoutId);
+		if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0)) {
+			this.timeoutId = setInterval(() => {
+				this.$panelContainer.toggleClass("flipped");
+			}, this.panel.flipTime * 1000);
+		}
+	}
+
 	link(scope, elem, attrs, ctrl) {
 		this.$panelContainer = elem.find('.panel-container');
+		this.$panelContainer.addClass("st-card");
 		this.$panelContoller = ctrl;
 	}
 }

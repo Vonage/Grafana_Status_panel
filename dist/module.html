@@ -1,7 +1,14 @@
 <div class="status-panel">
-	<div ng-show="ctrl.duplicates">
-		<strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
-	</div>
+  <div class="st-card-front">
+    <div class="ok-text">ok</div>
+    <div class="warning-text">warning</div>
+    <div class="fail-text">critical</div>
+    <div class="gray-text">No data</div>
+  </div>
+  <div class="st-card-back">
+    <div ng-show="ctrl.duplicates">
+      <strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
+    </div>
 
 	<div ng-hide="ctrl.duplicates" class="status-panel-annotation_row">
 		<div ng-repeat="annoation in ctrl.annotation">
@@ -46,4 +53,5 @@
 			<span ng-hide="disabled.url">{{ disabled.alias }}</span>
 		</div>
 	</div>
+</div>
 </div>
