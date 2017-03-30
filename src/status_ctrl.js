@@ -45,6 +45,32 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			numberOrTextFilter.$stateful = true;
 			return numberOrTextFilter;
 		});
+
+		coreModule.filter('numberOrTextWithRegex', () => {
+			let numberOrTextFilter = (input, textRegex) => {
+				if(angular.isNumber(input)) {
+					return this.filter('number')(input);
+				} else {
+
+					if(textRegex == null || textRegex.length == 0) {
+						return input;
+					}
+					else {
+						var regex = new RegExp(textRegex);
+						var matchResults = input.match(regex);
+						if(matchResults == null) {
+							return input;
+						}
+						else {
+							return matchResults[0];
+						}
+					}
+				}
+			};
+
+			numberOrTextFilter.$stateful = true;
+			return numberOrTextFilter;
+		});
 	}
 
 	postRefresh() {
@@ -130,6 +156,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.url = target.url;
 			s.display = true;
 			s.displayType = target.displayType;
+			s.valueDisplayRegex = target.valueDisplayRegex;
 
 			let value;
 			switch (target.aggregation) {

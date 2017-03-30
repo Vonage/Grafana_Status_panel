@@ -111,6 +111,30 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							numberOrTextFilter.$stateful = true;
 							return numberOrTextFilter;
 						});
+
+						coreModule.filter('numberOrTextWithRegex', function () {
+							var numberOrTextFilter = function numberOrTextFilter(input, textRegex) {
+								if (angular.isNumber(input)) {
+									return _this2.filter('number')(input);
+								} else {
+
+									if (textRegex == null || textRegex.length == 0) {
+										return input;
+									} else {
+										var regex = new RegExp(textRegex);
+										var matchResults = input.match(regex);
+										if (matchResults == null) {
+											return input;
+										} else {
+											return matchResults[0];
+										}
+									}
+								}
+							};
+
+							numberOrTextFilter.$stateful = true;
+							return numberOrTextFilter;
+						});
 					}
 				}, {
 					key: "postRefresh",
@@ -202,6 +226,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.url = target.url;
 							s.display = true;
 							s.displayType = target.displayType;
+							s.valueDisplayRegex = target.valueDisplayRegex;
 
 							var value = void 0;
 							switch (target.aggregation) {
