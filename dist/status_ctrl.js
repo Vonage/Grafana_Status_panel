@@ -117,16 +117,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 								if (angular.isNumber(input)) {
 									return _this2.filter('number')(input);
 								} else {
-
 									if (textRegex == null || textRegex.length == 0) {
 										return input;
 									} else {
-										var regex = new RegExp(textRegex);
-										var matchResults = input.match(regex);
-										if (matchResults == null) {
+										try {
+											var regex = new RegExp(textRegex);
+											var matchResults = input.match(regex);
+											if (matchResults == null) {
+												return input;
+											} else {
+												return matchResults[0];
+											}
+										} catch (e) {
 											return input;
-										} else {
-											return matchResults[0];
 										}
 									}
 								}
@@ -226,7 +229,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.url = target.url;
 							s.display = true;
 							s.displayType = target.displayType;
-							s.valueDisplayRegex = target.valueDisplayRegex;
+							target.valueDisplayRegexValidated = _this4.validateRegex(target.valueDisplayRegex);
+							if (target.valueDisplayRegexValidated) {
+								s.valueDisplayRegex = target.valueDisplayRegex;
+							} else {
+								s.valueDisplayRegex = "";
+							}
 
 							var value = void 0;
 							switch (target.aggregation) {
@@ -389,6 +397,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
 						} else {
 							this.uri = undefined;
+						}
+					}
+				}, {
+					key: "validateRegex",
+					value: function validateRegex(textRegex) {
+						if (textRegex == null || textRegex.length == 0) {
+							return true;
+						}
+						try {
+							var regex = new RegExp(textRegex);
+							return true;
+						} catch (e) {
+							return false;
 						}
 					}
 				}, {

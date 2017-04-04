@@ -79,17 +79,6 @@
 				</div>
 			</div>
 
-			<!--Metric URL-->
-			<div class="gf-form">
-				<span class="gf-form-label width-12">
-				  Metric URL
-				  <info-popover mode="right-normal">
-					Make the name of the metric clickable, and send the user to a link (with explanations what to do when this error occurs)
-				  </info-popover>
-				</span>
-				<input type="text" name="crit" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
-			</div>
-
 			<!--Metric Display Regex-->
 			<div class="gf-form">
 				<span class="gf-form-label width-12">
@@ -99,7 +88,21 @@
 					  In case the regex is empty or it doesn't match any part of the metrics value, all the metric value will be displayed.
 				  </info-popover>
 				</span>
-				<input type="text" name="valueDisplayRegex" ng-model="measurement.valueDisplayRegex" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
+				<input type="text" name="valueDisplayRegex" ng-model="measurement.valueDisplayRegex" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" />
+				<div ng-if="measurement.valueDisplayRegexValidated == false" style="color: red; padding-left: 5px">
+					Invalid Regex
+				</div>
+			</div>
+
+			<!--Metric URL-->
+			<div class="gf-form">
+				<span class="gf-form-label width-12">
+				  Metric URL
+				  <info-popover mode="right-normal">
+					Make the name of the metric clickable, and send the user to a link (with explanations what to do when this error occurs)
+				  </info-popover>
+				</span>
+				<input type="text" name="crit" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
 			</div>
 		</div>
 

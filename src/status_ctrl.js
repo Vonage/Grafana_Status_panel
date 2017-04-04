@@ -51,18 +51,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				if(angular.isNumber(input)) {
 					return this.filter('number')(input);
 				} else {
-
 					if(textRegex == null || textRegex.length == 0) {
 						return input;
-					}
-					else {
-						var regex = new RegExp(textRegex);
-						var matchResults = input.match(regex);
-						if(matchResults == null) {
+					} else {
+						try {
+							let regex = new RegExp(textRegex);
+							let matchResults = input.match(regex);
+							if (matchResults == null) {
+								return input;
+							} else {
+								return matchResults[0];
+							}
+						} catch (e) {
 							return input;
-						}
-						else {
-							return matchResults[0];
 						}
 					}
 				}
@@ -156,7 +157,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.url = target.url;
 			s.display = true;
 			s.displayType = target.displayType;
-			s.valueDisplayRegex = target.valueDisplayRegex;
+			target.valueDisplayRegexValidated = this.validateRegex(target.valueDisplayRegex);
+			if(target.valueDisplayRegexValidated) {
+				s.valueDisplayRegex = target.valueDisplayRegex;
+			}
+			else {
+				s.valueDisplayRegex = "";
+			}
 
 			let value;
 			switch (target.aggregation) {
@@ -307,6 +314,18 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
 		} else {
 			this.uri = undefined;
+		}
+	}
+
+	validateRegex(textRegex) {
+		if(textRegex == null || textRegex.length == 0) {
+			return true
+		}
+		try {
+			let regex = new RegExp(textRegex);
+			return true
+		} catch(e) {
+			return false
 		}
 	}
 
