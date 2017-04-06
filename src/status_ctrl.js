@@ -54,16 +54,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					if(textRegex == null || textRegex.length == 0) {
 						return input;
 					} else {
+						let regex;
+
 						try {
-							let regex = new RegExp(textRegex);
-							let matchResults = input.match(regex);
-							if (matchResults == null) {
-								return input;
-							} else {
-								return matchResults[0];
-							}
+							regex = new RegExp(textRegex);
 						} catch (e) {
 							return input;
+						}
+
+						let matchResults = input.match(regex);
+						if (matchResults == null) {
+							return input;
+						} else {
+							return matchResults[0];
 						}
 					}
 				}
@@ -157,12 +160,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.url = target.url;
 			s.display = true;
 			s.displayType = target.displayType;
-			target.valueDisplayRegexValidated = this.validateRegex(target.valueDisplayRegex);
-			if(target.valueDisplayRegexValidated) {
+			s.valueDisplayRegex = "";
+
+			if(this.validateRegex(target.valueDisplayRegex)) {
 				s.valueDisplayRegex = target.valueDisplayRegex;
-			}
-			else {
-				s.valueDisplayRegex = "";
 			}
 
 			let value;

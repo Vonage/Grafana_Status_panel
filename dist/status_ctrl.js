@@ -120,16 +120,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 									if (textRegex == null || textRegex.length == 0) {
 										return input;
 									} else {
+										var regex = void 0;
+
 										try {
-											var regex = new RegExp(textRegex);
-											var matchResults = input.match(regex);
-											if (matchResults == null) {
-												return input;
-											} else {
-												return matchResults[0];
-											}
+											regex = new RegExp(textRegex);
 										} catch (e) {
 											return input;
+										}
+
+										var matchResults = input.match(regex);
+										if (matchResults == null) {
+											return input;
+										} else {
+											return matchResults[0];
 										}
 									}
 								}
@@ -229,11 +232,10 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.url = target.url;
 							s.display = true;
 							s.displayType = target.displayType;
-							target.valueDisplayRegexValidated = _this4.validateRegex(target.valueDisplayRegex);
-							if (target.valueDisplayRegexValidated) {
+							s.valueDisplayRegex = "";
+
+							if (_this4.validateRegex(target.valueDisplayRegex)) {
 								s.valueDisplayRegex = target.valueDisplayRegex;
-							} else {
-								s.valueDisplayRegex = "";
 							}
 
 							var value = void 0;
