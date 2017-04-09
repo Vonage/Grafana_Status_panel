@@ -111,6 +111,36 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							numberOrTextFilter.$stateful = true;
 							return numberOrTextFilter;
 						});
+
+						coreModule.filter('numberOrTextWithRegex', function () {
+							var numberOrTextFilter = function numberOrTextFilter(input, textRegex) {
+								if (angular.isNumber(input)) {
+									return _this2.filter('number')(input);
+								} else {
+									if (textRegex == null || textRegex.length == 0) {
+										return input;
+									} else {
+										var regex = void 0;
+
+										try {
+											regex = new RegExp(textRegex);
+										} catch (e) {
+											return input;
+										}
+
+										var matchResults = input.match(regex);
+										if (matchResults == null) {
+											return input;
+										} else {
+											return matchResults[0];
+										}
+									}
+								}
+							};
+
+							numberOrTextFilter.$stateful = true;
+							return numberOrTextFilter;
+						});
 					}
 				}, {
 					key: "postRefresh",
@@ -202,6 +232,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.url = target.url;
 							s.display = true;
 							s.displayType = target.displayType;
+							s.valueDisplayRegex = "";
+
+							if (_this4.validateRegex(target.valueDisplayRegex)) {
+								s.valueDisplayRegex = target.valueDisplayRegex;
+							}
 
 							var value = void 0;
 							switch (target.aggregation) {
@@ -364,6 +399,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
 						} else {
 							this.uri = undefined;
+						}
+					}
+				}, {
+					key: "validateRegex",
+					value: function validateRegex(textRegex) {
+						if (textRegex == null || textRegex.length == 0) {
+							return true;
+						}
+						try {
+							var regex = new RegExp(textRegex);
+							return true;
+						} catch (e) {
+							return false;
 						}
 					}
 				}, {
