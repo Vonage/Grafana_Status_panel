@@ -304,14 +304,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	static isFloat(val) {
-		var floatRegex = /^-?\d+(?:[.,]\d*?)?$/;
-		if (!floatRegex.test(val))
-			return false;
-
-		val = parseFloat(val);
-		if (isNaN(val))
-			return false;
-		return true;
+		if (!isNaN(val) && val.toString().indexOf('e') == -1) {
+			return true;
+		}
+		return false;
 	}
 
 	onDataReceived(dataList) {
