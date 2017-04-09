@@ -426,7 +426,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "isFloat",
 					value: function isFloat(val) {
-						if (!isNaN(val) && val.toString().indexOf('e') == -1) {
+						if (!isNaN(val) && val.toString().toLowerCase().indexOf('e') == -1) {
 							return true;
 						}
 						return false;

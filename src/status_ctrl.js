@@ -304,7 +304,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	static isFloat(val) {
-		if (!isNaN(val) && val.toString().indexOf('e') == -1) {
+		if (!isNaN(val) && val.toString().toLowerCase().indexOf('e') == -1) {
 			return true;
 		}
 		return false;
