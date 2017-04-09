@@ -286,12 +286,32 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	static parseThresholds(metricOptions) {
 		let res = {};
 
-		res.warn = metricOptions.warn;
-		res.warnIsNumber = angular.isNumber(res.warn);
-		res.crit = metricOptions.crit;
-		res.critIsNumber = angular.isNumber(res.crit);
+		res.warnIsNumber = StatusPluginCtrl.isFloat(metricOptions.warn)
+		if(res.warnIsNumber) {
+			res.warn = parseFloat(metricOptions.warn);
+		} else {
+			res.warn = metricOptions.warn;
+		}
+
+		res.critIsNumber = StatusPluginCtrl.isFloat(metricOptions.crit);
+		if(res.critIsNumber) {
+			res.crit = parseFloat(metricOptions.crit);
+		} else {
+			res.crit = metricOptions.crit;
+		}
 
 		return res;
+	}
+
+	static isFloat(val) {
+		var floatRegex = /^-?\d+(?:[.,]\d*?)?$/;
+		if (!floatRegex.test(val))
+			return false;
+
+		val = parseFloat(val);
+		if (isNaN(val))
+			return false;
+		return true;
 	}
 
 	onDataReceived(dataList) {
