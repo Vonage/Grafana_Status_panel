@@ -15,7 +15,7 @@ This plugin will make it easier to do. You just add all the metrics you want to 
 2. Component disable marker - Set the exact value that represent if the component is disabled, the panel will be grey.
 3. Display as text - show extra information about the component in the panel
 
-Severity and text values can be shown in 2 options:
+Severity and text values can be shown in 2 modes:
 1. Regular - under the panel title
 2. Annotation - In the top left side of the panel
 
@@ -35,7 +35,8 @@ You can also repeat the panel on a template if you have multiple instances that 
 3. Go the the Options tab, and choose the how to treat each metric. 
 	1. For severity display, select the `Threshold` option type under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
 		* If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Always`
- 		* The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the "critical" threshold than the "warning" threshold. 
+		* In case one of the fields (`Warning`/`Critical`) is a text, there will be equality check with the values.
+ 		* In case both fields are numbers there will be range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
 	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
 	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
@@ -46,6 +47,9 @@ You can also repeat the panel on a template if you have multiple instances that 
 The plugins has a 'Remove Prefix' field in the configuration. This field is is meant for easier renaming of the panels when you repeat them from a Grafana template.
 
 i.e. you recognize your servers by domain, and they are all name in the following way `www.general-prefix.server.com`, and you would like to remove the prefix from the display, then you enter `www.general-prefix.` and all the panels will only display the `server.com` part.
+
+### Display Value by Regex
+When you want to display just part of the value for a specific metric in the screen, you can pass a regex in the `Value Regex` field, and if there is match, Only the first match will be displayed. Otherwise, the original value will be displayed.
 
 ### Measurement URL
 Lets say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
