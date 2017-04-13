@@ -27,7 +27,7 @@
 		<div class="bottom_section" ng-style="ctrl.annotation.length === 0 && { 'min-height': ctrl.minHeight }">
 			<div class="status_name_row">
 				<h1>
-					<a ng-href="{{ 'dashboard/' + ctrl.uri | interpolateTemplateVars:this }}" target="_blank" ng-if="ctrl.uri">
+					<a ng-href="{{ ctrl.uri | interpolateTemplateVars:this }}" target="_blank" ng-if="ctrl.uri">
 						{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
 					</a>
 					<span ng-hide="ctrl.uri">

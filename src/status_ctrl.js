@@ -312,7 +312,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	parseUri() {
 		if (this.panel.links && this.panel.links.length > 0) {
-			this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
+			let link = this.panel.links[0];
+
+			if (link.type == "absolute") {
+				this.uri = link.url;
+			} else {
+				this.uri = 'dashboard/' + link.dashUri + "?" + link.params;
+			}
 		} else {
 			this.uri = undefined;
 		}
