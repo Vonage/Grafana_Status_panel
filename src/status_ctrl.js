@@ -317,8 +317,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			if (link.type == "absolute") {
 				this.uri = link.url;
 			} else {
-				this.uri = 'dashboard/' + link.dashUri + "?" + link.params;
+				this.uri = 'dashboard/' + link.dashUri;
 			}
+
+			if (link.params) {
+				this.uri +=  "?" + link.params;
+			}
+
+			this.targetBlank = link.targetBlank;
 		} else {
 			this.uri = undefined;
 		}
