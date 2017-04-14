@@ -306,7 +306,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		} else if((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
 			this.$panelContainer.addClass('no-data-state');
 		} else {
-			this.$panelContainer.addClass('ok-state');
+		    if (!this.panel.useDefaultBackground)
+		        this.$panelContainer.addClass('ok-state');
 		}
 	}
 
