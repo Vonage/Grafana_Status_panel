@@ -38,10 +38,11 @@
   display: none;
   font-size: 2.0rem; }
 
-.ok-state {
+.ok-state .ok-text {
+  display: block; }
+
+.ok-state:not(.default-background) {
   background-color: green; }
-  .ok-state .ok-text {
-    display: block; }
 
 .warn-state {
   background-color: orange; }
