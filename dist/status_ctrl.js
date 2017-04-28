@@ -397,7 +397,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					key: "parseUri",
 					value: function parseUri() {
 						if (this.panel.links && this.panel.links.length > 0) {
-							this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
+							var link = this.panel.links[0];
+
+							if (link.type == "absolute") {
+								this.uri = link.url;
+							} else {
+								this.uri = 'dashboard/' + link.dashUri;
+							}
+
+							if (link.params) {
+								this.uri += "?" + link.params;
+							}
+
+							this.targetBlank = link.targetBlank;
 						} else {
 							this.uri = undefined;
 						}

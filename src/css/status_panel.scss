@@ -108,16 +108,16 @@
 	transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover:not(.no-data-state) .st-card-front, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-front {
+.st-card.effect-hover:hover .st-card-front, .st-card.effect-hover.flipped .st-card-front {
 	-webkit-transform: rotateY(-180deg);
 	transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover:not(.no-data-state) .st-card-back, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-back {
+.st-card.effect-hover:hover .st-card-back, .st-card.effect-hover.flipped .st-card-back {
 	-webkit-transform: rotateY(0);
 	transform: rotateY(0);
 }
 
-.st-card:not(.effect-hover):not(.no-data-state) .st-card-front {
+.st-card:not(.effect-hover) .st-card-front {
 	display: none;
 }
