@@ -49,28 +49,17 @@
 .ok-state .ok-text {
   display: block; }
 
-.ok-state:not(.default-background) {
-  background-color: green; }
+.warn-state .warning-text {
+  display: block; }
 
-.warn-state {
-  background-color: orange; }
-  .warn-state .warning-text {
-    display: block; }
+.error-state .fail-text {
+  display: block; }
 
-.error-state {
-  background-color: red; }
-  .error-state .fail-text {
-    display: block; }
+.no-data-state .no-data-text {
+  display: block; }
 
-.no-data-state {
-  background-color: gray; }
-  .no-data-state .no-data-text {
-    display: block; }
-
-.disabled-state {
-  background-color: gray; }
-  .disabled-state .disabled-text {
-    display: block; }
+.disabled-state .disabled-text {
+  display: block; }
 
 .st-card.effect-hover .st-card-back {
   -webkit-transform: rotateY(-180deg);
