@@ -1,9 +1,11 @@
-import {MetricsPanelCtrl} from "app/plugins/sdk";
+﻿import {MetricsPanelCtrl} from "app/plugins/sdk";
 import "app/plugins/panel/graph/legend";
 import "app/plugins/panel/graph/series_overrides_ctrl";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
-import coreModule from "app/core/core_module"
+import coreModule from "app/core/core_module";
+import kbn from "app/core/utils/kbn";
+import moment from "moment";
 
 import './css/status_panel.css!';
 
@@ -15,9 +17,17 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		//this.log = $log.debug;
 		this.filter = $filter;
 
-		this.valueHandlers = ['Threshold', 'Disable Criteria', 'Text Only'];
+		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 		this.displayTypes = ['Regular', 'Annotation'];
+
+		// Dates get stored as strings and will need to be converted back to a Date objects
+		_.each(this.panel.targets, (t) => {
+			if (t.valueHandler === "Date Threshold") {
+				if (typeof t.crit != "undefined") t.crit = new Date(t.crit);
+				if (typeof t.warn != "undefined") t.warn = new Date(t.warn);
+			}
+		});
 
 		this.panel.flipTime = this.panel.flipTime || 5;
 
@@ -107,7 +117,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onInitEditMode() {
-		this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+        this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+		// Load in the supported units-of-measure formats so they can be displayed in the editor
+		this.unitFormats = kbn.getUnitFormats();
+	}
+
+    setUnitFormat(measurement, subItem) {
+		measurement.units = subItem.value;
+		this.render();
 	}
 
 	setElementHeight() {
@@ -122,6 +139,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
 		panelWidth = panelWidth - 20;
 		this.maxWidth = panelWidth;
+	}
+
+	onHandlerChange(measurement) {
+		// If the Threshold type changes between Number/String/Date then try and recast the thresholds to keep consistent
+		if (measurement.valueHandler === "Number Threshold") {
+			measurement.crit = (isNaN(Number(measurement.crit))) ? undefined : Number(measurement.crit);
+			measurement.warn = (isNaN(Number(measurement.warn))) ? undefined : Number(measurement.warn);
+		} else if (measurement.valueHandler === "String Threshold") {
+			if (typeof measurement.crit != "undefined") measurement.crit = String(measurement.crit);
+			if (typeof measurement.warn != "undefined") measurement.warn = String(measurement.warn);
+		} else if (measurement.valueHandler === "Date Threshold") {
+			let c = new Date(measurement.crit), w = new Date(measurement.warn);
+			measurement.crit = (isNaN(c.getTime())) ? undefined : c;
+			measurement.warn = (isNaN(w.getTime())) ? undefined : w;
+		}
+		this.onRender();
 	}
 
 	onRender() {
@@ -198,7 +231,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 			s.display_value = value;
 
-			if (target.valueHandler == "Threshold") {
+			if (target.valueHandler == "Number Threshold" ||
+				target.valueHandler == "String Threshold" ||
+				target.valueHandler == "Date Threshold") {
 				this.handleThresholdStatus(s, target);
 			}
 			else if (target.valueHandler == "Disable Criteria") {
@@ -236,6 +271,23 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				target.displayType = this.displayTypes[0];
 			}
 		});
+
+		// Depreciate Threshold in favour of Type specific versions
+		_.each(targets, (target) => {
+			if (target.valueHandler === "Threshold") {
+				// Use the same logic as Threshold Parsing to ensure we retain same behaviour
+				// i.e. map to Number Threshold if two floats (i.e. range check) otherwise map to String Threshold (i.e. exact match)
+				if (StatusPluginCtrl.isFloat(target.crit) && StatusPluginCtrl.isFloat(target.warn)) {
+					target.valueHandler = "Number Threshold"
+					target.crit = Number(target.crit);
+					target.warn = Number(target.warn);
+				} else {
+					target.valueHandler = "String Threshold"
+					if (typeof target.crit != "undefined") target.crit = String(target.crit);
+					if (typeof target.warn != "undefined") target.warn = String(target.warn);
+				}
+			}
+		});
 	}
 
 	handleThresholdStatus(series, target) {
@@ -268,6 +320,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		}
 
+		// Add units-of-measure and decimal formatting or date formatting as needed
+		series.display_value = this.formatDisplayValue(series.display_value, target);
+
 		if(isCritical) {
 			this.crit.push(series);
 			series.displayType = this.displayTypes[0]
@@ -281,6 +336,32 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				this.display.push(series);
 			}
 		}
+	}
+
+	formatDisplayValue(value, target) {
+		// Format the display value. Set to "Invalid" if value is out-of-bounds or a type mismatch with the handler
+		if (target.valueHandler === "Number Threshold") {
+			if (_.isFinite(value)) {
+				let units = (typeof target.units === "string") ? target.units : 'none';
+				let decimals = (Math.floor(value) === value) ? 0 : value.toString().split(".")[1].length;
+				decimals = (typeof target.decimals === "number") ? target.decimals : decimals;
+				value = kbn.valueFormats[units](value, decimals, null);
+			} else {
+				value = "Invalid Number";
+			}
+		} else if (target.valueHandler === "String Threshold") {
+			if (value === undefined || value === null || value !== value)
+				value = "Invalid String";
+		} else if (target.valueHandler === "Date Threshold") {
+			if (_.isFinite(value)) {
+				let date = moment(new Date(value));
+				if (this.dashboard.isTimezoneUtc()) date = date.utc();
+				value = date.format(target.dateFormat);
+			} else {
+				value = "Invalid Date";
+			}
+		}
+		return value;
 	}
 
 	handleDisabledStatus(series, target) {
@@ -373,18 +454,27 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	static parseThresholds(metricOptions) {
 		let res = {};
 
-		res.warnIsNumber = StatusPluginCtrl.isFloat(metricOptions.warn)
-		if(res.warnIsNumber) {
+		if (StatusPluginCtrl.isFloat(metricOptions.warn)) {
 			res.warn = parseFloat(metricOptions.warn);
+			res.warnIsNumber = true;
+		} else if (metricOptions.warn instanceof Date) {
+			// Convert Dates to Numbers and leverage existing threshold logic
+			res.warn = metricOptions.warn.valueOf();
+			res.warnIsNumber = true;
 		} else {
 			res.warn = metricOptions.warn;
+			res.warnIsNumber = false;
 		}
 
-		res.critIsNumber = StatusPluginCtrl.isFloat(metricOptions.crit);
-		if(res.critIsNumber) {
+		if (StatusPluginCtrl.isFloat(metricOptions.crit)) {
 			res.crit = parseFloat(metricOptions.crit);
+			res.critIsNumber = true;
+		} else if (metricOptions.crit instanceof Date) {
+			res.crit = metricOptions.crit.valueOf();
+			res.critIsNumber = true;
 		} else {
 			res.crit = metricOptions.crit;
+			res.critIsNumber = false;
 		}
 
 		return res;

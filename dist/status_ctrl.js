@@ -1,9 +1,9 @@
 "use strict";
 
-System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/core/core_module", "./css/status_panel.css!"], function (_export, _context) {
+System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/core/core_module", "app/core/utils/kbn", "moment", "./css/status_panel.css!"], function (_export, _context) {
 	"use strict";
 
-	var MetricsPanelCtrl, _, TimeSeries, coreModule, _createClass, StatusPluginCtrl;
+	var MetricsPanelCtrl, _, TimeSeries, coreModule, kbn, moment, _createClass, StatusPluginCtrl;
 
 	function _classCallCheck(instance, Constructor) {
 		if (!(instance instanceof Constructor)) {
@@ -44,6 +44,10 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 			TimeSeries = _appCoreTime_series.default;
 		}, function (_appCoreCore_module) {
 			coreModule = _appCoreCore_module.default;
+		}, function (_appCoreUtilsKbn) {
+			kbn = _appCoreUtilsKbn.default;
+		}, function (_moment) {
+			moment = _moment.default;
 		}, function (_cssStatus_panelCss) {}],
 		execute: function () {
 			_createClass = function () {
@@ -76,9 +80,17 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					//this.log = $log.debug;
 					_this.filter = $filter;
 
-					_this.valueHandlers = ['Threshold', 'Disable Criteria', 'Text Only'];
+					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 					_this.displayTypes = ['Regular', 'Annotation'];
+
+					// Dates get stored as strings and will need to be converted back to a Date objects
+					_.each(_this.panel.targets, function (t) {
+						if (t.valueHandler === "Date Threshold") {
+							if (typeof t.crit != "undefined") t.crit = new Date(t.crit);
+							if (typeof t.warn != "undefined") t.warn = new Date(t.warn);
+						}
+					});
 
 					_this.panel.flipTime = _this.panel.flipTime || 5;
 
@@ -178,6 +190,14 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					key: "onInitEditMode",
 					value: function onInitEditMode() {
 						this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+						// Load in the supported units-of-measure formats so they can be displayed in the editor
+						this.unitFormats = kbn.getUnitFormats();
+					}
+				}, {
+					key: "setUnitFormat",
+					value: function setUnitFormat(measurement, subItem) {
+						measurement.units = subItem.value;
+						this.render();
 					}
 				}, {
 					key: "setElementHeight",
@@ -193,6 +213,24 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						if (isNaN(panelWidth)) panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
 						panelWidth = panelWidth - 20;
 						this.maxWidth = panelWidth;
+					}
+				}, {
+					key: "onHandlerChange",
+					value: function onHandlerChange(measurement) {
+						// If the Threshold type changes between Number/String/Date then try and recast the thresholds to keep consistent
+						if (measurement.valueHandler === "Number Threshold") {
+							measurement.crit = isNaN(Number(measurement.crit)) ? undefined : Number(measurement.crit);
+							measurement.warn = isNaN(Number(measurement.warn)) ? undefined : Number(measurement.warn);
+						} else if (measurement.valueHandler === "String Threshold") {
+							if (typeof measurement.crit != "undefined") measurement.crit = String(measurement.crit);
+							if (typeof measurement.warn != "undefined") measurement.warn = String(measurement.warn);
+						} else if (measurement.valueHandler === "Date Threshold") {
+							var c = new Date(measurement.crit),
+							    w = new Date(measurement.warn);
+							measurement.crit = isNaN(c.getTime()) ? undefined : c;
+							measurement.warn = isNaN(w.getTime()) ? undefined : w;
+						}
+						this.onRender();
 					}
 				}, {
 					key: "onRender",
@@ -276,7 +314,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 							s.display_value = value;
 
-							if (target.valueHandler == "Threshold") {
+							if (target.valueHandler == "Number Threshold" || target.valueHandler == "String Threshold" || target.valueHandler == "Date Threshold") {
 								_this4.handleThresholdStatus(s, target);
 							} else if (target.valueHandler == "Disable Criteria") {
 								_this4.handleDisabledStatus(s, target);
@@ -315,6 +353,23 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 								target.displayType = _this5.displayTypes[0];
 							}
 						});
+
+						// Depreciate Threshold in favour of Type specific versions
+						_.each(targets, function (target) {
+							if (target.valueHandler === "Threshold") {
+								// Use the same logic as Threshold Parsing to ensure we retain same behaviour
+								// i.e. map to Number Threshold if two floats (i.e. range check) otherwise map to String Threshold (i.e. exact match)
+								if (StatusPluginCtrl.isFloat(target.crit) && StatusPluginCtrl.isFloat(target.warn)) {
+									target.valueHandler = "Number Threshold";
+									target.crit = Number(target.crit);
+									target.warn = Number(target.warn);
+								} else {
+									target.valueHandler = "String Threshold";
+									if (typeof target.crit != "undefined") target.crit = String(target.crit);
+									if (typeof target.warn != "undefined") target.warn = String(target.warn);
+								}
+							}
+						});
 					}
 				}, {
 					key: "handleThresholdStatus",
@@ -348,6 +403,9 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							}
 						}
 
+						// Add units-of-measure and decimal formatting or date formatting as needed
+						series.display_value = this.formatDisplayValue(series.display_value, target);
+
 						if (isCritical) {
 							this.crit.push(series);
 							series.displayType = this.displayTypes[0];
@@ -361,6 +419,32 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 								this.display.push(series);
 							}
 						}
+					}
+				}, {
+					key: "formatDisplayValue",
+					value: function formatDisplayValue(value, target) {
+						// Format the display value. Set to "Invalid" if value is out-of-bounds or a type mismatch with the handler
+						if (target.valueHandler === "Number Threshold") {
+							if (_.isFinite(value)) {
+								var units = typeof target.units === "string" ? target.units : 'none';
+								var decimals = Math.floor(value) === value ? 0 : value.toString().split(".")[1].length;
+								decimals = typeof target.decimals === "number" ? target.decimals : decimals;
+								value = kbn.valueFormats[units](value, decimals, null);
+							} else {
+								value = "Invalid Number";
+							}
+						} else if (target.valueHandler === "String Threshold") {
+							if (value === undefined || value === null || value !== value) value = "Invalid String";
+						} else if (target.valueHandler === "Date Threshold") {
+							if (_.isFinite(value)) {
+								var date = moment(new Date(value));
+								if (this.dashboard.isTimezoneUtc()) date = date.utc();
+								value = date.format(target.dateFormat);
+							} else {
+								value = "Invalid Date";
+							}
+						}
+						return value;
 					}
 				}, {
 					key: "handleDisabledStatus",
@@ -407,21 +491,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var _this6 = this;
 
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-							(function () {
-								var currentMaxAllowedAlerts = _this6.panel.maxAlertNumber;
-								var filteredOutAlerts = 0;
-								var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-								arrayNamesToSlice.forEach(function (arrayName) {
-									var originAlertCount = _this6[arrayName].length;
-									_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
-									currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
-									filteredOutAlerts += originAlertCount - _this6[arrayName].length;
-								});
+							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
+							var filteredOutAlerts = 0;
+							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
+							arrayNamesToSlice.forEach(function (arrayName) {
+								var originAlertCount = _this6[arrayName].length;
+								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
+							});
 
-								if (filteredOutAlerts > 0) {
-									_this6.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
-								}
-							})();
+							if (filteredOutAlerts > 0) {
+								this.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
+							}
 						}
 					}
 				}, {
@@ -499,18 +581,27 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					value: function parseThresholds(metricOptions) {
 						var res = {};
 
-						res.warnIsNumber = StatusPluginCtrl.isFloat(metricOptions.warn);
-						if (res.warnIsNumber) {
+						if (StatusPluginCtrl.isFloat(metricOptions.warn)) {
 							res.warn = parseFloat(metricOptions.warn);
+							res.warnIsNumber = true;
+						} else if (metricOptions.warn instanceof Date) {
+							// Convert Dates to Numbers and leverage existing threshold logic
+							res.warn = metricOptions.warn.valueOf();
+							res.warnIsNumber = true;
 						} else {
 							res.warn = metricOptions.warn;
+							res.warnIsNumber = false;
 						}
 
-						res.critIsNumber = StatusPluginCtrl.isFloat(metricOptions.crit);
-						if (res.critIsNumber) {
+						if (StatusPluginCtrl.isFloat(metricOptions.crit)) {
 							res.crit = parseFloat(metricOptions.crit);
+							res.critIsNumber = true;
+						} else if (metricOptions.crit instanceof Date) {
+							res.crit = metricOptions.crit.valueOf();
+							res.critIsNumber = true;
 						} else {
 							res.crit = metricOptions.crit;
+							res.critIsNumber = false;
 						}
 
 						return res;
