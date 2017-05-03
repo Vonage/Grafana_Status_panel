@@ -204,7 +204,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		});
 
-		if(this.disabled.length > 0) {
+		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 			this.crit = [];
 			this.warn = [];
 			this.display = [];
@@ -213,6 +213,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.autoFlip();
 		this.handleCssDisplay();
 		this.parseUri();
+
+		//This must appear after handling the css style of the panel
+		this.handleMaxAlertsToShow();
 	}
 
 	upgradeOldVersion() {
@@ -307,6 +310,30 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.$panelContainer.addClass('no-data-state');
 		} else {
 			this.$panelContainer.addClass('ok-state');
+		}
+	}
+
+	handleMaxAlertsToShow() {
+		if(this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
+			let currentAlertsNumber = this.panel.maxAlertNumber;
+			if(this.disabled.length > currentAlertsNumber) {
+				this.disabled = this.disabled.slice(0,currentAlertsNumber);
+			}
+			currentAlertsNumber = Math.max(currentAlertsNumber - this.disabled.length, 0);
+
+			if(this.crit.length > currentAlertsNumber) {
+				this.crit = this.crit.slice(0,currentAlertsNumber);
+			}
+			currentAlertsNumber = Math.max(currentAlertsNumber - this.crit.length, 0);
+
+			if(this.warn.length > currentAlertsNumber) {
+				this.warn = this.warn.slice(0,currentAlertsNumber);
+			}
+			currentAlertsNumber = Math.max(currentAlertsNumber - this.warn.length, 0);
+
+			if(this.display.length > currentAlertsNumber) {
+				this.display = this.display.slice(0,currentAlertsNumber);
+			}
 		}
 	}
 
