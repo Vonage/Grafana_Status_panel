@@ -293,7 +293,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	handleCssDisplay() {
-		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
+		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state default-background');
 
 		if(this.duplicates) {
 			this.$panelContainer.addClass('error-state');
@@ -307,6 +307,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.$panelContainer.addClass('no-data-state');
 		} else {
 			this.$panelContainer.addClass('ok-state');
+			if (this.panel.useDefaultBackground)
+				this.$panelContainer.addClass('default-background');
 		}
 	}
 
