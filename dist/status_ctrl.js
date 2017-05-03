@@ -379,7 +379,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "handleCssDisplay",
 					value: function handleCssDisplay() {
-						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
+						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state default-background');
 
 						if (this.duplicates) {
 							this.$panelContainer.addClass('error-state');
@@ -393,6 +393,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							this.$panelContainer.addClass('no-data-state');
 						} else {
 							this.$panelContainer.addClass('ok-state');
+							if (this.panel.useDefaultBackground) this.$panelContainer.addClass('default-background');
 						}
 					}
 				}, {

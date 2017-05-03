@@ -35,7 +35,6 @@
 		</div>
 	</div>
 
-	<!--Disable mode section-->
 	<div class="section gf-form-group">
 		<gf-form-switch class="gf-form"
 						label-class="width-15"
@@ -44,6 +43,10 @@
 		<gf-form-switch class="gf-form"
 						label-class="width-15"
 						label="Hide alerts on disable mode" checked="ctrl.panel.isHideAlertsOnDisable"
+						on-change="ctrl.onRender()"></gf-form-switch>
+		<gf-form-switch class="gf-form"
+						label-class="width-15"
+						label="Default background in OK state" checked="ctrl.panel.useDefaultBackground"
 						on-change="ctrl.onRender()"></gf-form-switch>
 	</div>
 
@@ -55,7 +58,7 @@
 						on-change="ctrl.onRender()"></gf-form-switch>
 		<div class="gf-form">
 			<span class="gf-form-label width-12">Flip interval</span>
-			<input type="text" ng-model="ctrl.panel.flipTime" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+			<input type="text" ng-model="ctrl.panel.flipTime" class="gf-form-input max-width-5" ng-change="ctrl.onRender()">
 		</div>
 	</div>
 </div>
