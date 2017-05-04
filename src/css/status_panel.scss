@@ -20,11 +20,14 @@
 	}
 
 	.st-card-back {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: column;
+
 		.top_section {
 			.status-panel-annotation_row {
 				text-align: left;
 				font-size: 0.85rem;
-				padding-bottom: 10px;
 
 				.row-overflow {
 					max-width: 150px;
@@ -47,6 +50,10 @@
 			.status_alerts_row {
 				min-height: 1px;
 			}
+		}
+
+		.center_content_hidden_section {
+			min-height: 1px;
 		}
 	}
 

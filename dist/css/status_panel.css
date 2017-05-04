@@ -13,21 +13,26 @@
     flex-direction: column;
     justify-content: center;
     align-content: center; }
-  .status-panel .st-card-back .top_section .status-panel-annotation_row {
-    text-align: left;
-    font-size: 0.85rem;
-    padding-bottom: 10px; }
-    .status-panel .st-card-back .top_section .status-panel-annotation_row .row-overflow {
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; }
-  .status-panel .st-card-back .bottom_section {
+  .status-panel .st-card-back {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center; }
-    .status-panel .st-card-back .bottom_section .status_alerts_row {
+    justify-content: space-between;
+    flex-direction: column; }
+    .status-panel .st-card-back .top_section .status-panel-annotation_row {
+      text-align: left;
+      font-size: 0.85rem; }
+      .status-panel .st-card-back .top_section .status-panel-annotation_row .row-overflow {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+    .status-panel .st-card-back .bottom_section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center; }
+      .status-panel .st-card-back .bottom_section .status_alerts_row {
+        min-height: 1px; }
+    .status-panel .st-card-back .center_content_hidden_section {
       min-height: 1px; }
   .status-panel .st-card-front,
   .status-panel .st-card-back {
