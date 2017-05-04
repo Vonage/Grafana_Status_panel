@@ -218,6 +218,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						this.disabled = [];
 						this.display = [];
 						this.annotation = [];
+						this.extraMoreAlerts = null;
 
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
@@ -400,24 +401,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					key: "handleMaxAlertsToShow",
 					value: function handleMaxAlertsToShow() {
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-							var currentAlertsNumber = this.panel.maxAlertNumber;
-							if (this.disabled.length > currentAlertsNumber) {
-								this.disabled = this.disabled.slice(0, currentAlertsNumber);
+							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
+							var filteredOutAlerts = 0;
+							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
+							for (var i = 0; i < arrayNamesToSlice.length; i++) {
+								var arrayName = arrayNamesToSlice[i];
+								var originAlertCount = this[arrayName].length;
+								this[arrayName] = this[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - this[arrayName].length;
 							}
-							currentAlertsNumber = Math.max(currentAlertsNumber - this.disabled.length, 0);
 
-							if (this.crit.length > currentAlertsNumber) {
-								this.crit = this.crit.slice(0, currentAlertsNumber);
-							}
-							currentAlertsNumber = Math.max(currentAlertsNumber - this.crit.length, 0);
-
-							if (this.warn.length > currentAlertsNumber) {
-								this.warn = this.warn.slice(0, currentAlertsNumber);
-							}
-							currentAlertsNumber = Math.max(currentAlertsNumber - this.warn.length, 0);
-
-							if (this.display.length > currentAlertsNumber) {
-								this.display = this.display.slice(0, currentAlertsNumber);
+							if (filteredOutAlerts > 0) {
+								this.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
 							}
 						}
 					}

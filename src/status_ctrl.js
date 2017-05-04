@@ -146,6 +146,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.disabled = [];
 		this.display = [];
 		this.annotation = [];
+		this.extraMoreAlerts = null;
 
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
@@ -317,24 +318,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	handleMaxAlertsToShow() {
 		if(this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-			let currentAlertsNumber = this.panel.maxAlertNumber;
-			if(this.disabled.length > currentAlertsNumber) {
-				this.disabled = this.disabled.slice(0,currentAlertsNumber);
+			let currentMaxAllowedAlerts = this.panel.maxAlertNumber;
+			let filteredOutAlerts = 0;
+			let arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
+			for(let i=0; i<arrayNamesToSlice.length; i++) {
+				let arrayName = arrayNamesToSlice[i];
+				let originAlertCount = this[arrayName].length;
+				this[arrayName] = this[arrayName].slice(0,currentMaxAllowedAlerts);
+				currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
+				filteredOutAlerts += (originAlertCount - this[arrayName].length);
 			}
-			currentAlertsNumber = Math.max(currentAlertsNumber - this.disabled.length, 0);
 
-			if(this.crit.length > currentAlertsNumber) {
-				this.crit = this.crit.slice(0,currentAlertsNumber);
-			}
-			currentAlertsNumber = Math.max(currentAlertsNumber - this.crit.length, 0);
-
-			if(this.warn.length > currentAlertsNumber) {
-				this.warn = this.warn.slice(0,currentAlertsNumber);
-			}
-			currentAlertsNumber = Math.max(currentAlertsNumber - this.warn.length, 0);
-
-			if(this.display.length > currentAlertsNumber) {
-				this.display = this.display.slice(0,currentAlertsNumber);
+			if(filteredOutAlerts > 0) {
+				this.extraMoreAlerts = "+ " + filteredOutAlerts + " more"
 			}
 		}
 	}
