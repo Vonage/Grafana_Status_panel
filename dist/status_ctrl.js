@@ -400,17 +400,18 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "handleMaxAlertsToShow",
 					value: function handleMaxAlertsToShow() {
+						var _this6 = this;
+
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
 							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
 							var filteredOutAlerts = 0;
 							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-							for (var i = 0; i < arrayNamesToSlice.length; i++) {
-								var arrayName = arrayNamesToSlice[i];
-								var originAlertCount = this[arrayName].length;
-								this[arrayName] = this[arrayName].slice(0, currentMaxAllowedAlerts);
-								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
-								filteredOutAlerts += originAlertCount - this[arrayName].length;
-							}
+							arrayNamesToSlice.forEach(function (arrayName) {
+								var originAlertCount = _this6[arrayName].length;
+								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
+							});
 
 							if (filteredOutAlerts > 0) {
 								this.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
@@ -471,12 +472,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "autoFlip",
 					value: function autoFlip() {
-						var _this6 = this;
+						var _this7 = this;
 
 						if (this.timeoutId) clearInterval(this.timeoutId);
 						if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0 || this.disabled.length > 0)) {
 							this.timeoutId = setInterval(function () {
-								_this6.$panelContainer.toggleClass("flipped");
+								_this7.$panelContainer.toggleClass("flipped");
 							}, this.panel.flipTime * 1000);
 						}
 					}

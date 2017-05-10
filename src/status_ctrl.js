@@ -321,13 +321,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			let currentMaxAllowedAlerts = this.panel.maxAlertNumber;
 			let filteredOutAlerts = 0;
 			let arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-			for(let i=0; i<arrayNamesToSlice.length; i++) {
-				let arrayName = arrayNamesToSlice[i];
+			arrayNamesToSlice.forEach( arrayName => {
 				let originAlertCount = this[arrayName].length;
 				this[arrayName] = this[arrayName].slice(0,currentMaxAllowedAlerts);
 				currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
 				filteredOutAlerts += (originAlertCount - this[arrayName].length);
-			}
+			});
 
 			if(filteredOutAlerts > 0) {
 				this.extraMoreAlerts = "+ " + filteredOutAlerts + " more"
