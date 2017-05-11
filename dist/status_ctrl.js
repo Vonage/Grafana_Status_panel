@@ -403,19 +403,21 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var _this6 = this;
 
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
-							var filteredOutAlerts = 0;
-							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-							arrayNamesToSlice.forEach(function (arrayName) {
-								var originAlertCount = _this6[arrayName].length;
-								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
-								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
-								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
-							});
+							(function () {
+								var currentMaxAllowedAlerts = _this6.panel.maxAlertNumber;
+								var filteredOutAlerts = 0;
+								var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
+								arrayNamesToSlice.forEach(function (arrayName) {
+									var originAlertCount = _this6[arrayName].length;
+									_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
+									currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
+									filteredOutAlerts += originAlertCount - _this6[arrayName].length;
+								});
 
-							if (filteredOutAlerts > 0) {
-								this.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
-							}
+								if (filteredOutAlerts > 0) {
+									_this6.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
+								}
+							})();
 						}
 					}
 				}, {
