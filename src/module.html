@@ -59,6 +59,8 @@
 					<a ng-show="disabled.url" ng-href="{{ disabled.url | interpolateTemplateVars:this }}" target="_blank">{{ disabled.alias }}</a>
 					<span ng-hide="disabled.url">{{ disabled.alias }}</span>
 				</div>
+
+				<div class="status_extra_alerts" ng-show="ctrl.extraMoreAlerts">{{ ctrl.extraMoreAlerts }}</div>
 			</div>
 		</div>
 
