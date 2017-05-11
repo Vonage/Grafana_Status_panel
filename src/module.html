@@ -10,7 +10,7 @@
 		<div class="no-data-text">No data</div>
 		<div class="disabled-text">Disabled</div>
 	</div>
-	<div class="st-card-back" ng-hide="ctrl.duplicates">
+	<div class="st-card-back" ng-hide="ctrl.duplicates" ng-style="{ 'min-height': ctrl.minHeight }">
 
 		<div class="top_section">
 			<div class="status-panel-annotation_row" ng-if="ctrl.annotation.length > 0">
@@ -34,7 +34,6 @@
 					{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
 				</span>
 				</h1>
-
 			</div>
 
 			<div class="status_alerts_row">
@@ -64,6 +63,8 @@
 				<div class="status_extra_alerts" ng-show="ctrl.extraMoreAlerts">{{ ctrl.extraMoreAlerts }}</div>
 			</div>
 		</div>
+
+		<div class="center_content_hidden_section" ng-if="ctrl.annotation.length !== 0"/>
 
 	</div>
 </div>
