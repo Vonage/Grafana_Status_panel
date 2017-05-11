@@ -46,6 +46,11 @@
 
 			.status_alerts_row {
 				min-height: 1px;
+
+				.status_extra_alerts {
+					padding-top: 2px;
+					font-size: 0.85rem;
+				}
 			}
 		}
 	}
