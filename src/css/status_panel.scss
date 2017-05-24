@@ -20,14 +20,11 @@
 	}
 
 	.st-card-back {
-		display: flex;
-		justify-content: space-between;
-		flex-direction: column;
-
 		.top_section {
 			.status-panel-annotation_row {
 				text-align: left;
 				font-size: 0.85rem;
+				padding-bottom: 10px;
 
 				.row-overflow {
 					max-width: 150px;
@@ -49,16 +46,7 @@
 
 			.status_alerts_row {
 				min-height: 1px;
-
-				.status_extra_alerts {
-					padding-top: 2px;
-					font-size: 0.85rem;
-				}
 			}
-		}
-
-		.center_content_hidden_section {
-			min-height: 1px;
 		}
 	}
 
@@ -77,13 +65,11 @@
 }
 
 .ok-state {
+	background-color: green;
+
 	.ok-text {
 		display: block;
 	}
-}
-
-.ok-state:not(.default-background) {
-	background-color: green;
 }
 
 .warn-state {
@@ -120,16 +106,16 @@
 	transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover .st-card-front, .st-card.effect-hover.flipped .st-card-front {
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-front, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-front {
 	-webkit-transform: rotateY(-180deg);
 	transform: rotateY(-180deg);
 }
 
-.st-card.effect-hover:hover .st-card-back, .st-card.effect-hover.flipped .st-card-back {
+.st-card.effect-hover:hover:not(.no-data-state) .st-card-back, .st-card.effect-hover.flipped:not(.no-data-state) .st-card-back {
 	-webkit-transform: rotateY(0);
 	transform: rotateY(0);
 }
 
-.st-card:not(.effect-hover) .st-card-front {
+.st-card:not(.effect-hover):not(.no-data-state) .st-card-front {
 	display: none;
 }
