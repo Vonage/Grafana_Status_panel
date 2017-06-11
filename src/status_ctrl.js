@@ -62,6 +62,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 							return input;
 						}
 
+						if (!input) {
+							return input;
+						}
+
 						let matchResults = input.match(regex);
 						if (matchResults == null) {
 							return input;

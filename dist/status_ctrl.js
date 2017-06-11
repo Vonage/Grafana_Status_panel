@@ -128,6 +128,10 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 											return input;
 										}
 
+										if (!input) {
+											return input;
+										}
+
 										var matchResults = input.match(regex);
 										if (matchResults == null) {
 											return input;
