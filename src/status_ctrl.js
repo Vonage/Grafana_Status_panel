@@ -38,6 +38,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 		this.displayTypes = ['Regular', 'Annotation'];
+		this.displayValueTypes = ['Never', 'When Critical', 'When Warning','Always'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
@@ -141,7 +142,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.unitFormats = kbn.getUnitFormats();
 	}
 
-    setUnitFormat(measurement, subItem) {
+	setUnitFormat(measurement, subItem) {
 		measurement.units = subItem.value;
 		this.render();
 	}
@@ -290,6 +291,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				}
 				target.displayType = this.displayTypes[0];
 			}
+			if(target.display){
+				target.displayValueType = "Always";
+				delete target.display;
+			}
 		});
 
 		// Depreciate Threshold in favour of Type specific versions
@@ -313,7 +318,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	handleThresholdStatus(series, target) {
 		series.thresholds = StatusPluginCtrl.parseThresholds(target);
 		series.inverted = series.thresholds.crit < series.thresholds.warn;
-		series.display = target.display;
 
 		let isCritical = false;
 		let isWarning = false;
@@ -345,11 +349,16 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		if(isCritical) {
 			this.crit.push(series);
-			series.displayType = this.displayTypes[0]
+			series.displayType = this.displayTypes[0];
+			series.display = "Always" == target.displayValueType 
+					|| "When Warning" == target.displayValueType
+					|| "When Critical" == target.displayValueType;
 		} else if(isWarning) {
 			this.warn.push(series);
-			series.displayType = this.displayTypes[0]
-		} else if (series.display) {
+			series.displayType = this.displayTypes[0];
+			series.display = "Always" == target.displayValueType
+					|| "When Warning" == target.displayValueType;
+		} else if ("Always" == target.displayValueType) {
 			if(series.displayType == "Annotation") {
 				this.annotation.push(series);
 			} else {
