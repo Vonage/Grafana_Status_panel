@@ -294,7 +294,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		//Handle legacy code
 		_.each(targets, (target) => {
-			if(target.valueHandler == null) {
+			if(target.valueHandler == null && target.displayType != null) {
 				target.valueHandler = target.displayType;
 				if(target.valueHandler == "Annotation") {
 					target.valueHandler = "Text Only"

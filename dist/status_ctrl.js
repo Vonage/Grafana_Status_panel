@@ -381,7 +381,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 						//Handle legacy code
 						_.each(targets, function (target) {
-							if (target.valueHandler == null) {
+							if (target.valueHandler == null && target.displayType != null) {
 								target.valueHandler = target.displayType;
 								if (target.valueHandler == "Annotation") {
 									target.valueHandler = "Text Only";
