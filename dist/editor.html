@@ -198,6 +198,7 @@
 						</info-popover>
 					</span>
 					<input type="number" name="decimals" ng-model="measurement.decimals"
+						   ng-init="measurement.decimals = (measurement.decimals ? measurement.decimals : 2)"
 						   placeholder="auto" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" />
 				</div>
 			</div>
