@@ -183,7 +183,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.disabled = [];
 		this.display = [];
 		this.annotation = [];
-		this.extraMoreAlerts = null;
 
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
@@ -244,7 +243,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		});
 
-		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
+		if(this.disabled.length > 0) {
 			this.crit = [];
 			this.warn = [];
 			this.display = [];
@@ -253,9 +252,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.autoFlip();
 		this.handleCssDisplay();
 		this.parseUri();
-
-		//This must appear after handling the css style of the panel
-		this.handleMaxAlertsToShow();
 	}
 
 	upgradeOldVersion() {
@@ -382,7 +378,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	handleCssDisplay() {
-		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state default-background');
+		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 
 		if(this.duplicates) {
 			this.$panelContainer.addClass('error-state');
@@ -396,44 +392,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.$panelContainer.addClass('no-data-state');
 		} else {
 			this.$panelContainer.addClass('ok-state');
-			if (this.panel.useDefaultBackground)
-				this.$panelContainer.addClass('default-background');
-		}
-	}
-
-	handleMaxAlertsToShow() {
-		if(this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-			let currentMaxAllowedAlerts = this.panel.maxAlertNumber;
-			let filteredOutAlerts = 0;
-			let arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-			arrayNamesToSlice.forEach( arrayName => {
-				let originAlertCount = this[arrayName].length;
-				this[arrayName] = this[arrayName].slice(0,currentMaxAllowedAlerts);
-				currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
-				filteredOutAlerts += (originAlertCount - this[arrayName].length);
-			});
-
-			if(filteredOutAlerts > 0) {
-				this.extraMoreAlerts = "+ " + filteredOutAlerts + " more"
-			}
 		}
 	}
 
 	parseUri() {
 		if (this.panel.links && this.panel.links.length > 0) {
-			let link = this.panel.links[0];
-
-			if (link.type == "absolute") {
-				this.uri = link.url;
-			} else {
-				this.uri = 'dashboard/' + link.dashUri;
-			}
-
-			if (link.params) {
-				this.uri +=  "?" + link.params;
-			}
-
-			this.targetBlank = link.targetBlank;
+			this.uri = this.panel.links[0].dashUri + "?" + this.panel.links[0].params;
 		} else {
 			this.uri = undefined;
 		}
