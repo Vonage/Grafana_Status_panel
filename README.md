@@ -60,6 +60,10 @@ If there is not data from any of the metrics, you can show the panel as disabled
 Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
 
 ## Release Notes
+### Upgrading Tips
+When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
+To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
+
 ### Version 1.0.3
 * Version (1.0.3) can have some conflicts with older versions.
 
