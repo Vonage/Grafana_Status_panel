@@ -68,6 +68,22 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				};
 			}();
 
+			panelDefaults = {
+				flipCard: false,
+				flipTime: 5,
+				colorMode: 'Panel',
+				// Changed colors to match Table Panel so colorised text is easier to read
+				colors: {
+					crit: 'rgba(245, 54, 54, 0.9)',
+					warn: 'rgba(237, 129, 40, 0.9)',
+					ok: 'rgba(50, 128, 45, 0.9)',
+					disable: 'rgba(128, 128, 128, 0.9)'
+				},
+				isGrayOnNoData: false,
+				isIgnoreOKColors: false,
+				isHideAlertsOnDisable: false
+			};
+
 			_export("StatusPluginCtrl", StatusPluginCtrl = function (_MetricsPanelCtrl) {
 				_inherits(StatusPluginCtrl, _MetricsPanelCtrl);
 
@@ -77,12 +93,15 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 
 					var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
 
+					_.defaultsDeep(_this.panel, panelDefaults);
+
 					//this.log = $log.debug;
 					_this.filter = $filter;
 
 					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
 					_this.displayTypes = ['Regular', 'Annotation'];
+					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {
@@ -330,6 +349,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						}
 
 						this.autoFlip();
+						this.updatePanelState();
 						this.handleCssDisplay();
 						this.parseUri();
 
@@ -466,23 +486,46 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						}
 					}
 				}, {
-					key: "handleCssDisplay",
-					value: function handleCssDisplay() {
-						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state default-background');
+					key: "updatePanelState",
+					value: function updatePanelState() {
 
 						if (this.duplicates) {
-							this.$panelContainer.addClass('error-state');
+							this.panelState = 'error-state';
 						} else if (this.disabled.length > 0) {
-							this.$panelContainer.addClass('disabled-state');
+							this.panelState = 'disabled-state';
 						} else if (this.crit.length > 0) {
-							this.$panelContainer.addClass('error-state');
+							this.panelState = 'error-state';
 						} else if (this.warn.length > 0) {
-							this.$panelContainer.addClass('warn-state');
+							this.panelState = 'warn-state';
 						} else if ((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
-							this.$panelContainer.addClass('no-data-state');
+							this.panelState = 'no-data-state';
 						} else {
-							this.$panelContainer.addClass('ok-state');
-							if (this.panel.useDefaultBackground) this.$panelContainer.addClass('default-background');
+							this.panelState = 'ok-state';
+						}
+					}
+				}, {
+					key: "handleCssDisplay",
+					value: function handleCssDisplay() {
+						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
+						this.$panelContainer.addClass(this.panelState);
+
+						var okColor = this.panel.isIgnoreOKColors ? '' : this.panel.colors.ok;
+
+						if (this.panel.colorMode === "Panel") {
+							switch (this.panelState) {
+								case 'disabled-state':
+									this.$panelContainer.css('background-color', this.panel.colors.disable);break;
+								case 'error-state':
+									this.$panelContainer.css('background-color', this.panel.colors.crit);break;
+								case 'warn-state':
+									this.$panelContainer.css('background-color', this.panel.colors.warn);break;
+								case 'no-data-state':
+									this.$panelContainer.css('background-color', this.panel.colors.disable);break;
+								default:
+									this.$panelContainer.css('background-color', okColor);break;
+							}
+						} else {
+							this.$panelContainer.css('background-color', '');
 						}
 					}
 				}, {

@@ -82,34 +82,25 @@
 	}
 }
 
-.ok-state:not(.default-background) {
-	background-color: green;
-}
-
 .warn-state {
-	background-color: orange;
 	.warning-text {
 		display: block;
 	}
 }
 
 .error-state {
-	background-color: red;
 	.fail-text {
 		display: block;
 	}
 }
 
 .no-data-state {
-	background-color: gray;
-
 	.no-data-text {
 		display: block;
 	}
 }
 
 .disabled-state {
-	background-color: gray;
 	.disabled-text {
 		display: block;
 	}
