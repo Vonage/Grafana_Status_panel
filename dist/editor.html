@@ -1,4 +1,4 @@
-<div>
+﻿<div>
 	<strong>Note:</strong> Every metric has to have a unique <strong>Alias</strong> to be used
 </div>
 
@@ -138,7 +138,8 @@
 				  <info-popover mode="right-normal">
 					The type of data to show to the panel<br/>
 					<strong>Note:</strong> 'Threshold' will select the first value. <br/> <br/>
-					<strong>Threshold</strong> - Change background color of the panel if got warning / error + show the alias of the problematic metrics. <br/>
+					<strong>Threshold</strong> - Change background color of the panel if got warning / error + show the alias of the problematic metrics. 
+					Choose Number, String or Date versions to provide formatting options. Note: Date Threshold assumes Unix Timestamps (i.e. milliseconds since Unix Epoch)<br/>
 					<strong>Disable Criteria</strong> - Change background color of the panel to grey if disabled. <br/>
 					<strong>Text Only</strong> - Show the alias + the value on the panel without any condition.
 				  </info-popover>
@@ -148,7 +149,7 @@
 							ng-init="measurement.valueHandler = (measurement.valueHandler ? measurement.valueHandler : ctrl.valueHandlers[0])"
 							ng-model="measurement.valueHandler"
 							ng-options="t for t in ctrl.valueHandlers"
-							ng-change="ctrl.onRender()"
+							ng-change="ctrl.onHandlerChange(measurement)"
 							required></select>
 				</div>
 			</div>
@@ -172,15 +173,60 @@
 							required></select>
 				</div>
 			</div>
+			<div ng-if="measurement.valueHandler == 'Number Threshold'">
+				<!--Units-->
+				<div class="gf-form">
+					<span class="gf-form-label width-12">
+						Units
+						<info-popover mode="right-normal">
+							Format the Number Threshold with units of measure<br />
+						</info-popover>
+					</span>
+					<div class="gf-form-dropdown-typeahead max-width-12"
+						 ng-init="measurement.units = (measurement.units ? measurement.units : 'none')"
+						 ng-model="measurement.units"
+						 dropdown-typeahead2="ctrl.unitFormats"
+						 dropdown-typeahead-on-select="ctrl.setUnitFormat(measurement, $subItem)">
+					</div>
+				</div>
+				<!--Decimals-->
+				<div class="gf-form">
+					<span class="gf-form-label width-12">
+						Decimals
+						<info-popover mode="right-normal">
+							Override automatic decimal precision for numbers<br />
+						</info-popover>
+					</span>
+					<input type="number" name="decimals" ng-model="measurement.decimals"
+						   ng-init="measurement.decimals = (measurement.decimals ? measurement.decimals : 2)"
+						   placeholder="auto" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" />
+				</div>
+			</div>
+			<div ng-if="measurement.valueHandler == 'Date Threshold'">
+				<!--Date Format-->
+				<div class="gf-form">
+					<span class="gf-form-label width-12">
+					    Format
+						<info-popover mode="right-normal">
+							Specify the Date/Time format (Use 'lll' for local date/time format)<br />
+						</info-popover>
+					</span>
+					<input class="input-medium gf-form-input max-width-12" type="text"
+						   ng-init="measurement.dateFormat = (measurement.dateFormat ? measurement.dateFormat : 'YYYY-MM-DD HH:mm:ss')"
+						   ng-model="measurement.dateFormat"
+						   ng-change="ctrl.onRender()"
+						   ng-model-onblur>
+				</div>
+			</div>
 		</div>
 
 		<div class="section gf-form-group">
 			<!--Threshold Section-->
-			<div ng-if="measurement.valueHandler == 'Threshold'">
+			<div ng-if="measurement.valueHandler == 'Number Threshold' || measurement.valueHandler == 'String Threshold' || measurement.valueHandler == 'Date Threshold'">
 				<h5 class="section-heading">Threshold
 					<info-popover mode="normal">
-						The Warning and Critical fields get numbers or strings. <br/>
-						In case both of them are numbers, the thresholds will be used as ranges, and metric value will be checked if it is in the warning/critical ranges.<br/>
+						The Warning and Critical fields get numbers, strings or dates. <br/>
+						In case both of them are numbers or dates, the thresholds will be used as ranges, and metric value will be checked if it is in the warning/critical ranges.<br/>
 						In case one of them is string, the thresholds will check equality to the value.
 					</info-popover>
 				</h5>
@@ -190,7 +236,12 @@
 					<span class="gf-form-label width-12">
 					  Warning
 					</span>
-					<input type="text" name="warn" ng-model="measurement.warn" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
+					<input type="number" ng-if="measurement.valueHandler == 'Number Threshold'"
+						   name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<input type="text" ng-if="measurement.valueHandler == 'String Threshold'"
+						   name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<input type="datetime-local" ng-if="measurement.valueHandler == 'Date Threshold'"
+						   name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
 				</div>
 
 				<!--Critical threshold-->
@@ -198,7 +249,12 @@
 					<span class="gf-form-label width-12">
 					  Critical
 					</span>
-					<input type="text" name="crit" ng-model="measurement.crit" class="gf-form-input max-width-12" ng-change="ctrl.onRender()" required />
+					<input type="number" ng-if="measurement.valueHandler == 'Number Threshold'"
+						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<input type="text" ng-if="measurement.valueHandler == 'String Threshold'"
+						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<input type="datetime-local" ng-if="measurement.valueHandler == 'Date Threshold'"
+						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
 				</div>
 
 				<!--Show value for threshold-->
