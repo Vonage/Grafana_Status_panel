@@ -447,7 +447,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						if (target.valueHandler === "Number Threshold") {
 							if (_.isFinite(value)) {
 								var units = typeof target.units === "string" ? target.units : 'none';
-								var decimals = Math.floor(value) === value ? 0 : value.toString().split(".")[1].length;
+								var decimals = Math.floor(value) === value ? 0 : value.toFixed(20).replace(/^-?\d*\.?|0+$/g, '').length;
 								decimals = typeof target.decimals === "number" ? target.decimals : decimals;
 								value = kbn.valueFormats[units](value, decimals, null);
 							} else {
@@ -534,21 +534,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						var _this6 = this;
 
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
-							(function () {
-								var currentMaxAllowedAlerts = _this6.panel.maxAlertNumber;
-								var filteredOutAlerts = 0;
-								var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-								arrayNamesToSlice.forEach(function (arrayName) {
-									var originAlertCount = _this6[arrayName].length;
-									_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
-									currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
-									filteredOutAlerts += originAlertCount - _this6[arrayName].length;
-								});
+							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
+							var filteredOutAlerts = 0;
+							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
+							arrayNamesToSlice.forEach(function (arrayName) {
+								var originAlertCount = _this6[arrayName].length;
+								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
+							});
 
-								if (filteredOutAlerts > 0) {
-									_this6.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
-								}
-							})();
+							if (filteredOutAlerts > 0) {
+								this.extraMoreAlerts = "+ " + filteredOutAlerts + " more";
+							}
 						}
 					}
 				}, {
