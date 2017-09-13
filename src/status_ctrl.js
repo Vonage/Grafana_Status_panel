@@ -363,7 +363,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if (target.valueHandler === "Number Threshold") {
 			if (_.isFinite(value)) {
 				let units = (typeof target.units === "string") ? target.units : 'none';
-				let decimals = (Math.floor(value) === value) ? 0 : value.toString().split(".")[1].length;
+				let decimals = (Math.floor(value) === value) ? 0 : value.toFixed(20).replace(/^-?\d*\.?|0+$/g, '').length;
 				decimals = (typeof target.decimals === "number") ? target.decimals : decimals;
 				value = kbn.valueFormats[units](value, decimals, null);
 			} else {
