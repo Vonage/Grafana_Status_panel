@@ -36,7 +36,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.filter = $filter;
 
 		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
-		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 		this.displayTypes = ['Regular', 'Annotation'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
@@ -232,6 +232,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				case 'Min':
 					value = _.min(s.datapoints, (point) => { return point[0]; })[0];
 					value = s.stats.min;
+					break;
+				case: 'Delta':
+					value = s.datapoints[s.datapoints.length - 1][0] - s.datapoints[0][0];
 					break;
 				case 'Sum':
 					value = 0;
