@@ -1,6 +1,4 @@
-﻿import {MetricsPanelCtrl} from "app/plugins/sdk";
-import "app/plugins/panel/graph/legend";
-import "app/plugins/panel/graph/series_overrides_ctrl";
+import {MetricsPanelCtrl} from "app/plugins/sdk";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
 import coreModule from "app/core/core_module";
@@ -57,6 +55,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('data-received', this.onDataReceived.bind(this));
 		this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+
+		this.onColorChange = this.onColorChange.bind(this);
 
 		this.addFilters()
 	}
@@ -136,12 +136,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onInitEditMode() {
-        this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+		this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
 		// Load in the supported units-of-measure formats so they can be displayed in the editor
 		this.unitFormats = kbn.getUnitFormats();
 	}
 
-    setUnitFormat(measurement, subItem) {
+	setUnitFormat(measurement, subItem) {
 		measurement.units = subItem.value;
 		this.render();
 	}
@@ -174,6 +174,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			measurement.warn = (isNaN(w.getTime())) ? undefined : w;
 		}
 		this.onRender();
+	}
+
+	onColorChange(item) {
+		return (color) => {
+			this.panel.colors[item] = color;
+			this.render();
+		};
 	}
 
 	onRender() {
@@ -402,7 +409,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	updatePanelState() {
-
 		if(this.duplicates) {
 			this.panelState = 'error-state';
 		} else if (this.disabled.length > 0) {
