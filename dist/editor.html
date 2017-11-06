@@ -1,4 +1,4 @@
-﻿<div>
+<div>
 	<strong>Note:</strong> Every metric has to have a unique <strong>Alias</strong> to be used<br/><br/>
 </div>
 
@@ -70,16 +70,16 @@
 		<div class="gf-form">
 			<label class="gf-form-label width-8">Colors</label>
 			<span class="gf-form-label">
-				<spectrum-picker ng-model="ctrl.panel.colors.crit" bs-tooltip="'Critical'" ng-change="ctrl.onRender()"></spectrum-picker>
+				<color-picker color="ctrl.panel.colors.crit" bs-tooltip="'Critical'" onChange="ctrl.onColorChange('crit')"></color-picker>
 			</span>
 			<span class="gf-form-label">
-				<spectrum-picker ng-model="ctrl.panel.colors.warn" bs-tooltip="'Warning'" ng-change="ctrl.onRender()"></spectrum-picker>
+				<color-picker color="ctrl.panel.colors.warn" bs-tooltip="'Warning'" onChange="ctrl.onColorChange('warn')"></color-picker>
 			</span>
 			<span class="gf-form-label">
-				<spectrum-picker ng-model="ctrl.panel.colors.ok" bs-tooltip="'OK'" ng-change="ctrl.onRender()"></spectrum-picker>
+				<color-picker color="ctrl.panel.colors.ok" bs-tooltip="'OK'" onChange="ctrl.onColorChange('ok')"></color-picker>
 			</span>
 			<span class="gf-form-label">
-				<spectrum-picker ng-model="ctrl.panel.colors.disable" bs-tooltip="'Disabled'" ng-change="ctrl.onRender()"></spectrum-picker>
+				<color-picker color="ctrl.panel.colors.disable" bs-tooltip="'Disabled'" onChange="ctrl.onColorChange('disable')"></color-picker>
 			</span>
 		</div>
 	</div>
