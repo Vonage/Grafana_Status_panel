@@ -240,8 +240,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					value = _.min(s.datapoints, (point) => { return point[0]; })[0];
 					value = s.stats.min;
 					break;
-				case: 'Delta':
+				case 'Delta':
 					value = s.datapoints[s.datapoints.length - 1][0] - s.datapoints[0][0];
+					value = s.stats.diff;
 					break;
 				case 'Sum':
 					value = 0;

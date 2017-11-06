@@ -99,7 +99,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.filter = $filter;
 
 					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
-					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
@@ -325,6 +325,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 										return point[0];
 									})[0];
 									value = s.stats.min;
+									break;
+								case 'Delta':
+									value = s.datapoints[s.datapoints.length - 1][0] - s.datapoints[0][0];
+									value = s.stats.diff;
 									break;
 								case 'Sum':
 									value = 0;
