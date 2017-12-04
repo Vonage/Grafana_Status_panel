@@ -18,7 +18,7 @@
 					<div class="row-overflow" ng-style="{ 'max-width': ctrl.maxWidth }">
 						<a ng-show="annotation.url" ng-href="{{ annotation.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ annotation.alias }}</a>
 						<span ng-hide="annotation.url">{{ annotation.alias }}</span>
-						<span bs-tooltip="'{{ annotation.display_value }}'"> - {{ annotation.display_value |  numberOrTextWithRegex : annotation.valueDisplayRegex}} </span>
+						<span ng-show="annotation.isDisplayValue" bs-tooltip="'{{ annotation.display_value }}'"> - {{ annotation.display_value |  numberOrTextWithRegex : annotation.valueDisplayRegex}} </span>
 					</div>
 				</div>
 			</div>
@@ -40,19 +40,19 @@
 				<div ng-style="ctrl.panel.colorMode === 'Metric' && !ctrl.panel.isIgnoreOKColors && {'color':ctrl.panel.colors.ok}" ng-repeat="display in ctrl.display">
 					<a ng-show="display.url" ng-href="{{ display.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ display.alias }}</a>
 					<span ng-hide="display.url">{{ display.alias }}</span>
-					<span ng-show="display.display"> - {{ display.display_value | numberOrTextWithRegex : display.valueDisplayRegex }}</span>
+					<span ng-show="display.isDisplayValue"> - {{ display.display_value | numberOrTextWithRegex : display.valueDisplayRegex }}</span>
 				</div>
 
 				<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.crit}" ng-repeat="crit in ctrl.crit">
 					<a ng-show="crit.url" ng-href="{{ crit.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ crit.alias }}</a>
 					<span ng-hide="crit.url">{{ crit.alias }}</span>
-					<span ng-show="crit.display"> - {{ crit.display_value | numberOrTextWithRegex : crit.valueDisplayRegex }}</span>
+					<span ng-show="crit.isDisplayValue"> - {{ crit.display_value | numberOrTextWithRegex : crit.valueDisplayRegex }}</span>
 				</div>
 
 				<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.warn}" ng-repeat="warn in ctrl.warn">
 					<a ng-show="warn.url" ng-href="{{ warn.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ warn.alias }}</a>
 					<span ng-hide="warn.url">{{ warn.alias }}</span>
-					<span ng-show="warn.display"> - {{ warn.display_value | numberOrTextWithRegex : warn.valueDisplayRegex }}</span>
+					<span ng-show="warn.isDisplayValue"> - {{ warn.display_value | numberOrTextWithRegex : warn.valueDisplayRegex }}</span>
 				</div>
 
 				<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.disable}" ng-repeat="disabled in ctrl.disabled">

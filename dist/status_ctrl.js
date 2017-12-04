@@ -101,7 +101,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
-					_this.displayValueTypes = ['Never', 'When Critical', 'When Warning', 'Always'];
+					_this.displayAliasTypes = ['Warning / Critical', 'Always'];
+					_this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
@@ -305,7 +306,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 							s.alias = target.alias;
 							s.url = target.url;
-							s.display = true;
+							s.isDisplayValue = true;
 							s.displayType = target.displayType;
 							s.valueDisplayRegex = "";
 
@@ -391,11 +392,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								} else {
 									target.valueHandler = _this6.valueHandlers[0];
 								}
-
 								target.displayType = _this6.displayTypes[0];
 							}
-							if (target.display) {
-								target.displayValueType = "Always";
+
+							if (target.display != null) {
+								target.displayAliasType = target.display ? "Always" : _this6.displayAliasTypes[0];
+								target.displayValueWithAlias = target.display ? 'When Alias Displayed' : _this6.displayValueTypes[0];
 								delete target.display;
 							}
 						});
@@ -451,15 +453,22 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						// Add units-of-measure and decimal formatting or date formatting as needed
 						series.display_value = this.formatDisplayValue(series.display_value, target);
 
+						var displayValueWhenAliasDisplayed = 'When Alias Displayed' === target.displayValueWithAlias;
+						var displayValueFromWarning = 'Warning / Critical' === target.displayValueWithAlias;
+						var displayValueFromCritical = 'Critical Only' === target.displayValueWithAlias;
+
 						if (isCritical) {
+							//In critical state we don't show the error as annotation
+							series.displayType = this.displayTypes[0];
+							series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning || displayValueFromCritical;
 							this.crit.push(series);
-							series.displayType = this.displayTypes[0];
-							series.display = "Always" == target.displayValueType || "When Warning" == target.displayValueType || "When Critical" == target.displayValueType;
 						} else if (isWarning) {
-							this.warn.push(series);
+							//In warning state we don't show the warning as annotation
 							series.displayType = this.displayTypes[0];
-							series.display = "Always" == target.displayValueType || "When Warning" == target.displayValueType;
-						} else if ("Always" == target.displayValueType) {
+							series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning;
+							this.warn.push(series);
+						} else if ("Always" == target.displayAliasType) {
+							series.isDisplayValue = displayValueWhenAliasDisplayed;
 							if (series.displayType == "Annotation") {
 								this.annotation.push(series);
 							} else {
@@ -578,10 +587,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							var filteredOutAlerts = 0;
 							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
 							arrayNamesToSlice.forEach(function (arrayName) {
-								var originAlertCount = _this6[arrayName].length;
-								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
-								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
-								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
+								var originAlertCount = _this7[arrayName].length;
+								_this7[arrayName] = _this7[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this7[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - _this7[arrayName].length;
 							});
 
 							if (filteredOutAlerts > 0) {

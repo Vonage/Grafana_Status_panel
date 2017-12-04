@@ -36,7 +36,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 		this.displayTypes = ['Regular', 'Annotation'];
-		this.displayValueTypes = ['Never', 'When Critical', 'When Warning','Always'];
+		this.displayAliasTypes = ['Warning / Critical', 'Always'];
+		this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
@@ -223,7 +224,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 			s.alias = target.alias;
 			s.url = target.url;
-			s.display = true;
+			s.isDisplayValue = true;
 			s.displayType = target.displayType;
 			s.valueDisplayRegex = "";
 
@@ -304,12 +305,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				} else {
 					target.valueHandler = this.valueHandlers[0]
 				}
-
 				target.displayType = this.displayTypes[0];
 			}
-			if(target.display){
-				target.displayValueType = "Always";
+
+			if(target.display != null){
+				target.displayAliasType = target.display ? "Always" : this.displayAliasTypes[0];
+				target.displayValueWithAlias = target.display ? 'When Alias Displayed' : this.displayValueTypes[0];
 				delete target.display;
+
 			}
 		});
 
@@ -363,18 +366,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		// Add units-of-measure and decimal formatting or date formatting as needed
 		series.display_value = this.formatDisplayValue(series.display_value, target);
 
+		let displayValueWhenAliasDisplayed = 'When Alias Displayed' === target.displayValueWithAlias;
+		let displayValueFromWarning = 'Warning / Critical' === target.displayValueWithAlias;
+		let displayValueFromCritical = 'Critical Only' === target.displayValueWithAlias;
+
 		if(isCritical) {
+			//In critical state we don't show the error as annotation
+			series.displayType = this.displayTypes[0];
+			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning || displayValueFromCritical;
 			this.crit.push(series);
-			series.displayType = this.displayTypes[0];
-			series.display = "Always" == target.displayValueType 
-					|| "When Warning" == target.displayValueType
-					|| "When Critical" == target.displayValueType;
 		} else if(isWarning) {
-			this.warn.push(series);
+			//In warning state we don't show the warning as annotation
 			series.displayType = this.displayTypes[0];
-			series.display = "Always" == target.displayValueType
-					|| "When Warning" == target.displayValueType;
-		} else if ("Always" == target.displayValueType) {
+			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning;
+			this.warn.push(series);
+		} else if ("Always" == target.displayAliasType) {
+			series.isDisplayValue = displayValueWhenAliasDisplayed;
 			if(series.displayType == "Annotation") {
 				this.annotation.push(series);
 			} else {
