@@ -101,6 +101,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
+					_this.displayValueTypes = ['Never', 'When Critical', 'When Warning', 'Always'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
@@ -393,6 +394,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 								target.displayType = _this6.displayTypes[0];
 							}
+							if (target.display) {
+								target.displayValueType = "Always";
+								delete target.display;
+							}
 						});
 
 						// Depreciate Threshold in favour of Type specific versions
@@ -417,7 +422,6 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					value: function handleThresholdStatus(series, target) {
 						series.thresholds = StatusPluginCtrl.parseThresholds(target);
 						series.inverted = series.thresholds.crit < series.thresholds.warn;
-						series.display = target.display;
 
 						var isCritical = false;
 						var isWarning = false;
@@ -450,10 +454,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						if (isCritical) {
 							this.crit.push(series);
 							series.displayType = this.displayTypes[0];
+							series.display = "Always" == target.displayValueType || "When Warning" == target.displayValueType || "When Critical" == target.displayValueType;
 						} else if (isWarning) {
 							this.warn.push(series);
 							series.displayType = this.displayTypes[0];
-						} else if (series.display) {
+							series.display = "Always" == target.displayValueType || "When Warning" == target.displayValueType;
+						} else if ("Always" == target.displayValueType) {
 							if (series.displayType == "Annotation") {
 								this.annotation.push(series);
 							} else {
@@ -572,10 +578,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							var filteredOutAlerts = 0;
 							var arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
 							arrayNamesToSlice.forEach(function (arrayName) {
-								var originAlertCount = _this7[arrayName].length;
-								_this7[arrayName] = _this7[arrayName].slice(0, currentMaxAllowedAlerts);
-								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this7[arrayName].length, 0);
-								filteredOutAlerts += originAlertCount - _this7[arrayName].length;
+								var originAlertCount = _this6[arrayName].length;
+								_this6[arrayName] = _this6[arrayName].slice(0, currentMaxAllowedAlerts);
+								currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - _this6[arrayName].length, 0);
+								filteredOutAlerts += originAlertCount - _this6[arrayName].length;
 							});
 
 							if (filteredOutAlerts > 0) {

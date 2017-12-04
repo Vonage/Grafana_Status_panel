@@ -194,10 +194,10 @@
 				</div>
 			</div>
 
-			<!--Display Type-->
+			<!--Display Position-->
 			<div class="gf-form" ng-if="measurement.valueHandler != 'Disable Criteria'">
 				<span class="gf-form-label width-12">
-				  Display Type
+				  Display Position
 				  <info-popover mode="right-normal">
 					The location the value will be displayed<br/>
 					<strong>Regular</strong> - The alias + the value will be display in the center, under the panel title<br/>
@@ -258,6 +258,28 @@
 						   ng-model-onblur>
 				</div>
 			</div>
+
+                        <!--Display Value Type-->
+                        <div class="gf-form" ng-if="measurement.valueHandler == 'Number Threshold' || measurement.valueHandler == 'String Threshold' || measurement.valueHandler == 'Date Threshold'">
+                                <span class="gf-form-label width-12">
+                                  Display Value
+                                  <info-popover mode="right-normal">
+                                        When to display the value along with the alias<br/>
+                                        <strong>Never</strong> - The value will never be displayed, only the alias in warning or critical state<br/>
+                                        <strong>When Critical</strong> - The alias + the value will be displayed in critical state only<br/>
+					<strong>When Warning</strong> - The alias + the value will be displayed in warning or critical state<br/>
+					<strong>Always</strong> - The alias + the value will always be displayed, regardless critical and warning state
+                                  </info-popover>
+                                </span>
+                                <div class="gf-form-select-wrapper max-width-12">
+                                        <select class="gf-form-input"
+                                                        ng-init="measurement.displayValueType = (measurement.displayValueType ? measurement.displayValueType : ctrl.displayValueTypes[0])"
+                                                        ng-model="measurement.displayValueType"
+                                                        ng-options="t for t in ctrl.displayValueTypes"
+                                                        ng-change="ctrl.onRender()"
+                                                        required></select>
+                                </div>
+                        </div>
 		</div>
 
 		<div class="section gf-form-group">
@@ -296,13 +318,6 @@
 					<input type="datetime-local" ng-if="measurement.valueHandler == 'Date Threshold'"
 						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
 				</div>
-
-				<!--Show value for threshold-->
-				<gf-form-switch class="gf-form"
-								label-class="width-12"
-								tooltip="Show the metric also if threshold is not satisfied"
-								label="Show Always" checked="measurement.display"
-								on-change="ctrl.render()"></gf-form-switch>
 			</div>
 
 			<!--Disable Section-->
