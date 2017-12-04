@@ -1,6 +1,4 @@
-﻿import {MetricsPanelCtrl} from "app/plugins/sdk";
-import "app/plugins/panel/graph/legend";
-import "app/plugins/panel/graph/series_overrides_ctrl";
+import {MetricsPanelCtrl} from "app/plugins/sdk";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
 import coreModule from "app/core/core_module";
@@ -36,7 +34,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.filter = $filter;
 
 		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
-		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 		this.displayTypes = ['Regular', 'Annotation'];
 		this.displayValueTypes = ['Never', 'When Critical', 'When Warning','Always'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
@@ -58,6 +56,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('data-received', this.onDataReceived.bind(this));
 		this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+
+		this.onColorChange = this.onColorChange.bind(this);
 
 		this.addFilters()
 	}
@@ -137,7 +137,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onInitEditMode() {
-        this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+		this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
 		// Load in the supported units-of-measure formats so they can be displayed in the editor
 		this.unitFormats = kbn.getUnitFormats();
 	}
@@ -175,6 +175,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			measurement.warn = (isNaN(w.getTime())) ? undefined : w;
 		}
 		this.onRender();
+	}
+
+	onColorChange(item) {
+		return (color) => {
+			this.panel.colors[item] = color;
+			this.render();
+		};
 	}
 
 	onRender() {
@@ -234,6 +241,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					value = _.min(s.datapoints, (point) => { return point[0]; })[0];
 					value = s.stats.min;
 					break;
+				case 'Delta':
+					value = s.datapoints[s.datapoints.length - 1][0] - s.datapoints[0][0];
+					value = s.stats.diff;
+					break;
 				case 'Sum':
 					value = 0;
 					_.each(s.datapoints, (point) => { value += point[0] });
@@ -285,10 +296,15 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		//Handle legacy code
 		_.each(targets, (target) => {
 			if(target.valueHandler == null) {
-				target.valueHandler = target.displayType;
-				if(target.valueHandler == "Annotation") {
-					target.valueHandler = "Text Only"
+				if(target.displayType != null) {
+					target.valueHandler = target.displayType;
+					if (target.valueHandler == "Annotation") {
+						target.valueHandler = "Text Only"
+					}
+				} else {
+					target.valueHandler = this.valueHandlers[0]
 				}
+
 				target.displayType = this.displayTypes[0];
 			}
 			if(target.display){
@@ -372,8 +388,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if (target.valueHandler === "Number Threshold") {
 			if (_.isFinite(value)) {
 				let units = (typeof target.units === "string") ? target.units : 'none';
-				let decimals = (Math.floor(value) === value) ? 0 : value.toString().split(".")[1].length;
-				decimals = (typeof target.decimals === "number") ? target.decimals : decimals;
+				let decimals = this.decimalPlaces(value);
+				// We define the decimal percision by the minimal decimal needed
+				decimals = (typeof target.decimals === "number") ? Math.min(target.decimals, decimals) : decimals;
 				value = kbn.valueFormats[units](value, decimals, null);
 			} else {
 				value = "Invalid Number";
@@ -391,6 +408,17 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		}
 		return value;
+	}
+
+	decimalPlaces(num) {
+		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) { return 0; }
+		return Math.max(
+			0,
+			// Number of digits right of decimal point.
+			(match[1] ? match[1].length : 0)
+			// Adjust for scientific notation.
+			- (match[2] ? +match[2] : 0));
 	}
 
 	handleDisabledStatus(series, target) {
@@ -411,7 +439,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	updatePanelState() {
-
 		if(this.duplicates) {
 			this.panelState = 'error-state';
 		} else if (this.disabled.length > 0) {

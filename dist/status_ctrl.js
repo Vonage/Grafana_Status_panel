@@ -1,6 +1,6 @@
 "use strict";
 
-System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugins/panel/graph/series_overrides_ctrl", "lodash", "app/core/time_series2", "app/core/core_module", "app/core/utils/kbn", "moment", "./css/status_panel.css!"], function (_export, _context) {
+System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core/core_module", "app/core/utils/kbn", "moment", "./css/status_panel.css!"], function (_export, _context) {
 	"use strict";
 
 	var MetricsPanelCtrl, _, TimeSeries, coreModule, kbn, moment, _createClass, panelDefaults, StatusPluginCtrl;
@@ -38,7 +38,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 	return {
 		setters: [function (_appPluginsSdk) {
 			MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
-		}, function (_appPluginsPanelGraphLegend) {}, function (_appPluginsPanelGraphSeries_overrides_ctrl) {}, function (_lodash) {
+		}, function (_lodash) {
 			_ = _lodash.default;
 		}, function (_appCoreTime_series) {
 			TimeSeries = _appCoreTime_series.default;
@@ -99,7 +99,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					_this.filter = $filter;
 
 					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
-					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg'];
+					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
 					_this.displayValueTypes = ['Never', 'When Critical', 'When Warning', 'Always'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
@@ -121,6 +121,8 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 					_this.events.on('data-received', _this.onDataReceived.bind(_this));
 					_this.events.on('data-snapshot-load', _this.onDataReceived.bind(_this));
 					_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
+
+					_this.onColorChange = _this.onColorChange.bind(_this);
 
 					_this.addFilters();
 					return _this;
@@ -253,9 +255,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						this.onRender();
 					}
 				}, {
+					key: "onColorChange",
+					value: function onColorChange(item) {
+						var _this4 = this;
+
+						return function (color) {
+							_this4.panel.colors[item] = color;
+							_this4.render();
+						};
+					}
+				}, {
 					key: "onRender",
 					value: function onRender() {
-						var _this4 = this;
+						var _this5 = this;
 
 						this.setElementHeight();
 						this.setTextMaxWidth();
@@ -297,7 +309,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.displayType = target.displayType;
 							s.valueDisplayRegex = "";
 
-							if (_this4.validateRegex(target.valueDisplayRegex)) {
+							if (_this5.validateRegex(target.valueDisplayRegex)) {
 								s.valueDisplayRegex = target.valueDisplayRegex;
 							}
 
@@ -314,6 +326,10 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 										return point[0];
 									})[0];
 									value = s.stats.min;
+									break;
+								case 'Delta':
+									value = s.datapoints[s.datapoints.length - 1][0] - s.datapoints[0][0];
+									value = s.stats.diff;
 									break;
 								case 'Sum':
 									value = 0;
@@ -335,11 +351,11 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							s.display_value = value;
 
 							if (target.valueHandler == "Number Threshold" || target.valueHandler == "String Threshold" || target.valueHandler == "Date Threshold") {
-								_this4.handleThresholdStatus(s, target);
+								_this5.handleThresholdStatus(s, target);
 							} else if (target.valueHandler == "Disable Criteria") {
-								_this4.handleDisabledStatus(s, target);
+								_this5.handleDisabledStatus(s, target);
 							} else if (target.valueHandler == "Text Only") {
-								_this4.handleTextOnly(s, target);
+								_this5.handleTextOnly(s, target);
 							}
 						});
 
@@ -360,18 +376,23 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "upgradeOldVersion",
 					value: function upgradeOldVersion() {
-						var _this5 = this;
+						var _this6 = this;
 
 						var targets = this.panel.targets;
 
 						//Handle legacy code
 						_.each(targets, function (target) {
 							if (target.valueHandler == null) {
-								target.valueHandler = target.displayType;
-								if (target.valueHandler == "Annotation") {
-									target.valueHandler = "Text Only";
+								if (target.displayType != null) {
+									target.valueHandler = target.displayType;
+									if (target.valueHandler == "Annotation") {
+										target.valueHandler = "Text Only";
+									}
+								} else {
+									target.valueHandler = _this6.valueHandlers[0];
 								}
-								target.displayType = _this5.displayTypes[0];
+
+								target.displayType = _this6.displayTypes[0];
 							}
 							if (target.display) {
 								target.displayValueType = "Always";
@@ -453,8 +474,9 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 						if (target.valueHandler === "Number Threshold") {
 							if (_.isFinite(value)) {
 								var units = typeof target.units === "string" ? target.units : 'none';
-								var decimals = Math.floor(value) === value ? 0 : value.toString().split(".")[1].length;
-								decimals = typeof target.decimals === "number" ? target.decimals : decimals;
+								var decimals = this.decimalPlaces(value);
+								// We define the decimal percision by the minimal decimal needed
+								decimals = typeof target.decimals === "number" ? Math.min(target.decimals, decimals) : decimals;
 								value = kbn.valueFormats[units](value, decimals, null);
 							} else {
 								value = "Invalid Number";
@@ -471,6 +493,19 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 							}
 						}
 						return value;
+					}
+				}, {
+					key: "decimalPlaces",
+					value: function decimalPlaces(num) {
+						var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+						if (!match) {
+							return 0;
+						}
+						return Math.max(0,
+						// Number of digits right of decimal point.
+						(match[1] ? match[1].length : 0) - (
+						// Adjust for scientific notation.
+						match[2] ? +match[2] : 0));
 					}
 				}, {
 					key: "handleDisabledStatus",
@@ -494,7 +529,6 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "updatePanelState",
 					value: function updatePanelState() {
-
 						if (this.duplicates) {
 							this.panelState = 'error-state';
 						} else if (this.disabled.length > 0) {
@@ -537,7 +571,7 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "handleMaxAlertsToShow",
 					value: function handleMaxAlertsToShow() {
-						var _this6 = this;
+						var _this7 = this;
 
 						if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
 							var currentMaxAllowedAlerts = this.panel.maxAlertNumber;
@@ -609,12 +643,12 @@ System.register(["app/plugins/sdk", "app/plugins/panel/graph/legend", "app/plugi
 				}, {
 					key: "autoFlip",
 					value: function autoFlip() {
-						var _this7 = this;
+						var _this8 = this;
 
 						if (this.timeoutId) clearInterval(this.timeoutId);
 						if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0 || this.disabled.length > 0)) {
 							this.timeoutId = setInterval(function () {
-								_this7.$panelContainer.toggleClass("flipped");
+								_this8.$panelContainer.toggleClass("flipped");
 							}, this.panel.flipTime * 1000);
 						}
 					}
