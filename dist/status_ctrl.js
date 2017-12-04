@@ -468,8 +468,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						if (target.valueHandler === "Number Threshold") {
 							if (_.isFinite(value)) {
 								var units = typeof target.units === "string" ? target.units : 'none';
-								var decimals = Math.floor(value) === value ? 0 : value.toString().split(".")[1].length;
-								decimals = typeof target.decimals === "number" ? target.decimals : decimals;
+								var decimals = this.decimalPlaces(value);
+								// We define the decimal percision by the minimal decimal needed
+								decimals = typeof target.decimals === "number" ? Math.min(target.decimals, decimals) : decimals;
 								value = kbn.valueFormats[units](value, decimals, null);
 							} else {
 								value = "Invalid Number";
@@ -486,6 +487,19 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							}
 						}
 						return value;
+					}
+				}, {
+					key: "decimalPlaces",
+					value: function decimalPlaces(num) {
+						var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+						if (!match) {
+							return 0;
+						}
+						return Math.max(0,
+						// Number of digits right of decimal point.
+						(match[1] ? match[1].length : 0) - (
+						// Adjust for scientific notation.
+						match[2] ? +match[2] : 0));
 					}
 				}, {
 					key: "handleDisabledStatus",

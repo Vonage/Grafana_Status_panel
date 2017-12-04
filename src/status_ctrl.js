@@ -379,8 +379,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if (target.valueHandler === "Number Threshold") {
 			if (_.isFinite(value)) {
 				let units = (typeof target.units === "string") ? target.units : 'none';
-				let decimals = (Math.floor(value) === value) ? 0 : value.toString().split(".")[1].length;
-				decimals = (typeof target.decimals === "number") ? target.decimals : decimals;
+				let decimals = this.decimalPlaces(value);
+				// We define the decimal percision by the minimal decimal needed
+				decimals = (typeof target.decimals === "number") ? Math.min(target.decimals, decimals) : decimals;
 				value = kbn.valueFormats[units](value, decimals, null);
 			} else {
 				value = "Invalid Number";
@@ -398,6 +399,17 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 		}
 		return value;
+	}
+
+	decimalPlaces(num) {
+		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) { return 0; }
+		return Math.max(
+			0,
+			// Number of digits right of decimal point.
+			(match[1] ? match[1].length : 0)
+			// Adjust for scientific notation.
+			- (match[2] ? +match[2] : 0));
 	}
 
 	handleDisabledStatus(series, target) {
