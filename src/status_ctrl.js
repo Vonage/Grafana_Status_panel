@@ -39,6 +39,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.displayAliasTypes = ['Warning / Critical', 'Always'];
 		this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
+		this.fontFormats = ['Regular', 'Bold', 'Italic'];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
 		_.each(this.panel.targets, (t) => {

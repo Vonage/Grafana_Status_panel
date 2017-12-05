@@ -47,11 +47,27 @@
 		</div>
 	</div>
 
-	<!--Coloring-->
+	<!--Threshold Preferences-->
 	<div class="section gf-form-group">
-		<h5 class="section-heading">Threshold Colors</h5>
+		<h5 class="section-heading">Threshold Preferences</h5>
 		<div class="gf-form">
-			<span class="gf-form-label width-8">
+			<span class="gf-form-label width-9">
+					Font Format
+					<info-popover mode="right-normal">
+						The metric text font format in disable, warning or critical state
+					</info-popover>
+				</span>
+			<div class="gf-form-select-wrapper max-width-12">
+				<select class="gf-form-input"
+						ng-init="ctrl.panel.fontFormat = (ctrl.panel.fontFormat ? ctrl.panel.fontFormat : ctrl.fontFormats[0])"
+						ng-model="ctrl.panel.fontFormat"
+						ng-options="t for t in ctrl.fontFormats"
+						ng-change="ctrl.onRender()"
+						required></select>
+			</div>
+		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-9">
 				Coloring
 				<info-popover mode="right-normal">
 					<strong>Panel</strong> - Apply color to the panel background<br/>
@@ -68,7 +84,7 @@
 			</div>
 		</div>
 		<div class="gf-form">
-			<label class="gf-form-label width-8">Colors</label>
+			<label class="gf-form-label width-9">Colors</label>
 			<span class="gf-form-label">
 				<color-picker color="ctrl.panel.colors.crit" bs-tooltip="'Critical'" onChange="ctrl.onColorChange('crit')"></color-picker>
 			</span>

@@ -104,6 +104,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.displayAliasTypes = ['Warning / Critical', 'Always'];
 					_this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
+					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {

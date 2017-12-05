@@ -76,4 +76,10 @@
 .st-card:not(.effect-hover) .st-card-front {
   display: none; }
 
+.boldAlertMetric {
+  font-weight: bold; }
+
+.italicAlertMetric {
+  font-style: italic; }
+
 /*# sourceMappingURL=status_panel.css.map */
