@@ -33,10 +33,10 @@ You can also repeat the panel on a template if you have multiple instances that 
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
   **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
 3. Go the the Options tab, and choose the how to treat each metric. 
-	1. For severity display, select the `Threshold` option type under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
-		* If you want the result to always be displayed with it's value (regardless to the thresholds), check the box titled `Show Always`
-		* In case one of the fields (`Warning`/`Critical`) is a text, there will be equality check with the values.
- 		* In case both fields are numbers there will be range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
+	1. For severity display, select one of the `Threshold` option types (`Number Threshold` / `String Threshold` / `Date Threshold`) under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
+		* You can configure when the alias name and its value will be displayed in the dashboard panel by changing the fields: `Display Alias`, `Display Value`
+		* `String Threshold` option makes equality check to the values
+		* `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
 	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
 	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will just use the most first result)
@@ -54,6 +54,12 @@ When you want to display just part of the value for a specific metric in the scr
 ### Measurement URL
 Lets say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
 
+### Threshold preferences
+Panel display tuning is available when metric value gets to different states (`ok` / `warning` / `critical` / `disabled`):
+1. You can change the relevant color for each state
+2. You can configure if the color will change the panel background or the metric text
+3. You can change the text format (`bold` / `italic`) for metric text in `warning` / `critical` / `disabled`
+
 ### Show disable for no data
 If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
 ## Supported Data Sources
@@ -64,8 +70,14 @@ Currently the plugin was tested with **influxDB** and **Graphite**. Support for 
 When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
 To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
 
-### Version 1.0.3
-* Version (1.0.3) can have some conflicts with older versions.
+### Version 1.0.7 - What's new?
+* Threshold settings - removed 'show always' option, and replaced it with 2 options:
+	* `Display Alias` - Select when to show the metric alias
+	* `Display Value` - Select when to show the metric value 
+* Text format configuration (`bold` / `italic`) for `warning` / `critical` / `disabled` states.
+* Fixed decimal percision in case we get number with format like '1e-10'.
+* Added option to change the corner radius of the panel.
+* Bugfix - When creating new metric, The `Handler Type` didn't get default value. 
 
 # Screenshots
 ### Panel States
