@@ -32,6 +32,17 @@
 			</span>
 			<input type="number" ng-model="ctrl.panel.maxAlertNumber" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
 		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-12">
+				Corner Radius (%)
+				<info-popover mode="right-normal">
+					The corner radius to apply the panel.<br>
+					Values can be between 0% - 50%.<br>
+					0% for rectangle, 50% for circle / ellipse
+				</info-popover>
+			</span>
+			<input type="number" ng-model="ctrl.panel.cornerRadius" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+		</div>
 	</div>
 
 	<!--Flip card section-->

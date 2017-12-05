@@ -81,7 +81,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				},
 				isGrayOnNoData: false,
 				isIgnoreOKColors: false,
-				isHideAlertsOnDisable: false
+				isHideAlertsOnDisable: false,
+				cornerRadius: 0
 			};
 
 			_export("StatusPluginCtrl", StatusPluginCtrl = function (_MetricsPanelCtrl) {
@@ -558,6 +559,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					value: function handleCssDisplay() {
 						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 						this.$panelContainer.addClass(this.panelState);
+
+						var radius = _.isNumber(this.panel.cornerRadius) ? this.panel.cornerRadius : 0;
+						this.$panelContainer.css('border-radius', radius + '%');
 
 						var okColor = this.panel.isIgnoreOKColors ? '' : this.panel.colors.ok;
 

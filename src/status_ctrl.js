@@ -21,7 +21,8 @@ const panelDefaults = {
 	},
 	isGrayOnNoData: false,
 	isIgnoreOKColors: false,
-	isHideAlertsOnDisable: false
+	isHideAlertsOnDisable: false,
+	cornerRadius: 0
 };
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
@@ -465,6 +466,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	handleCssDisplay() {
 		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 		this.$panelContainer.addClass(this.panelState);
+
+		let radius = _.isNumber(this.panel.cornerRadius) ? this.panel.cornerRadius : 0
+		this.$panelContainer.css('border-radius', radius + '%');
 
 		let okColor = (this.panel.isIgnoreOKColors) ? '' : this.panel.colors.ok;
 
