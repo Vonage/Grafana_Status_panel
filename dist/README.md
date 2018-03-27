@@ -56,9 +56,9 @@ Lets say that you want your user to be able to get instructions on what to do wh
 
 ### Threshold preferences
 Panel display tuning is available when metric value gets to different states (`ok` / `warning` / `critical` / `disabled`):
-1. You can change the relevant color for each state
-2. You can configure if the color will change the panel background or the metric text
-3. You can change the text format (`bold` / `italic`) for metric text in `warning` / `critical` / `disabled`
+1. You can change the relevant color for each state.
+2. You can configure if the color will change the panel background or the metric text.
+3. You can change the text format (`bold` / `italic`) for metric text in `warning` / `critical` / `disabled` states.
 
 ### Show disable for no data
 If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
@@ -71,12 +71,12 @@ When upgrading there might be some changes in the data the plugin uses and saves
 To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
 
 ### Version 1.0.7 - What's new?
-* Threshold settings - removed 'show always' option, and replaced it with 2 options:
-	* `Display Alias` - Select when to show the metric alias
-	* `Display Value` - Select when to show the metric value 
+* Threshold settings - removed `Show Always` option, and replaced it with 2 options:
+	* `Display Alias` - Select when to show the metric alias.
+	* `Display Value` - Select when to show the metric value.
 * Text format configuration (`bold` / `italic`) for `warning` / `critical` / `disabled` states.
-* Fixed decimal percision in case we get number with format like '1e-10'.
-* Added option to change the corner radius of the panel.
+* Option to change the corner radius of the panel. Now you can change the panel's shape to have rounded corners.
+* Fixed decimal precision in case we get number with format like '1e-10'.
 * Bugfix - When creating new metric, The `Handler Type` didn't get default value. 
 
 # Screenshots

@@ -150,7 +150,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.render();
 	}
 
+	fixPanelHeader() {
+		// Handle the panel top menu height, since it's display doesn't look good with the panel
+		let panelHeaderHeight = '';
+		if(this.panel.title.length === 0) {
+			panelHeaderHeight = '10px';
+		}
+		this.$panelContainer.find('.panel-header').css('height', panelHeaderHeight);
+		this.$panelContainer.find('.panel-menu-container').css('height', panelHeaderHeight);
+		this.$panelContainer.find('.fa-caret-down').css('display', 'none');
+	}
+
 	setElementHeight() {
+		// Handle the panel height
 		this.$panelContainer.find('.status-panel').css('min-height', this.$panelContoller.height + 'px');
 		this.minHeight = this.$panelContoller.height-10;
 	}
@@ -188,6 +200,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onRender() {
+		this.fixPanelHeader();
 		this.setElementHeight();
 		this.setTextMaxWidth();
 		this.upgradeOldVersion();

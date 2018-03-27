@@ -225,8 +225,21 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.render();
 					}
 				}, {
+					key: "fixPanelHeader",
+					value: function fixPanelHeader() {
+						// Handle the panel top menu height, since it's display doesn't look good with the panel
+						var panelHeaderHeight = '';
+						if (this.panel.title.length === 0) {
+							panelHeaderHeight = '10px';
+						}
+						this.$panelContainer.find('.panel-header').css('height', panelHeaderHeight);
+						this.$panelContainer.find('.panel-menu-container').css('height', panelHeaderHeight);
+						this.$panelContainer.find('.fa-caret-down').css('display', 'none');
+					}
+				}, {
 					key: "setElementHeight",
 					value: function setElementHeight() {
+						// Handle the panel height
 						this.$panelContainer.find('.status-panel').css('min-height', this.$panelContoller.height + 'px');
 						this.minHeight = this.$panelContoller.height - 10;
 					}
@@ -272,6 +285,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					value: function onRender() {
 						var _this5 = this;
 
+						this.fixPanelHeader();
 						this.setElementHeight();
 						this.setTextMaxWidth();
 						this.upgradeOldVersion();
