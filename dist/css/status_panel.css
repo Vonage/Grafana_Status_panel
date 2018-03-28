@@ -1,4 +1,5 @@
 .status-panel {
+  overflow: hidden;
   position: relative;
   width: 100%;
   height: 100%;
@@ -42,6 +43,22 @@
     backface-visibility: hidden;
     transition: transform 0.5s; }
 
+.marquee_container {
+  overflow: hidden; }
+  .marquee_container .marquee_element {
+    backface-visibility: hidden;
+    transition: transform 0.5s;
+    display: inline-block;
+    animation: marquee_container 15s linear infinite; }
+  .marquee_container .marquee_element:hover {
+    animation-play-state: paused; }
+
+/* Make it move */
+@keyframes marquee_container {
+  0% {
+    transform: translate(0, 100%); }
+  100% {
+    transform: translate(0, -100%); } }
 .st-card-front .ok-text, .st-card-front .warning-text, .st-card-front .fail-text, .st-card-front .no-data-text, .st-card-front .disabled-text {
   display: none;
   font-size: 2.0rem; }

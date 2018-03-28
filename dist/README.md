@@ -70,14 +70,10 @@ Currently the plugin was tested with **influxDB** and **Graphite**. Support for 
 When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
 To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
 
-### Version 1.0.7 - What's new?
-* Threshold settings - removed `Show Always` option, and replaced it with 2 options:
-	* `Display Alias` - Select when to show the metric alias.
-	* `Display Value` - Select when to show the metric value.
-* Text format configuration (`bold` / `italic`) for `warning` / `critical` / `disabled` states.
-* Option to change the corner radius of the panel. Now you can change the panel's shape to have rounded corners.
-* Fixed decimal precision in case we get number with format like '1e-10'.
-* Bugfix - When creating new metric, The `Handler Type` didn't get default value. 
+### Version 1.0.8 - What's new?
+* Adding support for Grafana 5.0.x:
+	- Added option to auto scroll the alerts in case the text overflows the panel view
+	- Fix header padding when title is absent
 
 # Screenshots
 ### Panel States

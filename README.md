@@ -71,7 +71,9 @@ When upgrading there might be some changes in the data the plugin uses and saves
 To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
 
 ### Version 1.0.8 - What's new?
-* Adding support for Grafana 5.0.x 
+* Adding support for Grafana 5.0.x:
+	- Added option to auto scroll the alerts in case the text overflows the panel view
+	- Fix header padding when title is absent
 
 # Screenshots
 ### Panel States

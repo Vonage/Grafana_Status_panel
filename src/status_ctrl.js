@@ -22,7 +22,8 @@ const panelDefaults = {
 	isGrayOnNoData: false,
 	isIgnoreOKColors: false,
 	isHideAlertsOnDisable: false,
-	cornerRadius: 0
+	cornerRadius: 0,
+	isAutoScrollOnOverflow: false
 };
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
@@ -176,6 +177,16 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.maxWidth = panelWidth;
 	}
 
+	isAutoScrollAlerts() {
+		if(!this.panel.isAutoScrollOnOverflow) {
+			return false;
+		}
+
+		let element = this.$panelContainer.find('.status-panel')[0];
+		let overflowY = element.offsetHeight < element.scrollHeight;
+		return overflowY;
+	}
+
 	onHandlerChange(measurement) {
 		// If the Threshold type changes between Number/String/Date then try and recast the thresholds to keep consistent
 		if (measurement.valueHandler === "Number Threshold") {
@@ -214,9 +225,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		}
 
 		if(this.panel.flipCard){
-		  this.$panelContainer.addClass("effect-hover");
+			this.$panelContainer.addClass("effect-hover");
 		} else {
-		  this.$panelContainer.removeClass("effect-hover");
+			this.$panelContainer.removeClass("effect-hover");
 		}
 
 		let targets = this.panel.targets;

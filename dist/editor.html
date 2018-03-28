@@ -110,9 +110,14 @@
 			</span>
 		</div>
 	</div>
-	<!--Color Option-->
+
+	<!--Other Option-->
 	<div class="section gf-form-group">
 		<h5 class="section-heading">Other Options</h5>
+		<gf-form-switch class="gf-form"
+						label-class="width-15"
+						label="Auto scroll alerts on overflow" checked="ctrl.panel.isAutoScrollOnOverflow"
+						on-change="ctrl.onRender()"></gf-form-switch>
 		<gf-form-switch class="gf-form"
 						label-class="width-15"
 						label="Use 'Disable' color if no data" checked="ctrl.panel.isGrayOnNoData"
@@ -194,7 +199,7 @@
 				<input type="text" name="url" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
 			</div>
 		</div>
-
+ 
 		<div class="section gf-form-group">
 			<h5 class="section-heading">Metric display type</h5>
 

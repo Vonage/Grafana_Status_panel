@@ -82,7 +82,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				isGrayOnNoData: false,
 				isIgnoreOKColors: false,
 				isHideAlertsOnDisable: false,
-				cornerRadius: 0
+				cornerRadius: 0,
+				isAutoScrollOnOverflow: false
 			};
 
 			_export("StatusPluginCtrl", StatusPluginCtrl = function (_MetricsPanelCtrl) {
@@ -251,6 +252,17 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						if (isNaN(panelWidth)) panelWidth = parseInt(panelWidth.slice(0, -2), 10) / 12;
 						panelWidth = panelWidth - 20;
 						this.maxWidth = panelWidth;
+					}
+				}, {
+					key: "isAutoScrollAlerts",
+					value: function isAutoScrollAlerts() {
+						if (!this.panel.isAutoScrollOnOverflow) {
+							return false;
+						}
+
+						var element = this.$panelContainer.find('.status-panel')[0];
+						var overflowY = element.offsetHeight < element.scrollHeight;
+						return overflowY;
 					}
 				}, {
 					key: "onHandlerChange",
