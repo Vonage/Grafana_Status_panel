@@ -23,7 +23,8 @@ const panelDefaults = {
 	isIgnoreOKColors: false,
 	isHideAlertsOnDisable: false,
 	cornerRadius: 0,
-	isAutoScrollOnOverflow: false
+	isAutoScrollOnOverflow: false,
+	fontSize: 3
 };
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
