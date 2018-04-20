@@ -17,7 +17,8 @@ const panelDefaults = {
 		crit: 'rgba(245, 54, 54, 0.9)',
 		warn: 'rgba(237, 129, 40, 0.9)',
 		ok: 'rgba(50, 128, 45, 0.9)',
-		disable: 'rgba(128, 128, 128, 0.9)'
+		disable: 'rgba(128, 128, 128, 0.9)',
+		dimm: 'rgba(0, 0, 0, 0.5)'
 	},
 	isGrayOnNoData: false,
 	isIgnoreOKColors: false,

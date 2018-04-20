@@ -108,6 +108,9 @@
 			<span class="gf-form-label">
 				<color-picker color="ctrl.panel.colors.disable" bs-tooltip="'Disabled'" onChange="ctrl.onColorChange('disable')"></color-picker>
 			</span>
+			<span class="gf-form-label">
+				<color-picker color="ctrl.panel.colors.dimm" bs-tooltip="'Dimmed'" onChange="ctrl.onColorChange('dimm')"></color-picker>
+			</span>
 		</div>
 	</div>
 
@@ -313,15 +316,6 @@
 						   ng-model="measurement.template"
 						   ng-change="ctrl.onRender()"
 						   ng-model-onblur>
-				</div>
-			</div>
-			<div ng-if="measurement.valueHandler == 'Dimming Criteria'">
-				<!--Dimming color-->
-				<div class="gf-form">
-					<span class="gf-form-label width-12">Color</span>
-					<span class="gf-form-label">
-						<color-picker color="measurement.dimmColor" bs-tooltip="'Dimmed'" onChange="ctrl.onColorChange('dimm')"></color-picker>
-					</span>
 				</div>
 			</div>
 		</div>
