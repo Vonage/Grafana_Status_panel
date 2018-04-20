@@ -90,7 +90,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				_inherits(StatusPluginCtrl, _MetricsPanelCtrl);
 
 				/** @ngInject */
-				function StatusPluginCtrl($scope, $injector, $log, $filter, annotationsSrv) {
+				function StatusPluginCtrl($scope, $injector, $log, $filter, annotationsSrv, $compile) {
 					_classCallCheck(this, StatusPluginCtrl);
 
 					var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
@@ -99,14 +99,16 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 					//this.log = $log.debug;
 					_this.filter = $filter;
+					_this.compile = $compile;
 
-					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
+					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Dimming Criteria', 'Text Only', 'Template'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
 					_this.displayAliasTypes = ['Warning / Critical', 'Always'];
 					_this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
+					_this.compareTypes = ['More than', 'More or equals', 'Equals', 'Less or equals', 'Less than'];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {
@@ -322,6 +324,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.display = [];
 						this.annotation = [];
 						this.extraMoreAlerts = null;
+						this.isDimmed = false;
 
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
@@ -337,6 +340,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							s.isDisplayValue = true;
 							s.displayType = target.displayType;
 							s.valueDisplayRegex = "";
+							s.hideCard = target.hideCard;
 
 							if (_this5.validateRegex(target.valueDisplayRegex)) {
 								s.valueDisplayRegex = target.valueDisplayRegex;
@@ -383,8 +387,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								_this5.handleThresholdStatus(s, target);
 							} else if (target.valueHandler == "Disable Criteria") {
 								_this5.handleDisabledStatus(s, target);
+							} else if (target.valueHandler == 'Dimming Criteria') {
+								_this5.handleDimmingCriteria(s, target);
 							} else if (target.valueHandler == "Text Only") {
 								_this5.handleTextOnly(s, target);
+							} else if (target.valueHandler == "Template") {
+								_this5.handleTemplate(s, target, _this5.series);
 							}
 						});
 
@@ -555,8 +563,66 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						}
 					}
 				}, {
+					key: "handleDimmingCriteria",
+					value: function handleDimmingCriteria(series, target) {
+						var compareValue = target.dimmCriteria;
+						if (!compareValue) return;
+
+						series.displayType = this.displayTypes[0];
+						var compareResult = void 0;
+						if (isNaN(compareValue)) {
+							compareResult = compareValue.localeCompare(series.display_value);
+						} else {
+							compareResult = StatusPluginCtrl.compareNumbers(compareValue, series.display_value);
+						}
+
+						this.isDimmed = false;
+						switch (target.dimmCompare) {
+							case "More than":
+								if (compareResult < 0) this.isDimmed = true;
+								break;
+							case "More or equals":
+								if (compareResult <= 0) this.isDimmed = true;
+								break;
+							case "Equals":
+								if (compareResult == 0) this.isDimmed = true;
+								break;
+							case "Less or equals":
+								if (compareResult >= 0) this.isDimmed = true;
+								break;
+							case "Less than":
+								if (compareResult > 0) this.isDimmed = true;
+								break;
+							default:
+								break;
+						}
+					}
+				}, {
 					key: "handleTextOnly",
 					value: function handleTextOnly(series, target) {
+						if (series.displayType == "Annotation") {
+							this.annotation.push(series);
+						} else {
+							this.display.push(series);
+						}
+					}
+				}, {
+					key: "handleTemplate",
+					value: function handleTemplate(series, target, allSeries) {
+						var valueTemplate = target.template;
+						var result = valueTemplate;
+						var aliasRegExp = new RegExp("%[^%]+%", "g");
+						var regexResult = void 0;
+						while (regexResult = aliasRegExp.exec(valueTemplate)) {
+							var serie = _.find(allSeries, function (s) {
+								return s.alias == regexResult[0].replace(/%/g, '').trim();
+							});
+							if (serie) {
+								result = result.replace(regexResult[0], serie.display_value);
+							}
+						}
+
+						series.display_value = result;
 						if (series.displayType == "Annotation") {
 							this.annotation.push(series);
 						} else {
@@ -698,6 +764,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.$panelContainer = elem.find('.panel-container');
 						this.$panelContainer.addClass("st-card");
 						this.$panelContoller = ctrl;
+						if (this.$panelContainer.find('.dimm-state').length == 0) {
+							var dimmElement = angular.element("<div class='dimm-state' ng-if='ctrl.isDimmed' ng-style='{ \"background-color\": ctrl.panel.colors.dimm }'></div>");
+							this.$panelContainer.append(ctrl.compile(dimmElement)(scope));
+						}
 					}
 				}], [{
 					key: "parseThresholds",
@@ -736,6 +806,13 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							return true;
 						}
 						return false;
+					}
+				}, {
+					key: "compareNumbers",
+					value: function compareNumbers(val1, val2) {
+						if (val1 == val2) return 0;
+						if (val1 < val2) return -1;
+						if (val1 > val2) return 1;
 					}
 				}, {
 					key: "seriesHandler",
