@@ -243,6 +243,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.extraMoreAlerts = null;
 		this.isDimmed = false;
 
+		let processTemplate = false;
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
 				return target.alias == s.alias || target.target == s.alias;
@@ -307,9 +308,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			else if (target.valueHandler == "Text Only") {
 				this.handleTextOnly(s, target);
 			} else if (target.valueHandler == "Template") {
-				this.handleTemplate(s, target, this.series);
+				processTemplate = true;
 			}
 		});
+
+		//Template need to be processed last, because it needs display_value in all of series
+		if(processTemplate){
+			_.each(this.series, (s) => {
+				let target = _.find(targets, (target) => {
+					return target.valueHandler == "Template" &&(target.alias == s.alias || target.target == s.alias);
+				});
+
+				if(target) {
+					this.handleTemplate(s, target, this.series);
+				}
+			});
+		}
 
 		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 			this.crit = [];

@@ -327,6 +327,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.extraMoreAlerts = null;
 						this.isDimmed = false;
 
+						var processTemplate = false;
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
 								return target.alias == s.alias || target.target == s.alias;
@@ -393,9 +394,22 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							} else if (target.valueHandler == "Text Only") {
 								_this5.handleTextOnly(s, target);
 							} else if (target.valueHandler == "Template") {
-								_this5.handleTemplate(s, target, _this5.series);
+								processTemplate = true;
 							}
 						});
+
+						//Template need to be processed last, because it needs display_value in all of series
+						if (processTemplate) {
+							_.each(this.series, function (s) {
+								var target = _.find(targets, function (target) {
+									return target.valueHandler == "Template" && (target.alias == s.alias || target.target == s.alias);
+								});
+
+								if (target) {
+									_this5.handleTemplate(s, target, _this5.series);
+								}
+							});
+						}
 
 						if (this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 							this.crit = [];
