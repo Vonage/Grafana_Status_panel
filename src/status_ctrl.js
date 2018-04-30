@@ -17,7 +17,8 @@ const panelDefaults = {
 		crit: 'rgba(245, 54, 54, 0.9)',
 		warn: 'rgba(237, 129, 40, 0.9)',
 		ok: 'rgba(50, 128, 45, 0.9)',
-		disable: 'rgba(128, 128, 128, 0.9)'
+		disable: 'rgba(128, 128, 128, 0.9)',
+		dimm: 'rgba(0, 0, 0, 0.5)'
 	},
 	isGrayOnNoData: false,
 	isIgnoreOKColors: false,
@@ -28,20 +29,22 @@ const panelDefaults = {
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
 	/** @ngInject */
-	constructor($scope, $injector, $log, $filter, annotationsSrv) {
+	constructor($scope, $injector, $log, $filter, annotationsSrv, $compile) {
 		super($scope, $injector);
 		_.defaultsDeep(this.panel, panelDefaults);
 
 		//this.log = $log.debug;
 		this.filter = $filter;
+		this.compile = $compile;
 
-		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
+		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Dimming Criteria', 'Text Only', 'Template'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 		this.displayTypes = ['Regular', 'Annotation'];
 		this.displayAliasTypes = ['Warning / Critical', 'Always'];
 		this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 		this.fontFormats = ['Regular', 'Bold', 'Italic'];
+		this.compareTypes = ['More than', 'More or equals', 'Equals', 'Less or equals', 'Less than'];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
 		_.each(this.panel.targets, (t) => {
@@ -238,7 +241,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.display = [];
 		this.annotation = [];
 		this.extraMoreAlerts = null;
+		this.isDimmed = false;
 
+		let processTemplate = false;
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
 				return target.alias == s.alias || target.target == s.alias;
@@ -253,6 +258,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.isDisplayValue = true;
 			s.displayType = target.displayType;
 			s.valueDisplayRegex = "";
+			s.hideCard = target.hideCard;
 
 			if(this.validateRegex(target.valueDisplayRegex)) {
 				s.valueDisplayRegex = target.valueDisplayRegex;
@@ -296,11 +302,28 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else if (target.valueHandler == "Disable Criteria") {
 				this.handleDisabledStatus(s,target);
+			} else if (target.valueHandler == 'Dimming Criteria') {
+				this.handleDimmingCriteria(s, target);
 			}
 			else if (target.valueHandler == "Text Only") {
 				this.handleTextOnly(s, target);
+			} else if (target.valueHandler == "Template") {
+				processTemplate = true;
 			}
 		});
+
+		//Template need to be processed last, because it needs display_value in all of series
+		if(processTemplate){
+			_.each(this.series, (s) => {
+				let target = _.find(targets, (target) => {
+					return target.valueHandler == "Template" &&(target.alias == s.alias || target.target == s.alias);
+				});
+
+				if(target) {
+					this.handleTemplate(s, target, this.series);
+				}
+			});
+		}
 
 		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 			this.crit = [];
@@ -463,7 +486,65 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		}
 	}
 
+	handleDimmingCriteria(series, target) {
+		let compareValue = target.dimmCriteria;
+		if (!compareValue) return;
+
+		series.displayType = this.displayTypes[0];
+		let compareResult;
+		if (isNaN(compareValue)) {
+			compareResult = compareValue.localeCompare(series.display_value);
+		} else {
+			compareResult = StatusPluginCtrl.compareNumbers(compareValue, series.display_value);
+		}
+
+		this.isDimmed = false;
+		switch (target.dimmCompare) {
+			case "More than":
+				if(compareResult < 0) this.isDimmed = true;
+				break;
+			case "More or equals":
+				if(compareResult <= 0) this.isDimmed = true;
+				break;
+			case "Equals":
+				if(compareResult == 0) this.isDimmed = true;
+				break;
+			case "Less or equals":
+				if(compareResult >= 0) this.isDimmed = true;
+				break;
+			case "Less than":
+				if(compareResult > 0) this.isDimmed = true;
+				break;
+			default:
+				break;
+		}
+
+		this.display.push(series);
+	}
+
 	handleTextOnly(series, target) {
+		if(series.displayType == "Annotation") {
+			this.annotation.push(series);
+		} else {
+			this.display.push(series);
+		}
+	}
+
+	handleTemplate(series, target, allSeries) {
+		let valueTemplate = target.template;
+		let result = valueTemplate;
+		let aliasRegExp = new RegExp("%[^%]+%", "g");
+		let regexResult;
+		while(regexResult = aliasRegExp.exec(valueTemplate)) {
+			let serie = _.find(allSeries, (s) => {
+				return s.alias == regexResult[0].replace(/%/g, '').trim();
+			});
+			if(serie) {
+				result = result.replace(regexResult[0], serie.display_value);
+			}
+		}
+
+		series.display_value = result;
 		if(series.displayType == "Annotation") {
 			this.annotation.push(series);
 		} else {
@@ -595,6 +676,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		return false;
 	}
 
+	static compareNumbers(val1, val2) {
+		if (val1 == val2) return 0;
+		if (val1 < val2) return -1;
+		if (val1 > val2) return 1;
+	}
+
 	onDataReceived(dataList) {
 		this.series = dataList.map(StatusPluginCtrl.seriesHandler.bind(this));
 		this.render();
@@ -633,6 +720,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.$panelContainer = elem.find('.panel-container');
 		this.$panelContainer.addClass("st-card");
 		this.$panelContoller = ctrl;
+		if (this.$panelContainer.find('.dimm-state').length == 0) {
+			var dimmElement = angular.element("<div class='dimm-state' ng-if='ctrl.isDimmed' ng-style='{ \"background-color\": ctrl.panel.colors.dimm }'></div>");
+			this.$panelContainer.append(ctrl.compile(dimmElement)(scope));
+		}
 	}
 }
 
