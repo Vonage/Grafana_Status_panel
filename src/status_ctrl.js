@@ -248,6 +248,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				return;
 			}
 
+			if (s.datapoints.length === 0) {
+				return;
+			}
+
 			s.alias = target.alias;
 			s.url = target.url;
 			s.isDisplayValue = true;
