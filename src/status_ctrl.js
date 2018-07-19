@@ -240,15 +240,15 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.extraMoreAlerts = null;
 
 		_.each(this.series, (s) => {
+			if (s.datapoints.length === 0) {
+				return;
+			}
+
 			let target = _.find(targets, (target) => {
 				return target.alias == s.alias || target.target == s.alias;
 			});
 
 			if (!target) {
-				return;
-			}
-
-			if (s.datapoints.length === 0) {
 				return;
 			}
 
