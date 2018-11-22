@@ -326,6 +326,10 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.extraMoreAlerts = null;
 
 						_.each(this.series, function (s) {
+							if (s.datapoints.length === 0) {
+								return;
+							}
+
 							var target = _.find(targets, function (target) {
 								return target.alias == s.alias || target.target == s.alias;
 							});
