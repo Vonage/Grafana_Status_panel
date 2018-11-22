@@ -34,3 +34,4 @@ grafana
 .notouch
 .sass-cache/
 /dist/src/
+.sass-cache
