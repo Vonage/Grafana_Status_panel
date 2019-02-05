@@ -27,12 +27,12 @@
 		<div class="bottom_section" ng-style="ctrl.annotation.length === 0 && { 'min-height': ctrl.minHeight }">
 			<div class="status_name_row">
 				<h1>
-					<a ng-href="{{ ctrl.uri | interpolateTemplateVars:this }}" target="{{ ctrl.targetBlank ? '_blank' : '_self' }}" ng-if="ctrl.uri">
+					<a ng-href="{{ ctrl.uri | interpolateTemplateVars:this }}" target="{{ ctrl.target }}" ng-if="ctrl.uri">
 						{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
 					</a>
 					<span ng-hide="ctrl.uri">
-					{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
-				</span>
+						{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
+					</span>
 				</h1>
 			</div>
 
