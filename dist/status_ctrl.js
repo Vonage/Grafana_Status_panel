@@ -100,7 +100,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					//this.log = $log.debug;
 					_this.filter = $filter;
 
-					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
+					_this.threshold_prefix = 'Threshold_';
+					_this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only', 'Request Threshold'];
 					_this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 					_this.displayTypes = ['Regular', 'Annotation'];
 					_this.displayAliasTypes = ['Warning / Critical', 'Always'];
@@ -193,7 +194,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							this.panel.span = this.panel.fixedSpan;
 						}
 
-						this.measurements = this.panel.targets;
+						this.measurements = this.panel.targets.filter(function (item) {
+							return !_.startsWith(item.legendFormat, _this3.threshold_prefix);
+						});
 
 						/** Duplicate alias validation **/
 						this.duplicates = false;
@@ -383,7 +386,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 							s.display_value = value;
 
-							if (target.valueHandler == "Number Threshold" || target.valueHandler == "String Threshold" || target.valueHandler == "Date Threshold") {
+							if (target.valueHandler == "Number Threshold" || target.valueHandler == "String Threshold" || target.valueHandler == "Date Threshold" || target.valueHandler == "Request Threshold") {
 								_this5.handleThresholdStatus(s, target);
 							} else if (target.valueHandler == "Disable Criteria") {
 								_this5.handleDisabledStatus(s, target);
@@ -455,6 +458,20 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					key: "handleThresholdStatus",
 					value: function handleThresholdStatus(series, target) {
 						series.thresholds = StatusPluginCtrl.parseThresholds(target);
+						if (series.thresholds && target.valueHandler === 'Request Threshold') {
+							if (target.crit != "Disabled") {
+								series.thresholds.crit = this.threshold_series.filter(function (item) {
+									return item.target === target.crit;
+								})[0].value;
+								series.thresholds.critIsNumber = true;
+							}
+							if (target.warn != "Disabled") {
+								series.thresholds.warn = this.threshold_series.filter(function (item) {
+									return item.target === target.warn;
+								})[0].value;
+								series.thresholds.warnIsNumber = true;
+							}
+						}
 						series.inverted = series.thresholds.crit < series.thresholds.warn;
 
 						var isCritical = false;
@@ -512,7 +529,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					key: "formatDisplayValue",
 					value: function formatDisplayValue(value, target) {
 						// Format the display value. Set to "Invalid" if value is out-of-bounds or a type mismatch with the handler
-						if (target.valueHandler === "Number Threshold") {
+						if (target.valueHandler === "Number Threshold" || target.valueHandler === 'Request Threshold') {
 							if (_.isFinite(value)) {
 								var units = typeof target.units === "string" ? target.units : 'none';
 								var decimals = this.decimalPlaces(value);
@@ -670,7 +687,14 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "onDataReceived",
 					value: function onDataReceived(dataList) {
-						this.series = dataList.map(StatusPluginCtrl.seriesHandler.bind(this));
+						var _this8 = this;
+
+						this.series = dataList.filter(function (item) {
+							return !_.startsWith(item.target, _this8.threshold_prefix);
+						}).map(StatusPluginCtrl.seriesHandler.bind(this));
+						this.threshold_series = dataList.filter(function (item) {
+							return _.startsWith(item.target, _this8.threshold_prefix);
+						}).map(StatusPluginCtrl.thresholdSeriesHandler.bind(this));
 						this.render();
 					}
 				}, {
@@ -687,12 +711,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "autoFlip",
 					value: function autoFlip() {
-						var _this8 = this;
+						var _this9 = this;
 
 						if (this.timeoutId) clearInterval(this.timeoutId);
 						if (this.panel.flipCard && (this.crit.length > 0 || this.warn.length > 0 || this.disabled.length > 0)) {
 							this.timeoutId = setInterval(function () {
-								_this8.$panelContainer.toggleClass("flipped");
+								_this9.$panelContainer.toggleClass("flipped");
 							}, this.panel.flipTime * 1000);
 						}
 					}
@@ -752,6 +776,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						series.flotpairs = series.getFlotPairs("connected");
 
 						return series;
+					}
+				}, {
+					key: "thresholdSeriesHandler",
+					value: function thresholdSeriesHandler(seriesData) {
+						var value = { "target": seriesData.target, "value": seriesData.datapoints[seriesData.datapoints.length - 1][0] };
+						return value;
 					}
 				}]);
 
