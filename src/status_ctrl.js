@@ -245,14 +245,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 
 			let target = _.find(targets, (target) => {
-				return target.alias == s.alias || target.target == s.alias;
+				const templatizedName = this.filter('interpolateTemplateVars')(target.alias, this.$scope);
+				return target.alias == s.alias || target.target == s.alias || target.alias == templatizedName;
 			});
 
 			if (!target) {
 				return;
 			}
 
-			s.alias = target.alias;
 			s.url = target.url;
 			s.isDisplayValue = true;
 			s.displayType = target.displayType;
