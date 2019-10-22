@@ -26,6 +26,6 @@
     "babel-plugin-transform-es2015-for-of": "^6.6.0",
     "babel-plugin-transform-es2015-modules-systemjs": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.13"
   }
 }
