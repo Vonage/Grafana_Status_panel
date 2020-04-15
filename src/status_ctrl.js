@@ -34,8 +34,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		//this.log = $log.debug;
 		this.filter = $filter;
-
-		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only'];
+		   
+		this.threshold_prefix = 'Threshold_';
+		this.valueHandlers = ['Number Threshold', 'String Threshold', 'Date Threshold', 'Disable Criteria', 'Text Only', 'Request Threshold'];
 		this.aggregations = ['Last', 'First', 'Max', 'Min', 'Sum', 'Avg', 'Delta'];
 		this.displayTypes = ['Regular', 'Annotation'];
 		this.displayAliasTypes = ['Warning / Critical', 'Always'];
@@ -120,7 +121,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panel.span = this.panel.fixedSpan;
 		}
 
-		this.measurements = this.panel.targets;
+		this.measurements = this.panel.targets.filter(
+			item => !_.startsWith(item.legendFormat, this.threshold_prefix)
+		);
 
 		/** Duplicate alias validation **/
 		this.duplicates = false;
@@ -295,7 +298,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 			if (target.valueHandler == "Number Threshold" ||
 				target.valueHandler == "String Threshold" ||
-				target.valueHandler == "Date Threshold") {
+				target.valueHandler == "Date Threshold"   ||
+				target.valueHandler == "Request Threshold" ) {
 				this.handleThresholdStatus(s, target);
 			}
 			else if (target.valueHandler == "Disable Criteria") {
@@ -366,6 +370,16 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	handleThresholdStatus(series, target) {
 		series.thresholds = StatusPluginCtrl.parseThresholds(target);
+		if (series.thresholds && target.valueHandler === 'Request Threshold') {
+			if (target.crit!="Disabled") {
+				series.thresholds.crit = (this.threshold_series.filter(item => item.target === target.crit))[0].value;
+				series.thresholds.critIsNumber = true
+			}
+			if (target.warn!="Disabled") {
+				series.thresholds.warn = (this.threshold_series.filter(item => item.target === target.warn))[0].value;
+				series.thresholds.warnIsNumber = true
+			}	
+		}
 		series.inverted = series.thresholds.crit < series.thresholds.warn;
 
 		let isCritical = false;
@@ -422,7 +436,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	formatDisplayValue(value, target) {
 		// Format the display value. Set to "Invalid" if value is out-of-bounds or a type mismatch with the handler
-		if (target.valueHandler === "Number Threshold") {
+		if (target.valueHandler === "Number Threshold" || target.valueHandler === 'Request Threshold') {
 			if (_.isFinite(value)) {
 				let units = (typeof target.units === "string") ? target.units : 'none';
 				let decimals = this.decimalPlaces(value);
@@ -590,7 +604,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onDataReceived(dataList) {
-		this.series = dataList.map(StatusPluginCtrl.seriesHandler.bind(this));
+		this.series = dataList.filter(
+			item => !_.startsWith(item.target, this.threshold_prefix)
+		).map(StatusPluginCtrl.seriesHandler.bind(this));
+		this.threshold_series = dataList.filter(
+			item => _.startsWith(item.target, this.threshold_prefix)
+		).map(StatusPluginCtrl.thresholdSeriesHandler.bind(this));			
 		this.render();
 	}
 
@@ -608,6 +627,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		series.flotpairs = series.getFlotPairs("connected");
 
 		return series;
+	}
+	
+	static thresholdSeriesHandler(seriesData) {
+		var value = { "target": seriesData.target, "value": seriesData.datapoints[seriesData.datapoints.length - 1][0] }
+		return value;
 	}
 
 	$onDestroy() {

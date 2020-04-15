@@ -34,14 +34,14 @@ You can also repeat the panel on a template if you have multiple instances that 
 
 ## How to use
 
-1. Add the queries you want to the panel and give each of them a unique alias
+1. Add the queries you want to the panel and give each of them a unique alias. If you need threshold queries set alias started with 'Threshold_'
 2. Choose the name of the panel to be displayed in the `Panel Title` field.
   **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
 3. Go to the Options tab, and choose how to treat each metric. 
 	1. For severity display, select one of the `Threshold` option types (`Number Threshold` / `String Threshold` / `Date Threshold`) under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
 		* You can configure when the alias name and its value will be displayed in the dashboard panel by changing the fields: `Display Alias`, `Display Value`
 		* `String Threshold` option makes equality check to the values
-		* `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
+		* `Number Threshold`,  `Date Threshold` and `Request Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
 	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
 	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will use first item from the result)

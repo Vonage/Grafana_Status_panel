@@ -245,7 +245,7 @@
 							required></select>
 				</div>
 			</div>
-			<div ng-if="measurement.valueHandler == 'Number Threshold'">
+			<div ng-if="measurement.valueHandler == 'Number Threshold' || measurement.valueHandler == 'Request Threshold' ">
 				<!--Units-->
 				<div class="gf-form">
 					<span class="gf-form-label width-12">
@@ -294,7 +294,7 @@
 
 		<div class="section gf-form-group">
 			<!--Threshold Section-->
-			<div ng-if="measurement.valueHandler == 'Number Threshold' || measurement.valueHandler == 'String Threshold' || measurement.valueHandler == 'Date Threshold'">
+			<div ng-if="measurement.valueHandler == 'Number Threshold' || measurement.valueHandler == 'String Threshold' || measurement.valueHandler == 'Date Threshold' || measurement.valueHandler == 'Request Threshold'">
 				<h5 class="section-heading">Threshold
 					<info-popover mode="normal">
 						The Warning and Critical fields get numbers, strings or dates. <br/>
@@ -313,7 +313,16 @@
 					<input type="text" ng-if="measurement.valueHandler == 'String Threshold'"
 						   name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
 					<input type="datetime-local" ng-if="measurement.valueHandler == 'Date Threshold'"
-						   name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+							 name="warn" ng-model="measurement.warn" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<select class="gf-form-input"
+								ng-if="measurement.valueHandler == 'Request Threshold'"
+								ng-init="measurement.warn = (measurement.warn ? measurement.warn : 'Disabled')"
+								ng-model="measurement.warn"
+								ng-change="ctrl.onRender()"
+								required>
+								<option value="Disabled">Disabled</option>
+								<option ng-repeat="item in ctrl.threshold_series" value="{{item.target}}">{{item.target}}</option>
+					</select>
 				</div>
 
 				<!--Critical threshold-->
@@ -326,7 +335,16 @@
 					<input type="text" ng-if="measurement.valueHandler == 'String Threshold'"
 						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
 					<input type="datetime-local" ng-if="measurement.valueHandler == 'Date Threshold'"
-						   name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+							 name="crit" ng-model="measurement.crit" class="gf-form-input max-width-14" ng-change="ctrl.onRender()" required />
+					<select class="gf-form-input"
+								ng-if="measurement.valueHandler == 'Request Threshold'"
+								ng-init="measurement.crit = (measurement.crit ? measurement.crit : 'Disabled')"
+								ng-model="measurement.crit"
+								ng-change="ctrl.onRender()"
+								required>
+						<option value="Disabled">Disabled</option>
+						<option ng-repeat="item in ctrl.threshold_series" value="{{item.target}}">{{item.target}}</option>
+					</select>
 				</div>
 
 				<!--Display Value Type-->
