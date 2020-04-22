@@ -2,7 +2,7 @@
 
 This document contains the technical aspects of the Grafana Status Panel release process. The intended audience is thoes who have approved by Vonage to crete, promote and sign official release builds for this plugin.
 
-## Before Creating a new Release
+## Creating a new Release
 
 To create a new release for this plugin follow these steps:
 
