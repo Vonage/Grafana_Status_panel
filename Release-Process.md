@@ -22,7 +22,7 @@ To create a new release for this plugin follow these steps:
 		"commit": "2a9b8e14e4622c611785117fbca3536c8f7f2ab2",
 		"url": "https://github.com/Vonage/Grafana_Status_panel"
 	},
-	...
+	// previous versions
 }
 ```
 * Grafana will now test and make sure that everything looks good from their end. if they have rejects, fix them, and update the `commit` with the new version hash.
