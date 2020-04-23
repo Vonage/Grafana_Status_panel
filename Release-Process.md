@@ -11,7 +11,7 @@ To create a new release for this plugin follow these steps:
 * Make sure that the dist folder is up to date with the source folder by running `grunt` or `npx grunt`. this will build a new version and update the dist folder.
 * Now you need to commit all these changes to the `develop` branch and then merge them to the `master` brach.
 * Now you'll need to update the [grafana-plugin-repository](https://github.com/grafana/grafana-plugin-repository). Create a PR with a new version in the `repo.json` under the `vonage-status-panel` section. you need to fill there the `version` according to the new version, the `url` (just copy paste the last one) and the `commit` which is the hash of the new version commit. example:<br>
-```json
+```js
 {
 	"id": "vonage-status-panel",
 	"type": "panel",
