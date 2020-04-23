@@ -1,6 +1,6 @@
 # Grafana Status Panel Release Process
 
-This document contains the technical aspects of the Grafana Status Panel release process. The intended audience is thoes who have approved by Vonage to crete, promote and sign official release builds for this plugin.
+This document contains the technical aspects of the Grafana Status Panel release process. The intended audience is those who have been approved by Vonage to create, promote and sign official release builds for this plugin.
 
 ## Creating a new Release
 
