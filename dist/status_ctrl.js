@@ -83,7 +83,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				isIgnoreOKColors: false,
 				isHideAlertsOnDisable: false,
 				cornerRadius: 0,
-				isAutoScrollOnOverflow: false
+				isAutoScrollOnOverflow: false,
+				titleFontSize: 1,
+				fontSize: 1
 			};
 
 			_export("StatusPluginCtrl", StatusPluginCtrl = function (_MetricsPanelCtrl) {

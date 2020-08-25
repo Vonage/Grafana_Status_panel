@@ -16,6 +16,15 @@
 		</div>
 		<div class="gf-form">
 			<span class="gf-form-label width-12">
+				Title Font Size
+				<info-popover mode="right-normal">
+					The title font font size expressed in <strong>rem</strong>
+				</info-popover>
+			</span>
+			<input type="number" ng-model="ctrl.panel.titleFontSize" class="gf-form-input max-width-12" ng-blur="ctrl.onRender()" min="1" />
+		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-12">
 				Remove Prefix
 				<info-popover mode="right-normal">
 					A prefix to remove from the name (helps when repeating panel over a template)
@@ -42,6 +51,15 @@
 				</info-popover>
 			</span>
 			<input type="number" ng-model="ctrl.panel.cornerRadius" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-12">
+				Metric font Size
+				<info-popover mode="right-normal">
+					The metric font font size expressed in <strong>rem</strong>
+				</info-popover>
+			</span>
+			<input type="number" ng-model="ctrl.panel.fontSize" class="gf-form-input max-width-12" ng-blur="ctrl.onRender()" min="1" />
 		</div>
 	</div>
 

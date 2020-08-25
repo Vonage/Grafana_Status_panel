@@ -26,7 +26,7 @@
 
 		<div class="bottom_section" ng-style="ctrl.annotation.length === 0 && { 'min-height': ctrl.minHeight }">
 			<div class="status_name_row">
-				<h1>
+				<h1 style="font-size: {{ctrl.panel.titleFontSize}}rem;">
 					<a ng-href="{{ ctrl.uri | interpolateTemplateVars:this }}" target="{{ ctrl.targetBlank ? '_blank' : '_self' }}" ng-if="ctrl.uri">
 						{{ ctrl.panel.displayName | interpolateTemplateVars:this }}
 					</a>
@@ -36,7 +36,7 @@
 				</h1>
 			</div>
 
-			<div ng-class="{'marquee_container': ctrl.isAutoScrollAlerts()}">
+			<div ng-class="{'marquee_container': ctrl.isAutoScrollAlerts()}" style="font-size: {{ctrl.panel.fontSize}}rem;">
 				<div class="status_alerts_row" ng-class="{'marquee_element': ctrl.isAutoScrollAlerts()}">
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && !ctrl.panel.isIgnoreOKColors && {'color':ctrl.panel.colors.ok}" ng-repeat="display in ctrl.display">
 						<a ng-show="display.url" ng-href="{{ display.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ display.alias }}</a>
