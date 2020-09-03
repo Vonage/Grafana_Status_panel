@@ -1,7 +1,7 @@
 {
   "name": "vonage-status-panel",
   "private": true,
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "babel": "~6.5.1",
-    "grunt": "^1.0.3",
+    "grunt": "^1.3.0",
     "grunt-babel": "~6.0.0",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-copy": "~0.8.2",
@@ -26,6 +26,7 @@
     "babel-plugin-transform-es2015-for-of": "^6.6.0",
     "babel-plugin-transform-es2015-modules-systemjs": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.20",
+    "js-yaml": "^3.14.0"
   }
 }
