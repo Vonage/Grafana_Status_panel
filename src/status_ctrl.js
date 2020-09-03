@@ -319,6 +319,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		//This must appear after handling the css style of the panel
 		this.handleMaxAlertsToShow();
+
+        //Calling postRefresh will ensure the measurements are set on the initial render
+        this.postRefresh();
 	}
 
 	upgradeOldVersion() {
