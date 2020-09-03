@@ -699,7 +699,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "link",
 					value: function link(scope, elem, attrs, ctrl) {
-						this.$panelContainer = elem.find('.panel-container');
+						this.$panelContainer = elem;
 						this.$panelContainer.addClass("st-card");
 						this.$panelContoller = ctrl;
 					}
