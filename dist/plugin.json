@@ -23,8 +23,8 @@
       {"name": "Warning State", "path": "img/warning.png"},
       {"name": "Critical State", "path": "img/error.png"}
     ],
-    "version": "1.0.9",
-    "updated": "2018-12-10"
+    "version": "1.0.10",
+    "updated": "2020-09-03"
   },
 
   "dependencies": {
