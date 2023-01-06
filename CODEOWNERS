@@ -1,4 +1,3 @@
-
 # This is a comment.
 # Each line is a file pattern followed by one or more owners.
 
@@ -6,14 +5,16 @@
 # the repo. Unless a later match takes precedence,
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
-*       @vonage/mobile
-*       @vonage/essentials-dev
-*       @vonage/atl-sre
+*       @Vonage/mobile
+*       @Vonage/essentials-dev
+*       @Vonage/atl-sre
 
 
+# Define overrides for specific project resources in this section.
+# These overrides will only request PR from the people and resources as defined.
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
 # modifies JS files, only @js-owner and not the global
 # owner(s) will be requested for a review.
-# Example Usage:
+# Example Usage can be found here:
 # https://github.com/Vonage/sre-centralized-logging/blob/a9e125826f75189e16a00ab53118ac11c21ab895/CODEOWNERS
