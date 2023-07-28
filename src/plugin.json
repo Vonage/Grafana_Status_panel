@@ -1,35 +1,35 @@
 {
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
   "name": "Status Panel",
   "id": "vonage-status-panel",
-
   "info": {
     "description": "Status Panel for Grafana",
     "author": {
-      "name": "Tomer Amir",
+      "name": "Vonage",
       "url": "https://github.com/Vonage"
     },
     "keywords": ["status", "panel"],
     "logos": {
-      "small": "img/icon_status_panel.svg",
-      "large": "img/icon_status_panel.svg"
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
     },
     "links": [
-      {"name": "Github", "url": "https://github.com/Vonage/Grafana_Status_panel"}
+      {
+        "name": "Github",
+        "url": "https://github.com/Vonage/Grafana_Status_panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE"
+      }
     ],
-    "screenshots": [
-      {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},
-      {"name": "Ok State", "path": "img/ok.png"},
-      {"name": "Warning State", "path": "img/warning.png"},
-      {"name": "Critical State", "path": "img/error.png"}
-    ],
-    "version": "1.0.10",
-    "updated": "2020-09-03"
+    "screenshots": [],
+    "version": "2.0.0",
+    "updated": "2022-08-19"
   },
-
   "dependencies": {
-    "grafanaDependency": ">=3.0.0",
-    "grafanaVersion": "3.x.x",
-    "plugins": [ ]
+    "grafanaDependency": ">=7.0.0",
+    "plugins": []
   }
 }
