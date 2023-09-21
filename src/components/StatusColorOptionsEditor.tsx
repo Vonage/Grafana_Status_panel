@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ColorPicker } from '@grafana/ui';
 import { PanelOptionsEditorProps } from '@grafana/data';
-import { StatusPanelOptions } from 'path-to-statusPanelOptionsBuilder';  // Update the import path if necessary
+import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';  // Update the import path if necessary
 
 const defaultColors = {
   crit: "defaultCriticalColor",
@@ -13,7 +13,7 @@ const defaultColors = {
 export const StatusColorOptionsEditor: FC<PanelOptionsEditorProps<StatusPanelOptions['colors']>> = ({ value = defaultColors, onChange }) => {
   const colorPicker = (colorProps: { value: string; onChange: (color: string) => void }) => (
     <div className="gf-form">
-      <ColorPicker {...colorProps} />
+      <ColorPicker color={colorProps.value} onChange={colorProps.onChange} /> 
     </div>
   );
 
@@ -33,4 +33,3 @@ export const StatusColorOptionsEditor: FC<PanelOptionsEditorProps<StatusPanelOpt
     </div>
   );
 };
-

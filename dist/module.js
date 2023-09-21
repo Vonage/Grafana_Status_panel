@@ -552,7 +552,10 @@ var StatusColorOptionsEditor = function StatusColorOptionsEditor(_a) {
   var colorPicker = function colorPicker(colorProps) {
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["ColorPicker"], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, colorProps)));
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["ColorPicker"], {
+      color: colorProps.value,
+      onChange: colorProps.onChange
+    }));
   };
   var buildHandler = function buildHandler(prop) {
     return function (color) {
@@ -611,6 +614,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var defaultColors = {
+  crit: "defaultCriticalColor",
+  warn: "defaultWarningColor",
+  ok: "defaultOkColor",
+  disable: "defaultDisableColor"
+};
 var StatusPanel = function StatusPanel(_a) {
   var data = _a.data,
     options = _a.options,
@@ -619,34 +628,40 @@ var StatusPanel = function StatusPanel(_a) {
     height = _a.height,
     replaceVariables = _a.replaceVariables,
     timeZone = _a.timeZone;
+  var _b;
+  var colors = ((_b = options) === null || _b === void 0 ? void 0 : _b.colors) || defaultColors;
+  var okColor = colors.ok;
+  var warnColor = colors.warn;
+  var critColor = colors.crit;
+  var disableColor = colors.disable;
   // build styles
   var statusColorClasses = {
     ok: options.isIgnoreOKColors ? '' : Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: options.colors.ok
+      color: okColor
     }),
     warn: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: options.colors.warn
+      color: warnColor
     }),
     crit: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: options.colors.crit
+      color: critColor
     }),
     disable: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: options.colors.disable
+      color: disableColor
     }),
     noData: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: options.colors.disable
+      color: disableColor
     }),
     hide: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
       display: 'none'
     })
   };
   // build props
-  var _b = Object(lib_buildStatusMetricProps__WEBPACK_IMPORTED_MODULE_7__["buildStatusMetricProps"])(data, fieldConfig, options, statusColorClasses, replaceVariables, timeZone),
-    annotations = _b.annotations,
-    disables = _b.disables,
-    crits = _b.crits,
-    warns = _b.warns,
-    displays = _b.displays;
+  var _c = Object(lib_buildStatusMetricProps__WEBPACK_IMPORTED_MODULE_7__["buildStatusMetricProps"])(data, fieldConfig, options, statusColorClasses, replaceVariables, timeZone),
+    annotations = _c.annotations,
+    disables = _c.disables,
+    crits = _c.crits,
+    warns = _c.warns,
+    displays = _c.displays;
   // clear other metrics when disabled and hide on disable
   if (options.isHideAlertsOnDisable && disables.length > 0) {
     crits = warns = displays = [];
@@ -659,9 +674,9 @@ var StatusPanel = function StatusPanel(_a) {
     alerts = alerts.slice(0, options.maxAlertNumber);
   }
   // setup flipper
-  var _c = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(react__WEBPACK_IMPORTED_MODULE_3___default.a.useState(true), 2),
-    flipped = _c[0],
-    setFlipped = _c[1];
+  var _d = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(react__WEBPACK_IMPORTED_MODULE_3___default.a.useState(true), 2),
+    flipped = _d[0],
+    setFlipped = _d[1];
   var wrapper = react__WEBPACK_IMPORTED_MODULE_3___default.a.useRef(null);
   var isHover = Object(hooks_index__WEBPACK_IMPORTED_MODULE_6__["useHover"])(wrapper);
   Object(hooks_index__WEBPACK_IMPORTED_MODULE_6__["useInterval"])(function () {
@@ -1095,7 +1110,18 @@ function buildStatusMetricProps(data, fieldConfig, options, colorClasses, replac
     var displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold':
-        var value = field.state.calcs[config.custom.aggregation];
+        console.log('Field:', field);
+        console.log('Config:', config);
+        var value = void 0;
+        if (field.state && field.state.calcs && typeof field.state.calcs[config.custom.aggregation] === 'number') {
+          value = field.state.calcs[config.custom.aggregation];
+        } else {
+          // Handle the scenario where the value is not available.
+          // For example, set a default value or log an error.
+          value = 0; // Or any other default value
+          console.error("Unexpected data structure: field.state.calcs is not defined.");
+        }
+        // let value: number = field.state.calcs![config.custom.aggregation];
         var crit = +config.custom.thresholds.crit;
         var warn = +config.custom.thresholds.warn;
         if (warn <= crit && crit <= value || warn >= crit && crit >= value) {

@@ -23,6 +23,7 @@
     "@grafana/toolkit": "~7.0.0",
     "@grafana/ui": "~7.0.0",
     "@types/lodash": "^4.14.183",
+    "@types/puppeteer": "^7.0.4",
     "concurrently": "^7.3.0"
   },
   "engines": {

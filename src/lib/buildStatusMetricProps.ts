@@ -52,7 +52,20 @@ export function buildStatusMetricProps(
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold':
-        let value: number = field.state.calcs![config.custom.aggregation];
+        console.log('Field:',field);
+        console.log('Config:',config);
+        let value: number;
+        if (field.state && field.state.calcs && typeof field.state.calcs[config.custom.aggregation] === 'number') {
+          value = field.state.calcs[config.custom.aggregation];}
+        else {
+    // Handle the scenario where the value is not available.
+    // For example, set a default value or log an error.
+        value = 0; // Or any other default value
+        console.error("Unexpected data structure: field.state.calcs is not defined.");
+}
+
+
+        // let value: number = field.state.calcs![config.custom.aggregation];
         const crit = +config.custom.thresholds.crit;
         const warn = +config.custom.thresholds.warn;
         if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
