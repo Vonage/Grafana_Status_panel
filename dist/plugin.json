@@ -24,12 +24,7 @@
         "url": "https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE"
       }
     ],
-    "screenshots": [
-      {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},
-      {"name": "Ok State", "path": "img/ok.png"},
-      {"name": "Warning State", "path": "img/warning.png"},
-      {"name": "Critical State", "path": "img/error.png"}
-    ],
+    "screenshots": [],
     "version": "2.0.0",
     "updated": "2022-08-19"
   },

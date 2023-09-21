@@ -11,7 +11,7 @@
     "sign": "grafana-toolkit plugin:sign",
     "serve": "/run.sh",
     "start": "concurrently --kill-others \"yarn watch\" \"yarn serve\""
-  },  
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Vonage/Grafana_Status_panel.git"
@@ -29,6 +29,7 @@
     "node": ">=14"
   },
   "dependencies": {
+    "node-sass": "^9.0.0",
     "react-card-flip": "^1.1.5"
   }
 }
