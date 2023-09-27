@@ -614,12 +614,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var defaultColors = {
-  crit: "defaultCriticalColor",
-  warn: "defaultWarningColor",
-  ok: "defaultOkColor",
-  disable: "defaultDisableColor"
-};
 var StatusPanel = function StatusPanel(_a) {
   var data = _a.data,
     options = _a.options,
@@ -628,40 +622,34 @@ var StatusPanel = function StatusPanel(_a) {
     height = _a.height,
     replaceVariables = _a.replaceVariables,
     timeZone = _a.timeZone;
-  var _b;
-  var colors = ((_b = options) === null || _b === void 0 ? void 0 : _b.colors) || defaultColors;
-  var okColor = colors.ok;
-  var warnColor = colors.warn;
-  var critColor = colors.crit;
-  var disableColor = colors.disable;
   // build styles
   var statusColorClasses = {
     ok: options.isIgnoreOKColors ? '' : Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: okColor
+      color: options.colors.ok
     }),
     warn: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: warnColor
+      color: options.colors.warn
     }),
     crit: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: critColor
+      color: options.colors.crit
     }),
     disable: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: disableColor
+      color: options.colors.disable
     }),
     noData: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
-      color: disableColor
+      color: options.colors.disable
     }),
     hide: Object(emotion__WEBPACK_IMPORTED_MODULE_2__["css"])({
       display: 'none'
     })
   };
   // build props
-  var _c = Object(lib_buildStatusMetricProps__WEBPACK_IMPORTED_MODULE_7__["buildStatusMetricProps"])(data, fieldConfig, options, statusColorClasses, replaceVariables, timeZone),
-    annotations = _c.annotations,
-    disables = _c.disables,
-    crits = _c.crits,
-    warns = _c.warns,
-    displays = _c.displays;
+  var _b = Object(lib_buildStatusMetricProps__WEBPACK_IMPORTED_MODULE_7__["buildStatusMetricProps"])(data, fieldConfig, options, statusColorClasses, replaceVariables, timeZone),
+    annotations = _b.annotations,
+    disables = _b.disables,
+    crits = _b.crits,
+    warns = _b.warns,
+    displays = _b.displays;
   // clear other metrics when disabled and hide on disable
   if (options.isHideAlertsOnDisable && disables.length > 0) {
     crits = warns = displays = [];
@@ -674,9 +662,9 @@ var StatusPanel = function StatusPanel(_a) {
     alerts = alerts.slice(0, options.maxAlertNumber);
   }
   // setup flipper
-  var _d = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(react__WEBPACK_IMPORTED_MODULE_3___default.a.useState(true), 2),
-    flipped = _d[0],
-    setFlipped = _d[1];
+  var _c = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(react__WEBPACK_IMPORTED_MODULE_3___default.a.useState(true), 2),
+    flipped = _c[0],
+    setFlipped = _c[1];
   var wrapper = react__WEBPACK_IMPORTED_MODULE_3___default.a.useRef(null);
   var isHover = Object(hooks_index__WEBPACK_IMPORTED_MODULE_6__["useHover"])(wrapper);
   Object(hooks_index__WEBPACK_IMPORTED_MODULE_6__["useInterval"])(function () {
