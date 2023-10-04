@@ -1,38 +1,35 @@
-import { ColorDefinition, PanelOptionsEditorProps, getColorForTheme, standardEditorsRegistry } from '@grafana/data';
-import { HorizontalGroup, Label, getTheme } from '@grafana/ui';
-import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
-import React from 'react';
+import React, { FC } from 'react';
+import { ColorPicker } from '@grafana/ui';
+import { PanelOptionsEditorProps } from '@grafana/data';
+import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';  // Update the import path if necessary
 
-export const StatusColorOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPanelOptions['colors']>> = ({
-  value,
-  onChange,
-}) => {
-  // get grafana color picker and theme
-  const colorPicker = standardEditorsRegistry.get('color').editor as any;
-  const theme = getTheme();
+const defaultColors = {
+  crit: "defaultCriticalColor",
+  warn: "defaultWarningColor",
+  ok: "defaultOkColor",
+  disable: "defaultDisableColor"
+};
 
-  // helper function to build the handler for each color
-  const buildHandler = (key: keyof StatusPanelOptions['colors']) => (color: ColorDefinition) =>
-    onChange({ ...value, [key]: getColorForTheme(color, theme as any) });
+export const StatusColorOptionsEditor: FC<PanelOptionsEditorProps<StatusPanelOptions['colors']>> = ({ value = defaultColors, onChange }) => {
+  const colorPicker = (colorProps: { value: string; onChange: (color: string) => void }) => (
+    <div className="gf-form">
+      <ColorPicker color={colorProps.value} onChange={colorProps.onChange} /> 
+    </div>
+  );
+
+  const buildHandler = (prop: keyof typeof defaultColors) => (color: string) => {
+    onChange({
+      ...value,
+      [prop]: color,
+    });
+  };
 
   return (
-    <HorizontalGroup spacing="lg">
-      <div>
-        <Label>Critical</Label>
-        {colorPicker({ value: value.crit, onChange: buildHandler('crit') })}
-      </div>
-      <div>
-        <Label>Warning</Label>
-        {colorPicker({ value: value.warn, onChange: buildHandler('warn') })}
-      </div>
-      <div>
-        <Label>OK</Label>
-        {colorPicker({ value: value.ok, onChange: buildHandler('ok') })}
-      </div>
-      <div>
-        <Label>Disabled</Label>
-        {colorPicker({ value: value.disable, onChange: buildHandler('disable') })}
-      </div>
-    </HorizontalGroup>
+    <div className="gf-form-inline">
+      {colorPicker({ value: value.crit || defaultColors.crit, onChange: buildHandler('crit') })}
+      {colorPicker({ value: value.warn || defaultColors.warn, onChange: buildHandler('warn') })}
+      {colorPicker({ value: value.ok || defaultColors.ok, onChange: buildHandler('ok') })}
+      {colorPicker({ value: value.disable || defaultColors.disable, onChange: buildHandler('disable') })}
+    </div>
   );
 };
