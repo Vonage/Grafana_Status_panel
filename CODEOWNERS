@@ -16,5 +16,3 @@
 # precedence. When someone opens a pull request that only
 # modifies JS files, only @js-owner and not the global
 # owner(s) will be requested for a review.
-# Example Usage can be found here:
-# https://github.com/Vonage/sre-centralized-logging/blob/a9e125826f75189e16a00ab53118ac11c21ab895/CODEOWNERS
