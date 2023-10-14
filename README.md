@@ -9,7 +9,7 @@ Each value can be used to customize the panel in different ways:
 * Show extra data in the panel about the component  
 
 ## The General Idea
-Lets say that you want to monitor a bunch of servers, and you want to keep track of multiple stats for each of them, and see in a glance the status of all of them.
+Let's say that you want to monitor a bunch of servers, and you want to keep track of multiple stats for each of them, and see in a glance the status of all of them.
 
 This plugin will make it easier to do. You just add all the metrics you want to track, and choose how you want their values to be treated:
 
@@ -43,8 +43,8 @@ You can also repeat the panel on a template if you have multiple instances that 
 		* `String Threshold` option makes equality check to the values
 		* `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
 	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
-	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
-4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will use first item from the result)
+	3. For displaying the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
+4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will use the first item from the result)
 
 ## Other Features
 
@@ -60,7 +60,7 @@ When you want to display just part of the value for a specific metric in the scr
 
 ### Measurement URL
 
-Lets say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to the URL (like an internal wiki).
+Let's say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to the URL (like an internal wiki).
 
 ### Threshold preferences
 
@@ -74,7 +74,7 @@ Panel display tuning is available when metric value gets to different states (`o
 
 If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
 ## Supported Data Sources
-Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
+Currently, the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
 
 ## Release Notes
 
