@@ -1,0 +1,6 @@
+{
+  "code_review": {
+    "enable_automatic": true,
+    "push_status_check": true
+  }
+}
